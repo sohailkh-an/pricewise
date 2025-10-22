@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getMegapkPrice(url) {
+export async function getFriendsHomePrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,27 +23,31 @@ export async function getMegapkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.comp_ipro_price").first().text().trim();
-    const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
-    );
+    const priceText = $("sale-price.text-lg.text-on-sale")
+      .text()
+      .replace(/[^0-9]/g, "");
+    const priceValue = parseInt(priceText);
 
     return {
-      platform: "mega.pk",
+      platform: "friendshome.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
-    console.error("Error scraping mega.pk:", err.response?.status, err.message);
+    console.error(
+      "Error scraping friendshome.pk:",
+      err.response?.status,
+      err.message
+    );
     return null;
   }
 }
 
-(async () => {
-  const result = await getMegapkPrice(
-    "https://www.mega.pk/ledtv_products/25423/Haier-32S80EFX-32-inch-smart---QLED-TV.html"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getFriendsHomePrice(
+//     "https://friendshome.pk/products/haier-32-inch-smart-4k-qled-tv-model-32s80efx"
+//   );
+//   console.log(result);
+// })();

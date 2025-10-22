@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getMegapkPrice(url) {
+export async function getPriceoyepkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,27 +23,45 @@ export async function getMegapkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.comp_ipro_price").first().text().trim();
+    const priceText = $(
+      "span.summary-price.text-black.price-size-lg.bold span"
+    )
+      .first()
+      .text()
+      .trim();
     const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
+      parseFloat(priceText.replace(/Rs|,|\s/g, "").trim())
     );
 
     return {
-      platform: "mega.pk",
+      platform: "priceoye.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
-    console.error("Error scraping mega.pk:", err.response?.status, err.message);
+    console.error(
+      "Error scraping priceoye.pk:",
+      err.response?.status,
+      err.message
+    );
     return null;
   }
 }
 
 (async () => {
-  const result = await getMegapkPrice(
-    "https://www.mega.pk/ledtv_products/25423/Haier-32S80EFX-32-inch-smart---QLED-TV.html"
+  const result = await getPriceoyepkPrice(
+    "https://priceoye.pk/mobiles/samsung/samsung-galaxy-a06"
   );
   console.log(result);
 })();
+
+{
+  /* <span class="summary-price text-black price-size-lg bold">
+  <span>
+    <sup>Rs</sup>
+    21,500
+  </span>
+</span>; */
+}

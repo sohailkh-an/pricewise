@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getMegapkPrice(url) {
+export async function getShophiveComPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,27 +23,28 @@ export async function getMegapkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.comp_ipro_price").first().text().trim();
-    const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
-    );
+    const priceText = $("span.price").first().text().trim();
+    const priceValue = Number(priceText.replace(/[^0-9.]/g, "").split(".")[0]);
 
     return {
-      platform: "mega.pk",
-      originalPrice: "N/A",
+      platform: "shophive.com",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
-    console.error("Error scraping mega.pk:", err.response?.status, err.message);
+    console.error(
+      "Error scraping shophive.com:",
+      err.response?.status,
+      err.message
+    );
     return null;
   }
 }
 
 (async () => {
-  const result = await getMegapkPrice(
-    "https://www.mega.pk/ledtv_products/25423/Haier-32S80EFX-32-inch-smart---QLED-TV.html"
+  const result = await getShophiveComPrice(
+    "https://www.shophive.com/samsung-galaxy-a06-4gb-64gb/"
   );
   console.log(result);
 })();

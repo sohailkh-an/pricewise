@@ -11,7 +11,7 @@ const Footer = () => {
               <img
                 src="/logo1.jpg"
                 alt="PriceWise Logo"
-                className="h-15 object-cover"
+                className="w-70 object-cover"
               />
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
@@ -107,7 +107,7 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <p className="text-gray-300 text-sm">
                 Get the latest deals and price alerts delivered to your inbox.
               </p>
@@ -121,7 +121,7 @@ const Footer = () => {
                   Subscribe
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

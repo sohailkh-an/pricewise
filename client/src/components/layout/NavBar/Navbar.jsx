@@ -5,6 +5,8 @@ import {
   NavigationMenuLink,
 } from "../../ui/navigation-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar";
+import { Button } from "../../ui/button";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -12,12 +14,33 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "../../ui/dropdown-menu";
-import { User, LogOut, Search } from "lucide-react";
+import { User, LogOut, Search, LogIn, UserPlus, Plus } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const NavBar = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
+
+  const getInitials = (fullName) => {
+    if (fullName) {
+      const nameParts = fullName.trim().split(' ');
+      if (nameParts.length >= 2) {
+        return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`.toUpperCase();
+      }
+      return fullName.charAt(0).toUpperCase();
+    }
+    return "U";
+  };
   return (
     <nav className="flex items-center justify-start px-6 py-4 bg-[#041d09] border-b">
+      {/* <Link to="/"> */}
       <img src="/logo1.jpg" alt="Logo" className="h-15" />
+      {/* </Link> */}
 
       <div className="flex items-center gap-20 justify-between px-20">
         <NavigationMenu>
@@ -55,28 +78,63 @@ const NavBar = () => {
         </div>
       </div>
 
-      <div className="flex items-center flex-1 justify-end">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar className="cursor-pointer hover:ring-2 hover:ring-ring hover:ring-offset-2 transition-all">
-              <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
-              <AvatarFallback>
-                <User className="h-4 w-4" />
-              </AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48">
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="flex items-center flex-1 justify-end gap-4">
+        {user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="cursor-pointer hover:ring-2 hover:ring-ring hover:ring-offset-2 transition-all">
+                <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
+                <AvatarFallback>
+                  {getInitials(user.fullName)}
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48">
+              <div className="px-2 py-1.5 text-sm font-medium">
+                {user.fullName}
+              </div>
+              <div className="px-2 py-1 text-xs text-muted-foreground">
+                {user.email}
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <User className="mr-2 h-4 w-4" />
+                Profile
+              </DropdownMenuItem>
+              {user.email === "sohail@studio2001.com" && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/add-product" className="flex items-center">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Product
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" asChild>
+              <Link to="/login" className="text-white hover:text-green-300">
+                <LogIn className="mr-2 h-4 w-4" />
+                Login
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/register" className="text-white border-white hover:bg-white hover:text-green-600">
+                <UserPlus className="mr-2 h-4 w-4" />
+                Sign Up
+              </Link>
+            </Button>
+          </div>
+        )}
       </div>
     </nav>
   );

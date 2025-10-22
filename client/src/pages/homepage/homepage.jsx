@@ -3,6 +3,7 @@ import { ProductCard } from "../../components/ui/ProductCard";
 import { Carousel } from "../../components/ui/carousel";
 import { Button } from "../../components/ui/button";
 import { productData } from "../../data/products";
+import { useEffect } from "react";
 
 const HomePage = () => {
   const categories = [
@@ -11,6 +12,10 @@ const HomePage = () => {
     { name: "Clothes", key: "clothes" },
     { name: "Technology", key: "technology" },
   ];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">

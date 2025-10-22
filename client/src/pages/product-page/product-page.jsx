@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import * as React from "react";
 import { useParams } from "react-router-dom";
 import { usePriceComparison } from "../../hooks/usePriceComparison";
@@ -28,6 +29,14 @@ const ProductPage = () => {
   );
 
   console.log("Price Data", priceData);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat("en-US").format(num);
+  };
 
   const product = {
     id: id,
@@ -81,7 +90,7 @@ const ProductPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+      <div className=" w-full px-6 py-8">
         <nav className="mb-8">
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <span>Home</span>
@@ -146,7 +155,7 @@ const ProductPage = () => {
               {product.description}
             </p>
 
-            <Card>
+            <Card background="priceComparison" size="priceComparison">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingDown className="w-5 h-5 text-green-600" />
@@ -156,17 +165,18 @@ const ProductPage = () => {
               <CardContent>
                 {priceData ? (
                   <div className="space-y-4">
-                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-green-800 dark:text-green-200">
-                            {priceData.telemartPrice.platform}
+                            {priceData?.store1?.platform}
                           </span>
+
                           <Badge variant="success">Best Price</Badge>
                         </div>
                         <Button variant="outline" size="sm" asChild>
                           <a
-                            href={priceData.telemartPrice.url}
+                            href={priceData?.store1?.url}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -178,36 +188,21 @@ const ProductPage = () => {
                       <div className="flex items-center gap-4">
                         <div>
                           <p className="text-2xl font-bold text-green-600">
-                            {priceData.telemartPrice.price}
+                            Rs. {formatNumber(priceData?.store1?.price)}
                           </p>
-                          {priceData.telemartPrice.originalPrice &&
-                            priceData.telemartPrice.originalPrice !==
-                              priceData.telemartPrice.price && (
-                              <p className="text-sm text-muted-foreground line-through">
-                                {priceData.telemartPrice.originalPrice}
-                              </p>
-                            )}
                         </div>
-                        {priceData.telemartPrice.discountedPrice && (
-                          <Badge variant="success" className="ml-auto">
-                            Save{" "}
-                            {priceData.telemartPrice.originalPrice -
-                              priceData.telemartPrice.discountedPrice}
-                          </Badge>
-                        )}
                       </div>
                     </div>
-                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                    <div className="p-4 bg-white dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-green-800 dark:text-green-200">
-                            {priceData.megaPrice.platform}
+                            {priceData?.store2?.platform}
                           </span>
-                          <Badge variant="success">Best Price</Badge>
                         </div>
                         <Button variant="outline" size="sm" asChild>
                           <a
-                            href={priceData.megaPrice.url}
+                            href={priceData?.store2?.url}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -219,27 +214,42 @@ const ProductPage = () => {
                       <div className="flex items-center gap-4">
                         <div>
                           <p className="text-2xl font-bold text-green-600">
-                            {priceData.megaPrice.price}
+                            Rs. {formatNumber(priceData?.store2?.price)}
                           </p>
-                          {priceData.megaPrice.originalPrice &&
-                            priceData.megaPrice.originalPrice !==
-                              priceData.megaPrice.price && (
-                              <p className="text-sm text-muted-foreground line-through">
-                                {priceData.megaPrice.originalPrice}
-                              </p>
-                            )}
                         </div>
-                        {priceData.megaPrice.discountedPrice && (
-                          <Badge variant="success" className="ml-auto">
-                            Save PKR
-                            {priceData.megaPrice.originalPrice -
-                              priceData.megaPrice.discountedPrice}
-                          </Badge>
-                        )}
+                      </div>
+                    </div>
+                    <div className="p-4 bg-white dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-green-800 dark:text-green-200">
+                            {priceData?.store3?.platform}
+                          </span>
+                          {priceData?.store3?.isBestPrice && (
+                            <Badge variant="success">Best Price</Badge>
+                          )}
+                        </div>
+                        <Button variant="outline" size="sm" asChild>
+                          <a
+                            href={priceData?.store3?.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Visit Store
+                          </a>
+                        </Button>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div>
+                          <p className="text-2xl font-bold text-green-600">
+                            Rs. {formatNumber(priceData?.store3?.price)}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg border">
+                    {/* <div className="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg border">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-semibold">Other Platforms</span>
                         <span className="text-sm text-muted-foreground">
@@ -250,7 +260,7 @@ const ProductPage = () => {
                         Price comparison from Daraz, PriceOye, and other
                         platforms will be available soon.
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                 ) : (
                   <div className="text-center py-8">

@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getMegapkPrice(url) {
+export async function getShadenterprisespkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,27 +23,31 @@ export async function getMegapkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.comp_ipro_price").first().text().trim();
+    const priceText = $("p.price ins span.woocommerce-Price-amount bdi").first().text().trim();
     const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
+      parseFloat(priceText.replace(/₨|,|\s/g, "").trim())
     );
 
     return {
-      platform: "mega.pk",
+      platform: "shadenterprises.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
-    console.error("Error scraping mega.pk:", err.response?.status, err.message);
+    console.error(
+      "Error scraping shadenterprises.pk:",
+      err.response?.status,
+      err.message
+    );
     return null;
   }
 }
 
 (async () => {
-  const result = await getMegapkPrice(
-    "https://www.mega.pk/ledtv_products/25423/Haier-32S80EFX-32-inch-smart---QLED-TV.html"
+  const result = await getShadenterprisespkPrice(
+    "https://shadenterprises.pk/product/haier-32-inch-smart-qled-tv-32s80efx/"
   );
   console.log(result);
 })();
