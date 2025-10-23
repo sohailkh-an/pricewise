@@ -14,7 +14,7 @@ router.post("/register", async (req, res) => {
     if (!email || !password || !fullName) {
       return res.status(400).json({
         success: false,
-        message: "Email, password, and full name are required"
+        message: "Email, password, and full name are required",
       });
     }
 
@@ -23,16 +23,18 @@ router.post("/register", async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         success: false,
-        message: "Please enter a valid email address"
+        message: "Please enter a valid email address",
       });
     }
 
     // Password strength validation
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
         success: false,
-        message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+        message:
+          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
       });
     }
 
@@ -42,7 +44,7 @@ router.post("/register", async (req, res) => {
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: "Email already registered"
+        message: "Email already registered",
       });
     }
 
@@ -50,24 +52,22 @@ router.post("/register", async (req, res) => {
     const user = new User({
       email,
       password,
-      fullName
+      fullName,
     });
 
     await user.save();
 
     // Generate JWT token
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     res.status(201).json({
@@ -76,24 +76,24 @@ router.post("/register", async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
-        fullName: user.fullName
-      }
+        fullName: user.fullName,
+      },
     });
   } catch (error) {
     console.error("Registration error:", error);
-    
+
     if (error.name === "ValidationError") {
-      const errors = Object.values(error.errors).map(err => err.message);
+      const errors = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
         success: false,
         message: "Validation failed",
-        errors
+        errors,
       });
     }
 
     res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 });
@@ -107,7 +107,7 @@ router.post("/login", async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Email and password are required"
+        message: "Email and password are required",
       });
     }
 
@@ -116,7 +116,7 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password"
+        message: "Invalid email or password",
       });
     }
 
@@ -125,7 +125,7 @@ router.post("/login", async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password"
+        message: "Invalid email or password",
       });
     }
 
@@ -134,18 +134,16 @@ router.post("/login", async (req, res) => {
     await user.save();
 
     // Generate JWT token
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.json({
@@ -154,14 +152,14 @@ router.post("/login", async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
-        fullName: user.fullName
-      }
+        fullName: user.fullName,
+      },
     });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 });
@@ -171,7 +169,7 @@ router.post("/logout", (req, res) => {
   res.clearCookie("token");
   res.json({
     success: true,
-    message: "Logout successful"
+    message: "Logout successful",
   });
 });
 
@@ -179,7 +177,7 @@ router.post("/logout", (req, res) => {
 router.get("/me", authenticateToken, (req, res) => {
   res.json({
     success: true,
-    user: req.user
+    user: req.user,
   });
 });
 
@@ -193,39 +191,38 @@ router.put("/profile", authenticateToken, async (req, res) => {
     if (fullName !== undefined) updateData.fullName = fullName;
     if (email !== undefined) updateData.email = email;
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      updateData,
-      { new: true, runValidators: true }
-    ).select("-password");
+    const user = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
 
     res.json({
       success: true,
       message: "Profile updated successfully",
-      user
+      user,
     });
   } catch (error) {
     console.error("Profile update error:", error);
-    
+
     if (error.name === "ValidationError") {
-      const errors = Object.values(error.errors).map(err => err.message);
+      const errors = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
         success: false,
         message: "Validation failed",
-        errors
+        errors,
       });
     }
 
     if (error.code === 11000) {
       return res.status(409).json({
         success: false,
-        message: "Email already taken"
+        message: "Email already taken",
       });
     }
 
     res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 });
