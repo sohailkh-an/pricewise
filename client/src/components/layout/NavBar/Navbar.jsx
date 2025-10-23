@@ -28,9 +28,11 @@ const NavBar = () => {
 
   const getInitials = (fullName) => {
     if (fullName) {
-      const nameParts = fullName.trim().split(' ');
+      const nameParts = fullName.trim().split(" ");
       if (nameParts.length >= 2) {
-        return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`.toUpperCase();
+        return `${nameParts[0].charAt(0)}${nameParts[
+          nameParts.length - 1
+        ].charAt(0)}`.toUpperCase();
       }
       return fullName.charAt(0).toUpperCase();
     }
@@ -38,33 +40,41 @@ const NavBar = () => {
   };
   return (
     <nav className="flex items-center justify-start px-6 py-4 bg-[#041d09] border-b">
-      {/* <Link to="/"> */}
-      <img src="/logo1.jpg" alt="Logo" className="h-15" />
-      {/* </Link> */}
+      <Link to="/">
+        <img src="/logo1.jpg" alt="Logo" className="h-15" />
+      </Link>
 
       <div className="flex items-center gap-20 justify-between px-20">
         <NavigationMenu>
           <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
-                Home
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
-                Products
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
-                About
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
-                Contact
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            <Link to="/">
+              <NavigationMenuItem>
+                <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                  Home
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </Link>
+            <Link to="/products">
+              <NavigationMenuItem>
+                <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                  Products
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </Link>
+            <Link to="/about">
+              <NavigationMenuItem>
+                <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                  About
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </Link>
+            <Link to="/contact">
+              <NavigationMenuItem>
+                <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                  Contact
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </Link>
           </NavigationMenuList>
         </NavigationMenu>
 
@@ -84,9 +94,7 @@ const NavBar = () => {
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer hover:ring-2 hover:ring-ring hover:ring-offset-2 transition-all">
                 <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
-                <AvatarFallback>
-                  {getInitials(user.fullName)}
-                </AvatarFallback>
+                <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
@@ -128,7 +136,10 @@ const NavBar = () => {
               </Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link to="/register" className="text-white border-white hover:bg-white hover:text-green-600">
+              <Link
+                to="/register"
+                className="text-white border-white hover:bg-white hover:text-green-600"
+              >
                 <UserPlus className="mr-2 h-4 w-4" />
                 Sign Up
               </Link>

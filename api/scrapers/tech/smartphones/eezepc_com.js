@@ -46,12 +46,12 @@ export async function getEezepcComPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getEezepcComPrice(
-    "https://eezepc.com/product/samsung-galaxy-a06-4gb-64gb-light-blue/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getEezepcComPrice(
+//     "https://eezepc.com/product/samsung-galaxy-a06-4gb-64gb-light-blue/"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

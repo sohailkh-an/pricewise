@@ -4,7 +4,12 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -28,46 +33,76 @@ const AddProduct = () => {
   const [error, setError] = useState("");
 
   const categories = {
-    Shoes: ["Sneakers", "Boots", "Sandals", "Heels", "Sports Shoes", "Casual Shoes"],
-    Clothes: ["T-Shirts", "Jeans", "Dresses", "Jackets", "Shirts", "Pants", "Skirts"],
-    Tech: ["Smartphones", "Laptops", "Tablets", "Headphones", "Cameras", "Gaming", "Accessories"],
-    Cosmetics: ["Makeup", "Skincare", "Hair Care", "Fragrances", "Nail Care", "Tools & Brushes"]
+    Shoes: [
+      "Sneakers",
+      "Boots",
+      "Sandals",
+      "Heels",
+      "Sports Shoes",
+      "Casual Shoes",
+    ],
+    Clothes: [
+      "T-Shirts",
+      "Jeans",
+      "Dresses",
+      "Jackets",
+      "Shirts",
+      "Pants",
+      "Skirts",
+    ],
+    Tech: [
+      "Smartphones",
+      "Laptops",
+      "Smart Watches",
+      "Tablets",
+      "Headphones",
+      "Cameras",
+      "Gaming",
+      "Accessories",
+    ],
+    Cosmetics: [
+      "Makeup",
+      "Skincare",
+      "Hair Care",
+      "Fragrances",
+      "Nail Care",
+      "Tools & Brushes",
+    ],
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
-    // Reset subcategory when category changes
+
     if (name === "category") {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         category: value,
-        subCategory: ""
+        subCategory: "",
       }));
     }
   };
 
   const handlePriceComparisonChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       priceComparison: {
         ...prev.priceComparison,
-        [name]: value
-      }
+        [name]: value,
+      },
     }));
   };
 
   const handleImageChange = (index, value) => {
     const newImages = [...formData.images];
     newImages[index] = value;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: newImages
+      images: newImages,
     }));
   };
 
@@ -76,14 +111,12 @@ const AddProduct = () => {
     setLoading(true);
     setError("");
 
-    // Check if user is logged in
     if (!user) {
       setError("You must be logged in to add products");
       setLoading(false);
       return;
     }
 
-    // Check if user is admin
     if (user.email !== "sohail@studio2001.com") {
       setError("Access denied. Admin privileges required.");
       setLoading(false);
@@ -91,9 +124,8 @@ const AddProduct = () => {
     }
 
     try {
-      // Filter out empty image URLs
-      const filteredImages = formData.images.filter(img => img.trim() !== "");
-      
+      const filteredImages = formData.images.filter((img) => img.trim() !== "");
+
       if (filteredImages.length === 0) {
         setError("At least one image is required");
         setLoading(false);
@@ -102,17 +134,20 @@ const AddProduct = () => {
 
       const productData = {
         ...formData,
-        images: filteredImages
+        images: filteredImages,
       };
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "user-email": user.email,
-        },
-        body: JSON.stringify(productData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/products`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "user-email": user.email,
+          },
+          body: JSON.stringify(productData),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -121,8 +156,7 @@ const AddProduct = () => {
 
       const result = await response.json();
       console.log("Product created successfully:", result);
-      
-      // Reset form
+
       setFormData({
         title: "",
         shortDescription: "",
@@ -138,10 +172,8 @@ const AddProduct = () => {
         },
       });
 
-      // Navigate to products list or show success message
       alert("Product created successfully!");
-      navigate("/admin/products");
-      
+      navigate("/");
     } catch (err) {
       console.error("Error creating product:", err);
       setError(err.message || "Failed to create product");
@@ -155,7 +187,9 @@ const AddProduct = () => {
       <div className="max-w-4xl mx-auto px-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">Add New Product</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center">
+              Add New Product
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -165,7 +199,6 @@ const AddProduct = () => {
                 </div>
               )}
 
-              {/* Title */}
               <div className="space-y-2">
                 <Label htmlFor="title">Product Title *</Label>
                 <Input
@@ -179,7 +212,6 @@ const AddProduct = () => {
                 />
               </div>
 
-              {/* Short Description */}
               <div className="space-y-2">
                 <Label htmlFor="shortDescription">Short Description *</Label>
                 <textarea
@@ -197,7 +229,6 @@ const AddProduct = () => {
                 </p>
               </div>
 
-              {/* Long Description */}
               <div className="space-y-2">
                 <Label htmlFor="longDescription">Long Description *</Label>
                 <textarea
@@ -215,10 +246,11 @@ const AddProduct = () => {
                 </p>
               </div>
 
-              {/* Images */}
               <div className="space-y-4">
                 <Label>Product Images *</Label>
-                <p className="text-sm text-gray-500">Add up to 3 image URLs (at least 1 required)</p>
+                <p className="text-sm text-gray-500">
+                  Add up to 3 image URLs (at least 1 required)
+                </p>
                 {formData.images.map((image, index) => (
                   <div key={index} className="space-y-2">
                     <Label htmlFor={`image-${index}`}>Image {index + 1}</Label>
@@ -233,7 +265,6 @@ const AddProduct = () => {
                 ))}
               </div>
 
-              {/* Category */}
               <div className="space-y-2">
                 <Label htmlFor="category">Category *</Label>
                 <select
@@ -245,7 +276,7 @@ const AddProduct = () => {
                   required
                 >
                   <option value="">Select a category</option>
-                  {Object.keys(categories).map(category => (
+                  {Object.keys(categories).map((category) => (
                     <option key={category} value={category}>
                       {category}
                     </option>
@@ -253,7 +284,6 @@ const AddProduct = () => {
                 </select>
               </div>
 
-              {/* Sub Category */}
               <div className="space-y-2">
                 <Label htmlFor="subCategory">Sub Category *</Label>
                 <select
@@ -266,15 +296,15 @@ const AddProduct = () => {
                   disabled={!formData.category}
                 >
                   <option value="">Select a sub category</option>
-                  {formData.category && categories[formData.category]?.map(subCategory => (
-                    <option key={subCategory} value={subCategory}>
-                      {subCategory}
-                    </option>
-                  ))}
+                  {formData.category &&
+                    categories[formData.category]?.map((subCategory) => (
+                      <option key={subCategory} value={subCategory}>
+                        {subCategory}
+                      </option>
+                    ))}
                 </select>
               </div>
 
-              {/* Brand */}
               <div className="space-y-2">
                 <Label htmlFor="brand">Brand</Label>
                 <Input
@@ -287,11 +317,14 @@ const AddProduct = () => {
                 />
               </div>
 
-              {/* Price Comparison URLs */}
               <div className="space-y-4">
-                <Label className="text-lg font-semibold">Price Comparison URLs</Label>
-                <p className="text-sm text-gray-500">Add URLs from different platforms for price comparison</p>
-                
+                <Label className="text-lg font-semibold">
+                  Price Comparison URLs
+                </Label>
+                <p className="text-sm text-gray-500">
+                  Add URLs from different platforms for price comparison
+                </p>
+
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="platformOneUrl">Platform 1 URL</Label>
@@ -304,7 +337,7 @@ const AddProduct = () => {
                       placeholder="Enter first platform URL"
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="platformTwoUrl">Platform 2 URL</Label>
                     <Input
@@ -316,7 +349,7 @@ const AddProduct = () => {
                       placeholder="Enter second platform URL"
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="platformThreeUrl">Platform 3 URL</Label>
                     <Input
@@ -331,7 +364,6 @@ const AddProduct = () => {
                 </div>
               </div>
 
-              {/* Submit Button */}
               <div className="flex justify-end space-x-4">
                 <Button
                   type="button"

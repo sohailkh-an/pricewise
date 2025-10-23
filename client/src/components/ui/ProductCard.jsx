@@ -15,13 +15,11 @@ function ProductCard({ product }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link
-        to={`/product/4555`}
-      >
+      <Link to={`/product/${product._id || product.id}`}>
         <CardContent className="p-0">
           <div className="aspect-[1/0.8] overflow-hidden rounded-t-xl">
             <img
-              src={product.image}
+              src={product.images?.[0] || product.image}
               alt={product.title}
               className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
             />
@@ -36,7 +34,7 @@ function ProductCard({ product }) {
                   <Star
                     key={i}
                     className={`w-3 h-3 ${
-                      i < Math.floor(product.rating)
+                      i < Math.floor(product.rating || 0)
                         ? "fill-yellow-400 text-yellow-400"
                         : "text-gray-300"
                     }`}
@@ -44,15 +42,17 @@ function ProductCard({ product }) {
                 ))}
               </div>
               <span className="text-xs text-muted-foreground">
-                ({product.rating})
+                ({product.rating || 0})
               </span>
             </div>
-            <p className="font-bold text-lg text-primary">${product.price}</p>
+            {/* <p className="font-bold text-lg text-primary">
+              {product.shortDescription || "View Details"}
+            </p> */}
           </div>
         </CardContent>
         <CardFooter className="p-4 pt-0">
           <Button className="w-full" size="sm">
-            Add to Cart
+            View Product
           </Button>
         </CardFooter>
       </Link>

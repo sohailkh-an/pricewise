@@ -45,9 +45,9 @@ export async function getShadenterprisespkPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getShadenterprisespkPrice(
-    "https://shadenterprises.pk/product/haier-32-inch-smart-qled-tv-32s80efx/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getShadenterprisespkPrice(
+//     "https://shadenterprises.pk/product/haier-32-inch-smart-qled-tv-32s80efx/"
+//   );
+//   console.log(result);
+// })();

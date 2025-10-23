@@ -42,9 +42,9 @@ export async function getShophiveComPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getShophiveComPrice(
-    "https://www.shophive.com/hp-probook-450-g10-i5-1334u-8gb-512gb-ssd-1y/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getShophiveComPrice(
+//     "https://www.shophive.com/hp-probook-450-g10-i5-1334u-8gb-512gb-ssd-1y/"
+//   );
+//   console.log(result);
+// })();

@@ -46,12 +46,12 @@ export async function getEezepcComPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getEezepcComPrice(
-    "https://eezepc.com/product/hp-probook-450-g10-notebook-pc-intel-core-i5-1335u/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getEezepcComPrice(
+//     "https://eezepc.com/product/hp-probook-450-g10-notebook-pc-intel-core-i5-1335u/"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

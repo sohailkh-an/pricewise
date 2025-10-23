@@ -42,9 +42,9 @@ export async function getShophiveComPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getShophiveComPrice(
-    "https://www.shophive.com/samsung-galaxy-a06-4gb-64gb/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getShophiveComPrice(
+//     "https://www.shophive.com/samsung-galaxy-a06-4gb-64gb/"
+//   );
+//   console.log(result);
+// })();

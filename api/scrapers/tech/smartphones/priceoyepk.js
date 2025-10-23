@@ -50,12 +50,12 @@ export async function getPriceoyepkPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getPriceoyepkPrice(
-    "https://priceoye.pk/mobiles/samsung/samsung-galaxy-a06"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getPriceoyepkPrice(
+//     "https://priceoye.pk/mobiles/samsung/samsung-galaxy-a06"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span class="summary-price text-black price-size-lg bold">

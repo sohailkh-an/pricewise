@@ -20,46 +20,46 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
-            {/* Auth pages without NavBar and Footer */}
-            <Route 
-              path="/login" 
+            <Route
+              path="/login"
               element={
                 <PublicRoute>
                   <Login />
                 </PublicRoute>
-              } 
+              }
             />
-            <Route 
-              path="/register" 
+            <Route
+              path="/register"
               element={
                 <PublicRoute>
                   <Register />
                 </PublicRoute>
-              } 
+              }
             />
-            
-            {/* Main app pages with NavBar and Footer */}
-            <Route path="/*" element={
-              <div className="min-h-screen flex flex-col">
-                <NavBar />
-                <main className="flex-1">
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/product/4555" element={<ProductPage />} />
-                    <Route 
-                      path="/admin/add-product" 
-                      element={
-                        <ProtectedRoute>
-                          <AddProduct />
-                        </ProtectedRoute>
-                      } 
-                    />
-                    {/* Add more protected routes here as needed */}
-                  </Routes>
-                </main>
-                <Footer />
-              </div>
-            } />
+
+            <Route
+              path="/*"
+              element={
+                <div className="min-h-screen flex flex-col">
+                  <NavBar />
+                  <main className="flex-1">
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/product/:id" element={<ProductPage />} />
+                      <Route
+                        path="/admin/add-product"
+                        element={
+                          <ProtectedRoute>
+                            <AddProduct />
+                          </ProtectedRoute>
+                        }
+                      />
+                    </Routes>
+                  </main>
+                  <Footer />
+                </div>
+              }
+            />
           </Routes>
         </Router>
       </QueryClientProvider>

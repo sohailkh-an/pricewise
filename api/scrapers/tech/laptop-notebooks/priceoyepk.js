@@ -48,12 +48,12 @@ export async function getPriceoyepkPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getPriceoyepkPrice(
-    "https://priceoye.pk/laptops/hp/hp-probook-450-g10-core-i5-13th-gen-1335u"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getPriceoyepkPrice(
+//     "https://priceoye.pk/laptops/hp/hp-probook-450-g10-core-i5-13th-gen-1335u"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span class="summary-price text-black price-size-lg bold">

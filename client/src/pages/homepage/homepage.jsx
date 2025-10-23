@@ -2,15 +2,16 @@ import * as React from "react";
 import { ProductCard } from "../../components/ui/ProductCard";
 import { Carousel } from "../../components/ui/carousel";
 import { Button } from "../../components/ui/button";
-import { productData } from "../../data/products";
+import { useProductsByCategory } from "../../hooks/useProducts";
 import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 const HomePage = () => {
   const categories = [
     { name: "Shoes", key: "shoes" },
     { name: "Cosmetics", key: "cosmetics" },
     { name: "Clothes", key: "clothes" },
-    { name: "Technology", key: "technology" },
+    { name: "Technology", key: "Tech" },
   ];
 
   useEffect(() => {
@@ -32,18 +33,7 @@ const HomePage = () => {
 
       <section className="py-16 px-5 w-full">
         {categories.map((category) => (
-          <div key={category.key} className="mb-16 w-full">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold">{category.name}</h2>
-              <Button variant="outline">Browse More {category.name}</Button>
-            </div>
-
-            <Carousel itemsPerView={4} className="mb-4 w-full">
-              {productData[category.key].map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </Carousel>
-          </div>
+          <CategorySection key={category.key} category={category} />
         ))}
       </section>
 
@@ -63,6 +53,80 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+    </div>
+  );
+};
+
+const CategorySection = ({ category }) => {
+  const { data, isLoading, error } = useProductsByCategory(category.key, {
+    limit: 8,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="mb-16 w-full">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold">{category.name}</h2>
+          <Button variant="outline" disabled>
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            Loading...
+          </Button>
+        </div>
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="w-8 h-8 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mb-16 w-full">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold">{category.name}</h2>
+          <Button variant="outline" onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </div>
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Failed to load products</p>
+        </div>
+      </div>
+    );
+  }
+
+  const products = data?.products || [];
+
+  if (products.length === 0) {
+    return (
+      <div className="mb-16 w-full">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold">{category.name}</h2>
+          <Button variant="outline" disabled>
+            No Products Available
+          </Button>
+        </div>
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">
+            No products available in this category yet. Check back soon!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-16 w-full">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-3xl font-bold">{category.name}</h2>
+        <Button variant="outline">Browse More {category.name}</Button>
+      </div>
+
+      <Carousel itemsPerView={4} className="mb-4 w-full">
+        {products.map((product) => (
+          <ProductCard key={product._id || product.id} product={product} />
+        ))}
+      </Carousel>
     </div>
   );
 };
