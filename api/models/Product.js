@@ -50,6 +50,20 @@ const productSchema = new mongoose.Schema(
         message: "Product must have at least 1 image and at most 10 images",
       },
     },
+    priceComparison: {
+      platformOneUrl: {
+        type: String,
+        trim: true,
+      },
+      platformTwoUrl: {
+        type: String,
+        trim: true,
+      },
+      platformThreeUrl: {
+        type: String,
+        trim: true,
+      },
+    },
     category: {
       type: String,
       required: [true, "Category is required"],

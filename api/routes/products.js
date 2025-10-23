@@ -78,6 +78,7 @@ router.post("/", checkAdminAuth, async (req, res) => {
       category: req.body.category,
       subCategory: req.body.subCategory,
       brand: req.body.brand,
+      priceComparison: req.body.priceComparison,
     };
     
     const product = new Product(productData);

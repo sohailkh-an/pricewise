@@ -17,6 +17,11 @@ const AddProduct = () => {
     category: "",
     subCategory: "",
     brand: "",
+    priceComparison: {
+      platformOneUrl: "",
+      platformTwoUrl: "",
+      platformThreeUrl: "",
+    },
   });
 
   const [loading, setLoading] = useState(false);
@@ -44,6 +49,17 @@ const AddProduct = () => {
         subCategory: ""
       }));
     }
+  };
+
+  const handlePriceComparisonChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      priceComparison: {
+        ...prev.priceComparison,
+        [name]: value
+      }
+    }));
   };
 
   const handleImageChange = (index, value) => {
@@ -115,6 +131,11 @@ const AddProduct = () => {
         category: "",
         subCategory: "",
         brand: "",
+        priceComparison: {
+          platformOneUrl: "",
+          platformTwoUrl: "",
+          platformThreeUrl: "",
+        },
       });
 
       // Navigate to products list or show success message
@@ -264,6 +285,50 @@ const AddProduct = () => {
                   onChange={handleInputChange}
                   placeholder="Enter brand name"
                 />
+              </div>
+
+              {/* Price Comparison URLs */}
+              <div className="space-y-4">
+                <Label className="text-lg font-semibold">Price Comparison URLs</Label>
+                <p className="text-sm text-gray-500">Add URLs from different platforms for price comparison</p>
+                
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="platformOneUrl">Platform 1 URL</Label>
+                    <Input
+                      id="platformOneUrl"
+                      name="platformOneUrl"
+                      type="url"
+                      value={formData.priceComparison.platformOneUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter first platform URL"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="platformTwoUrl">Platform 2 URL</Label>
+                    <Input
+                      id="platformTwoUrl"
+                      name="platformTwoUrl"
+                      type="url"
+                      value={formData.priceComparison.platformTwoUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter second platform URL"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="platformThreeUrl">Platform 3 URL</Label>
+                    <Input
+                      id="platformThreeUrl"
+                      name="platformThreeUrl"
+                      type="url"
+                      value={formData.priceComparison.platformThreeUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter third platform URL"
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Submit Button */}
