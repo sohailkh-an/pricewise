@@ -6,16 +6,10 @@ const reviewSchema = new mongoose.Schema({
     ref: 'Product',
     required: true
   },
-  userName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  userEmail: {
-    type: String,
-    required: true,
-    trim: true,
-    lowercase: true
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   rating: {
     type: Number,
@@ -37,6 +31,7 @@ const reviewSchema = new mongoose.Schema({
 
 // Add index for efficient querying
 reviewSchema.index({ product: 1, createdAt: -1 });
+reviewSchema.index({ user: 1, product: 1 }, { unique: true }); // Ensure one review per user per product
 
 // Post-save hook to update product rating and reviews count
 reviewSchema.post('save', async function() {

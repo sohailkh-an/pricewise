@@ -63,6 +63,18 @@ const productSchema = new mongoose.Schema(
         type: String,
         trim: true,
       },
+      platformFourUrl: {
+        type: String,
+        trim: true,
+      },
+      platformFiveUrl: {
+        type: String,
+        trim: true,
+      },
+      platformSixUrl: {
+        type: String,
+        trim: true,
+      },
     },
     category: {
       type: String,

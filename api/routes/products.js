@@ -3,10 +3,22 @@ import Product from "../models/Product.js";
 import { getPriceoyepkPrice } from "../scrapers/tech/laptop-notebooks/priceoyepk.js";
 import { getEezepcComPrice } from "../scrapers/tech/laptop-notebooks/eezepc_com.js";
 import { getShophiveComPrice } from "../scrapers/tech/laptop-notebooks/shophive_com.js";
+import { getChasevaluePrice } from "../scrapers/cosmetics/chasevalue.js";
+import { getJust4girlspkPrice } from "../scrapers/cosmetics/just4girls_pk.js";
+import { getMakeupstashpkPrice } from "../scrapers/cosmetics/makeupstash_pk.js";
+import { getNaheedPrice } from "../scrapers/cosmetics/naheed_pk.js";
+import { getTrendifypkPrice } from "../scrapers/cosmetics/trendify_pk.js";
+import { getVegaspkPrice } from "../scrapers/cosmetics/vegas_pk.js";
+import { getAysonlinePrice } from "../scrapers/home_appliances/aysonline.js";
+import { getFriendsHomePrice } from "../scrapers/home_appliances/friendsHome.js";
+import { getJalalelectronicsPrice } from "../scrapers/home_appliances/jalalelectronics.js";
+import { getJapanelectronicsPrice } from "../scrapers/home_appliances/japanelectronics.js";
+import { getLahorecentrePrice } from "../scrapers/home_appliances/lahorecentre.js";
+import { getMegapkPrice } from "../scrapers/home_appliances/megapk.js";
+import { getSohailelectronicsPrice } from "../scrapers/home_appliances/sohailelectronics.js";
 
 import { getTelemartPrice } from "../scrapers/telemartpk.js";
 import { getShadenterprisespkPrice } from "../scrapers/shadenterprisespk.js";
-import { getFriendsHomePrice } from "../scrapers/friendsHome.js";
 const router = express.Router();
 
 const checkAdminAuth = (req, res, next) => {
@@ -59,6 +71,78 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Advanced search endpoint
+router.get("/search", async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 12,
+      search,
+      category,
+      subCategory,
+      minRating,
+      sortBy = "relevance",
+    } = req.query;
+
+    const query = { isActive: true };
+
+    // Text search
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    // Category filters
+    if (category) query.category = category;
+    if (subCategory) query.subCategory = subCategory;
+
+    // Rating filter
+    if (minRating) {
+      query.rating = { $gte: parseFloat(minRating) };
+    }
+
+    console.log("Search Query: ", query);
+
+    // Sort options
+    let sortOptions = {};
+    switch (sortBy) {
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "rating":
+        sortOptions = { rating: -1, reviews: -1 };
+        break;
+      case "reviews":
+        sortOptions = { reviews: -1, rating: -1 };
+        break;
+      case "relevance":
+      default:
+        if (search) {
+          sortOptions = { score: { $meta: "textScore" } };
+        } else {
+          sortOptions = { createdAt: -1 };
+        }
+        break;
+    }
+
+    const products = await Product.find(query)
+      .sort(sortOptions)
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
+
+    const total = await Product.countDocuments(query);
+
+    res.json({
+      products,
+      totalPages: Math.ceil(total / limit),
+      currentPage: parseInt(page),
+      total,
+    });
+  } catch (error) {
+    console.error("Error searching products:", error);
+    res.status(500).json({ error: "Failed to search products" });
+  }
+});
+
 // Specific routes must come before generic :id route
 router.get("/test", (req, res) => {
   res.json({ message: "Test successful" });
@@ -69,12 +153,14 @@ router.post("/price", async (req, res) => {
     const product = req.body;
     console.log("Product: ", product);
 
-    // Handle multiple URLs (new functionality)
     if (product) {
       const urlArray = new Array(
         product.priceComparison.platformOneUrl,
         product.priceComparison.platformTwoUrl,
-        product.priceComparison.platformThreeUrl
+        product.priceComparison.platformThreeUrl,
+        product.priceComparison.platformFourUrl,
+        product.priceComparison.platformFiveUrl,
+        product.priceComparison.platformSixUrl
       );
       console.log("URL Array: ", urlArray);
       const pricePromises = [];
@@ -106,10 +192,41 @@ router.post("/price", async (req, res) => {
             } else {
               pricePromises.push("Unknown domain");
             }
+          } else if (product.category.toLowerCase() === "cosmetics") {
+            if (url.includes("chasevalue")) {
+              pricePromises.push(getChasevaluePrice(url));
+            } else if (url.includes("just4girls")) {
+              pricePromises.push(getJust4girlspkPrice(url));
+            } else if (url.includes("makeupstash")) {
+              pricePromises.push(getMakeupstashpkPrice(url));
+            } else if (url.includes("naheed.pk")) {
+              pricePromises.push(getNaheedPrice(url));
+            } else if (url.includes("trendify.pk")) {
+              pricePromises.push(getTrendifypkPrice(url));
+            } else if (url.includes("vegas.pk")) {
+              pricePromises.push(getVegaspkPrice(url));
+            } else {
+              pricePromises.push("Unknown domain");
+            }
+          } else if (product.category.toLowerCase() === "home appliances") {
+            if (url.includes("aysonline")) {
+              pricePromises.push(getAysonlinePrice(url));
+            } else if (url.includes("friendshome")) {
+              pricePromises.push(getFriendsHomePrice(url));
+            } else if (url.includes("jalalelectronics")) {
+              pricePromises.push(getJalalelectronicsPrice(url));
+            } else if (url.includes("japanelectronics")) {
+              pricePromises.push(getJapanelectronicsPrice(url));
+            } else if (url.includes("lahorecentre")) {
+              pricePromises.push(getLahorecentrePrice(url));
+            } else if (url.includes("sohailelectronics")) {
+              pricePromises.push(getSohailelectronicsPrice(url));
+            } else {
+              pricePromises.push("Unknown domain");
+            }
           }
         } catch (error) {
           console.error(`Error processing URL ${url}:`, error);
-          // Continue with other URLs even if one fails
         }
       }
 
@@ -126,13 +243,13 @@ router.post("/price", async (req, res) => {
 
       validResults.sort((a, b) => a.price - b.price);
 
-      const priceData = {};
-      validResults.forEach((result, i) => {
-        priceData[`store${i + 1}`] = result;
-      });
+      // const priceData = {};
+      // validResults.forEach((result, i) => {
+      //   priceData[`store${i + 1}`] = result;
+      // });
 
-      console.log("Multi-URL price data: ", priceData);
-      return res.json(priceData);
+      console.log("Multi-URL price data: ", validResults);
+      return res.json(validResults);
     }
 
     return res.status(400).json({ error: "URL or URLs parameter is required" });
@@ -142,7 +259,38 @@ router.post("/price", async (req, res) => {
   }
 });
 
-// Get single product by ID
+router.get("/:id/recommendations", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { limit = 8 } = req.query;
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const recommendations = await Product.find({
+      _id: { $ne: id },
+      $or: [
+        { category: product.category },
+        { subCategory: product.subCategory },
+        { brand: product.brand },
+      ],
+      isActive: true,
+    })
+      .sort({ rating: -1, reviews: -1, createdAt: -1 })
+      .limit(parseInt(limit));
+
+    res.json({
+      recommendations,
+      total: recommendations.length,
+    });
+  } catch (error) {
+    console.error("Error fetching recommendations:", error);
+    res.status(500).json({ error: "Failed to fetch recommendations" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -151,8 +299,6 @@ router.get("/:id", async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    // console.log("Product: ", product);
-
     res.json(product);
   } catch (error) {
     console.error("Error fetching product:", error);
@@ -160,7 +306,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Create new product (Admin only)
 router.post("/", checkAdminAuth, async (req, res) => {
   try {
     const productData = {
@@ -193,7 +338,6 @@ router.post("/", checkAdminAuth, async (req, res) => {
   }
 });
 
-// Update product (Admin only)
 router.put("/:id", checkAdminAuth, async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -221,7 +365,6 @@ router.put("/:id", checkAdminAuth, async (req, res) => {
   }
 });
 
-// Delete product (Admin only)
 router.delete("/:id", checkAdminAuth, async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);

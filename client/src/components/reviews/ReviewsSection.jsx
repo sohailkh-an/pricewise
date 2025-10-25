@@ -8,9 +8,11 @@ import {
   useReviewStats,
   useAddReview,
 } from "../../hooks/useReviews";
+import { useAuth } from "../../contexts/AuthContext";
 import AddReviewForm from "./AddReviewForm";
 
 const ReviewsSection = ({ productId }) => {
+  const { user } = useAuth();
   const [showAddReview, setShowAddReview] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -87,13 +89,23 @@ const ReviewsSection = ({ productId }) => {
               <MessageCircle className="w-5 h-5" />
               Customer Reviews & Ratings
             </CardTitle>
-            <Button
-              onClick={() => setShowAddReview(!showAddReview)}
-              variant="outline"
-              size="sm"
-            >
-              Write a Review
-            </Button>
+            {user ? (
+              <Button
+                onClick={() => setShowAddReview(!showAddReview)}
+                variant="outline"
+                size="sm"
+              >
+                Write a Review
+              </Button>
+            ) : (
+              <Button
+                onClick={() => window.location.href = '/login'}
+                variant="outline"
+                size="sm"
+              >
+                Login to Review
+              </Button>
+            )}
           </div>
 
           {stats && (
@@ -173,7 +185,7 @@ const ReviewsSection = ({ productId }) => {
                   <div className="flex-1 space-y-2">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-sm">
-                        {review.userName}
+                        {review.user?.name || 'Anonymous'}
                       </span>
                       <div className="flex items-center gap-1">
                         {renderStars(review.rating, "w-3 h-3")}
@@ -239,9 +251,15 @@ const ReviewsSection = ({ productId }) => {
             <p className="text-muted-foreground mb-4">
               Be the first to share your experience with this product!
             </p>
-            <Button onClick={() => setShowAddReview(true)}>
-              Write the First Review
-            </Button>
+            {user ? (
+              <Button onClick={() => setShowAddReview(true)}>
+                Write the First Review
+              </Button>
+            ) : (
+              <Button onClick={() => window.location.href = '/login'}>
+                Login to Write the First Review
+              </Button>
+            )}
           </CardContent>
         </Card>
       )}

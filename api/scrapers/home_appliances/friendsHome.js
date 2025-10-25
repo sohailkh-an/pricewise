@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getPriceoyepkPrice(url) {
+export async function getFriendsHomePrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,16 +23,13 @@ export async function getPriceoyepkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.summary-price.text-black.price-size-lg.bold span")
-      .first()
+    const priceText = $("sale-price.text-lg.text-on-sale")
       .text()
-      .trim();
-    const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs|,|\s/g, "").trim())
-    );
+      .replace(/[^0-9]/g, "");
+    const priceValue = parseInt(priceText);
 
     return {
-      platform: "priceoye.pk",
+      platform: "friendshome.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
@@ -40,7 +37,7 @@ export async function getPriceoyepkPrice(url) {
     };
   } catch (err) {
     console.error(
-      "Error scraping priceoye.pk:",
+      "Error scraping friendshome.pk:",
       err.response?.status,
       err.message
     );
@@ -49,17 +46,8 @@ export async function getPriceoyepkPrice(url) {
 }
 
 (async () => {
-  const result = await getPriceoyepkPrice(
-    "https://priceoye.pk/mobiles/samsung/samsung-galaxy-a06"
+  const result = await getFriendsHomePrice(
+    "https://friendshome.pk/products/samsung-43-inch-smart-4k-crystal-uhd-tv-model-43du7000?_pos=1&_psq=43DU7000&_ss=e&_v=1.0"
   );
   console.log(result);
 })();
-
-{
-  /* <span class="summary-price text-black price-size-lg bold">
-  <span>
-    <sup>Rs</sup>
-    21,500
-  </span>
-</span>; */
-}

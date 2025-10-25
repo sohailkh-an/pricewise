@@ -28,6 +28,14 @@ export const productsAPI = {
     return response.data;
   },
 
+  // Get product recommendations
+  getRecommendations: async (id, limit = 8) => {
+    const response = await api.get(`/api/products/${id}/recommendations`, {
+      params: { limit }
+    });
+    return response.data;
+  },
+
   // Get price comparison data
   getPriceComparison: async (url) => {
     const response = await api.get('/api/products/price', { 
@@ -57,6 +65,45 @@ export const productsAPI = {
     const response = await api.delete(`/api/products/${id}`, {
       headers: { 'user-email': userEmail }
     });
+    return response.data;
+  },
+
+  // Search products with advanced filtering
+  search: async (params = {}) => {
+    const response = await api.get('/api/products/search', { params });
+    return response.data;
+  }
+};
+
+// Wishlist API
+export const wishlistAPI = {
+  // Get user's wishlist
+  getAll: async () => {
+    const response = await api.get('/api/wishlist');
+    return response.data;
+  },
+
+  // Add product to wishlist
+  add: async (productId) => {
+    const response = await api.post('/api/wishlist', { productId });
+    return response.data;
+  },
+
+  // Remove product from wishlist
+  remove: async (productId) => {
+    const response = await api.delete(`/api/wishlist/${productId}`);
+    return response.data;
+  },
+
+  // Check if product is in wishlist
+  check: async (productId) => {
+    const response = await api.get(`/api/wishlist/check/${productId}`);
+    return response.data;
+  },
+
+  // Clear entire wishlist
+  clear: async () => {
+    const response = await api.delete('/api/wishlist');
     return response.data;
   }
 };

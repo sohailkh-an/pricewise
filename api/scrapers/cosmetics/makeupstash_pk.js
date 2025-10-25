@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getFriendsHomePrice(url) {
+export async function getMakeupstashpkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,13 +23,18 @@ export async function getFriendsHomePrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("sale-price.text-lg.text-on-sale")
+    const priceText = $(
+      "div.productView-price div.price__regular dd.price__last span.price-item"
+    )
+      .first()
       .text()
-      .replace(/[^0-9]/g, "");
-    const priceValue = parseInt(priceText);
+      .trim();
+    const priceValue = Math.floor(
+      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
+    );
 
     return {
-      platform: "friendshome.pk",
+      platform: "Makeupstash.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
@@ -37,7 +42,7 @@ export async function getFriendsHomePrice(url) {
     };
   } catch (err) {
     console.error(
-      "Error scraping friendshome.pk:",
+      "Error scraping Makeupstash.pk:",
       err.response?.status,
       err.message
     );
@@ -45,9 +50,9 @@ export async function getFriendsHomePrice(url) {
   }
 }
 
-// (async () => {
-//   const result = await getFriendsHomePrice(
-//     "https://friendshome.pk/products/haier-32-inch-smart-4k-qled-tv-model-32s80efx"
-//   );
-//   console.log(result);
-// })();
+(async () => {
+  const result = await getMakeupstashpkPrice(
+    "https://makeupstash.pk/products/maybelline-new-york-fit-me-mattelp?_pos=2&_psq=Maybelline+New+York+Fit+Me&_ss=e&_v=1.0"
+  );
+  console.log(result);
+})();

@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getPriceoyepkPrice(url) {
+export async function getMegapkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,43 +23,27 @@ export async function getPriceoyepkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.summary-price.text-black.price-size-lg.bold span")
-      .first()
-      .text()
-      .trim();
+    const priceText = $("span.comp_ipro_price").first().text().trim();
     const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs|,|\s/g, "").trim())
+      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
     );
 
     return {
-      platform: "priceoye.pk",
+      platform: "mega.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
-    console.error(
-      "Error scraping priceoye.pk:",
-      err.response?.status,
-      err.message
-    );
+    console.error("Error scraping mega.pk:", err.response?.status, err.message);
     return null;
   }
 }
 
 (async () => {
-  const result = await getPriceoyepkPrice(
-    "https://priceoye.pk/mobiles/samsung/samsung-galaxy-a06"
+  const result = await getMegapkPrice(
+    "https://www.mega.pk/ledtv_products/26404/Samsung-43DU7000-43-Inch-Smart---4K-CRYSTAL-UHD-TV.html"
   );
   console.log(result);
 })();
-
-{
-  /* <span class="summary-price text-black price-size-lg bold">
-  <span>
-    <sup>Rs</sup>
-    21,500
-  </span>
-</span>; */
-}

@@ -2,9 +2,12 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "sonner";
 import NavBar from "./components/layout/NavBar/Navbar";
 import HomePage from "./pages/homepage/homepage";
 import ProductPage from "./pages/product-page/product-page";
+import SearchPage from "./pages/search-page/search-page";
+import WishlistPage from "./pages/wishlist/wishlist";
 import Login from "./pages/auth/login/login";
 import Register from "./pages/auth/register/register";
 import AddProduct from "./pages/admin/add-product/add-product";
@@ -45,6 +48,8 @@ function App() {
                   <main className="flex-1">
                     <Routes>
                       <Route path="/" element={<HomePage />} />
+                      <Route path="/search" element={<SearchPage />} />
+                      <Route path="/wishlist" element={<WishlistPage />} />
                       <Route path="/product/:id" element={<ProductPage />} />
                       <Route
                         path="/admin/add-product"
@@ -62,6 +67,7 @@ function App() {
             />
           </Routes>
         </Router>
+        <Toaster position="top-right" richColors />
       </QueryClientProvider>
     </AuthProvider>
   );

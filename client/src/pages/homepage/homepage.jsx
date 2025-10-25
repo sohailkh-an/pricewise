@@ -5,13 +5,13 @@ import { Button } from "../../components/ui/button";
 import { useProductsByCategory } from "../../hooks/useProducts";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const categories = [
-    { name: "Shoes", key: "shoes" },
-    { name: "Cosmetics", key: "cosmetics" },
-    { name: "Clothes", key: "clothes" },
     { name: "Technology", key: "Tech" },
+    { name: "Home Appliances", key: "Home Appliances" },
+    { name: "Cosmetics", key: "Cosmetics" },
   ];
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      <section className="py-16 px-5 w-full">
+      <section className="py-16 px-5 w-full bg-gray-50">
         {categories.map((category) => (
           <CategorySection key={category.key} category={category} />
         ))}
@@ -64,7 +64,7 @@ const CategorySection = ({ category }) => {
 
   if (isLoading) {
     return (
-      <div className="mb-16 w-full">
+      <div className="mb-16 w-full bg-gray-50">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold">{category.name}</h2>
           <Button variant="outline" disabled>
@@ -119,7 +119,11 @@ const CategorySection = ({ category }) => {
     <div className="mb-16 w-full">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-bold">{category.name}</h2>
-        <Button variant="outline">Browse More {category.name}</Button>
+        <Button variant="outline" asChild>
+          <Link to={`/search?category=${category.key}`}>
+            Browse More {category.name}
+          </Link>
+        </Button>
       </div>
 
       <Carousel itemsPerView={4} className="mb-4 w-full">

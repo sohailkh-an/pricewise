@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getPriceoyepkPrice(url) {
+export async function getTrendifypkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,16 +23,13 @@ export async function getPriceoyepkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.summary-price.text-black.price-size-lg.bold span")
-      .first()
-      .text()
-      .trim();
+    const priceText = $("div.prices span.price").first().text().trim();
     const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs|,|\s/g, "").trim())
+      Number(priceText.replace(/[^0-9]/g, "")) / 100
     );
 
     return {
-      platform: "priceoye.pk",
+      platform: "Trendify.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
@@ -40,7 +37,7 @@ export async function getPriceoyepkPrice(url) {
     };
   } catch (err) {
     console.error(
-      "Error scraping priceoye.pk:",
+      "Error scraping Trendify.pk:",
       err.response?.status,
       err.message
     );
@@ -49,17 +46,19 @@ export async function getPriceoyepkPrice(url) {
 }
 
 (async () => {
-  const result = await getPriceoyepkPrice(
-    "https://priceoye.pk/mobiles/samsung/samsung-galaxy-a06"
+  const result = await getTrendifypkPrice(
+    "https://trendify.pk/collections/maybelline/products/maybelline-new-york-fit-me-matte-poreless-liquid-foundation-30-ml?variant=41166181498985"
   );
   console.log(result);
 })();
 
 {
-  /* <span class="summary-price text-black price-size-lg bold">
-  <span>
-    <sup>Rs</sup>
-    21,500
-  </span>
+  /* <span
+  class="woocommerce-Price-amount amount eez-nosnippet"
+  data-nosnippet="true"
+>
+  <bdi>
+    <span class="woocommerce-Price-currencySymbol">Rs</span>&nbsp;22,490
+  </bdi>
 </span>; */
 }

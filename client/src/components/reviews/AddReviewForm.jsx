@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Star } from "lucide-react";
 import { useAddReview } from "../../hooks/useReviews";
+import { useAuth } from "../../contexts/AuthContext";
 
 const AddReviewForm = ({
   productId,
@@ -12,9 +12,8 @@ const AddReviewForm = ({
   onCancel,
   isSubmitting,
 }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
-    userName: "",
-    userEmail: "",
     rating: 5,
     comment: "",
   });
@@ -47,16 +46,6 @@ const AddReviewForm = ({
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.userName.trim()) {
-      newErrors.userName = "Name is required";
-    }
-
-    if (!formData.userEmail.trim()) {
-      newErrors.userEmail = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.userEmail)) {
-      newErrors.userEmail = "Please enter a valid email";
-    }
-
     if (!formData.comment.trim()) {
       newErrors.comment = "Review comment is required";
     } else if (formData.comment.trim().length < 10) {
@@ -81,8 +70,6 @@ const AddReviewForm = ({
       });
 
       setFormData({
-        userName: "",
-        userEmail: "",
         rating: 5,
         comment: "",
       });
@@ -97,37 +84,10 @@ const AddReviewForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="userName">Your Name *</Label>
-          <Input
-            id="userName"
-            name="userName"
-            value={formData.userName}
-            onChange={handleInputChange}
-            placeholder="Enter your name"
-            className={errors.userName ? "border-red-500" : ""}
-          />
-          {errors.userName && (
-            <p className="text-sm text-red-500">{errors.userName}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="userEmail">Your Email *</Label>
-          <Input
-            id="userEmail"
-            name="userEmail"
-            type="email"
-            value={formData.userEmail}
-            onChange={handleInputChange}
-            placeholder="Enter your email"
-            className={errors.userEmail ? "border-red-500" : ""}
-          />
-          {errors.userEmail && (
-            <p className="text-sm text-red-500">{errors.userEmail}</p>
-          )}
-        </div>
+      <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+        <p className="text-sm text-blue-800">
+          <strong>Reviewing as:</strong> {user?.name} ({user?.email})
+        </p>
       </div>
 
       <div className="space-y-2">

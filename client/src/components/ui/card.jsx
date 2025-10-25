@@ -7,7 +7,11 @@ const cardVariants = cva(
   "rounded-xl border bg-[#c0f6cb] text-card-foreground",
   {
     variants: {
+      height: {
+        homescreen: "h-[510px]",
+      },
       size: {
+        no_pad: "p-0",
         default: "p-2",
         sm: "p-4",
         lg: "p-8",
@@ -27,11 +31,11 @@ const cardVariants = cva(
   }
 );
 
-function Card({ className, size, background, ...props }) {
+function Card({ className, size, height, background, ...props }) {
   return (
     <div
       data-slot="card"
-      className={cn(cardVariants({ size, background }), className)}
+      className={cn(cardVariants({ size, height, background }), className)}
       {...props}
     />
   );

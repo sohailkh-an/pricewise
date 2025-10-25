@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getPriceoyepkPrice(url) {
+export async function getChasevaluePrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,16 +23,18 @@ export async function getPriceoyepkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.summary-price.text-black.price-size-lg.bold span")
+    const priceText = $(
+      "div.productView-price div.price__regular dd.price__last span.price-item span.money"
+    )
       .first()
       .text()
       .trim();
     const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs|,|\s/g, "").trim())
+      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
     );
 
     return {
-      platform: "priceoye.pk",
+      platform: "chasevalue.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
@@ -40,7 +42,7 @@ export async function getPriceoyepkPrice(url) {
     };
   } catch (err) {
     console.error(
-      "Error scraping priceoye.pk:",
+      "Error scraping Chasevalue.pk:",
       err.response?.status,
       err.message
     );
@@ -49,17 +51,8 @@ export async function getPriceoyepkPrice(url) {
 }
 
 (async () => {
-  const result = await getPriceoyepkPrice(
-    "https://priceoye.pk/mobiles/samsung/samsung-galaxy-a06"
+  const result = await getChasevaluePrice(
+    "https://chasevalue.pk/products/maybelline-fit-me-matte-poreless-liquid-foundation-120-classic-ivory-18ml-6902395722410-a12679120?_pos=1&_sid=e6b2a8ae9&_ss=r"
   );
   console.log(result);
 })();
-
-{
-  /* <span class="summary-price text-black price-size-lg bold">
-  <span>
-    <sup>Rs</sup>
-    21,500
-  </span>
-</span>; */
-}

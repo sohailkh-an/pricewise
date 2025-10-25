@@ -29,3 +29,13 @@ export function useProductsByCategory(category, params = {}) {
     cacheTime: 10 * 60 * 1000,
   });
 }
+
+export function useProductRecommendations(productId, limit = 8) {
+  return useQuery({
+    queryKey: ["product", "recommendations", productId, limit],
+    queryFn: () => productsAPI.getRecommendations(productId, limit),
+    enabled: !!productId,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+  });
+}

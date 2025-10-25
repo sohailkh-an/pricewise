@@ -21,9 +21,13 @@ const reviewsAPI = {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify(reviewData),
     });
-    if (!response.ok) throw new Error('Failed to add review');
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to add review');
+    }
     return response.json();
   }
 };

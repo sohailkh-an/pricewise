@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getPriceoyepkPrice(url) {
+export async function getNaheedPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,16 +23,16 @@ export async function getPriceoyepkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.summary-price.text-black.price-size-lg.bold span")
+    const priceText = $("span.price-container span.price-wrapper span.price")
       .first()
       .text()
       .trim();
     const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs|,|\s/g, "").trim())
+      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
     );
 
     return {
-      platform: "priceoye.pk",
+      platform: "neheed.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
@@ -40,7 +40,7 @@ export async function getPriceoyepkPrice(url) {
     };
   } catch (err) {
     console.error(
-      "Error scraping priceoye.pk:",
+      "Error scraping Naheed.pk:",
       err.response?.status,
       err.message
     );
@@ -49,17 +49,8 @@ export async function getPriceoyepkPrice(url) {
 }
 
 (async () => {
-  const result = await getPriceoyepkPrice(
-    "https://priceoye.pk/mobiles/samsung/samsung-galaxy-a06"
+  const result = await getNaheedPrice(
+    "https://www.naheed.pk/maybelline-new-york-fit-me-matte-poreless-liquid-foundation-120-classic-ivory-18ml"
   );
   console.log(result);
 })();
-
-{
-  /* <span class="summary-price text-black price-size-lg bold">
-  <span>
-    <sup>Rs</sup>
-    21,500
-  </span>
-</span>; */
-}

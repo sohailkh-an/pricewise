@@ -14,12 +14,24 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "../../ui/dropdown-menu";
-import { User, LogOut, Search, LogIn, UserPlus, Plus } from "lucide-react";
+import {
+  User,
+  LogOut,
+  Search,
+  LogIn,
+  UserPlus,
+  Plus,
+  Heart,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const NavBar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   const handleLogout = async () => {
     await logout();
@@ -38,6 +50,13 @@ const NavBar = () => {
     }
     return "U";
   };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (debouncedSearchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(debouncedSearchQuery.trim())}`);
+    }
+  };
   return (
     <nav className="flex items-center justify-start px-6 py-4 bg-[#041d09] border-b">
       <Link to="/">
@@ -54,7 +73,7 @@ const NavBar = () => {
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </Link>
-            <Link to="/products">
+            <Link to="/search">
               <NavigationMenuItem>
                 <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
                   Products
@@ -78,17 +97,30 @@ const NavBar = () => {
           </NavigationMenuList>
         </NavigationMenu>
 
-        <div className="relative">
+        <form onSubmit={handleSearch} className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 pr-4 py-2 w-84 bg-background border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
           />
-        </div>
+        </form>
       </div>
 
       <div className="flex items-center flex-1 justify-end gap-4">
+        {user && (
+          <Button
+            variant="ghost"
+            asChild
+            className="text-white hover:text-green-300"
+          >
+            <Link to="/wishlist" className="flex items-center">
+              <Heart className="h-6 w-6 text-[#ffffff] fill-[#ffffff]" />
+            </Link>
+          </Button>
+        )}
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

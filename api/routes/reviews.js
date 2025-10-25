@@ -1,6 +1,7 @@
 import express from "express";
 import Review from "../models/Review.js";
 import mongoose from "mongoose";
+import { authenticateToken } from "../middleware/auth.js";
 const router = express.Router();
 
 router.get("/product/:productId", async (req, res) => {
@@ -8,16 +9,23 @@ router.get("/product/:productId", async (req, res) => {
     const { productId } = req.params;
     const { page = 1, limit = 10 } = req.query;
 
-    const reviews = await Review.find({ product: productId })
+    // Convert string productId to ObjectId for proper matching
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ error: "Invalid product ID" });
+    }
+    const productObjectId = new mongoose.Types.ObjectId(productId);
+
+    const reviews = await Review.find({ product: productObjectId })
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit)
-      .populate("product", "title");
+      .populate("product", "title")
+      .populate("user", "name email");
 
-    const total = await Review.countDocuments({ product: productId });
+    const total = await Review.countDocuments({ product: productObjectId });
 
     const avgRatingResult = await Review.aggregate([
-      { $match: { product: productId } },
+      { $match: { product: productObjectId } },
       {
         $group: {
           _id: null,
@@ -46,12 +54,13 @@ router.get("/product/:productId", async (req, res) => {
 });
 
 // Add a new review
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
-    const { productId, userName, userEmail, rating, comment } = req.body;
+    const { productId, rating, comment } = req.body;
+    const userId = req.user._id;
 
     // Validate required fields
-    if (!productId || !userName || !userEmail || !rating || !comment) {
+    if (!productId || !rating || !comment) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -63,7 +72,7 @@ router.post("/", async (req, res) => {
     // Check if user already reviewed this product
     const existingReview = await Review.findOne({
       product: productId,
-      userEmail: userEmail.toLowerCase(),
+      user: userId,
     });
 
     if (existingReview) {
@@ -74,16 +83,16 @@ router.post("/", async (req, res) => {
 
     const review = new Review({
       product: productId,
-      userName: userName.trim(),
-      userEmail: userEmail.toLowerCase().trim(),
+      user: userId,
       rating,
       comment: comment.trim(),
     });
 
     await review.save();
 
-    // Populate product info for response
+    // Populate product and user info for response
     await review.populate("product", "title");
+    await review.populate("user", "name email");
 
     res.status(201).json({
       message: "Review added successfully",
@@ -97,6 +106,9 @@ router.post("/", async (req, res) => {
         details: Object.values(error.errors).map((err) => err.message),
       });
     }
+    if (error.code === 11000) {
+      return res.status(400).json({ error: "You have already reviewed this product" });
+    }
     res.status(500).json({ error: "Failed to add review" });
   }
 });
@@ -106,8 +118,14 @@ router.get("/stats/:productId", async (req, res) => {
   try {
     const { productId } = req.params;
 
+    // Convert string productId to ObjectId for proper matching
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ error: "Invalid product ID" });
+    }
+    const productObjectId = new mongoose.Types.ObjectId(productId);
+
     const stats = await Review.aggregate([
-      { $match: { product: productId } },
+      { $match: { product: productObjectId } },
       {
         $group: {
           _id: null,
@@ -146,14 +164,21 @@ router.get("/stats/:productId", async (req, res) => {
   }
 });
 
-// Delete review (Admin only)
-router.delete("/:id", async (req, res) => {
+// Delete review (User can delete their own review or admin)
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
-    const review = await Review.findByIdAndDelete(req.params.id);
+    const review = await Review.findById(req.params.id);
 
     if (!review) {
       return res.status(404).json({ error: "Review not found" });
     }
+
+    // Check if user is the owner of the review or is admin
+    if (review.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      return res.status(403).json({ error: "You can only delete your own reviews" });
+    }
+
+    await Review.findByIdAndDelete(req.params.id);
 
     res.json({ message: "Review deleted successfully" });
   } catch (error) {

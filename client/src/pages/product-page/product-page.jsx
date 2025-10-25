@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import * as React from "react";
 import { useParams } from "react-router-dom";
-import { useProduct } from "../../hooks/useProducts";
+import { useProduct, useProductRecommendations } from "../../hooks/useProducts";
 import { useMultiPriceComparison } from "../../hooks/useMultiPriceComparison";
+import { useToggleWishlist, useWishlistCheck } from "../../hooks/useWishlist";
+import { useAuth } from "../../contexts/AuthContext";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -13,6 +16,8 @@ import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import ImageViewer from "../../components/ui/ImageViewer";
 import { ReviewsSection } from "../../components/reviews";
+import { Carousel } from "../../components/ui/carousel";
+import { ProductCard } from "../../components/ui/ProductCard";
 import {
   Star,
   ShoppingCart,
@@ -21,12 +26,16 @@ import {
   TrendingUp,
   Loader2,
   Maximize2,
+  Heart,
 } from "lucide-react";
 
 const ProductPage = () => {
   const { id } = useParams();
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const { user } = useAuth();
+  const { data: wishlistCheck } = useWishlistCheck(id);
+  const { toggleWishlist, isLoading: wishlistLoading } = useToggleWishlist();
 
   const {
     data: product,
@@ -40,17 +49,40 @@ const ProductPage = () => {
     error: priceError,
   } = useMultiPriceComparison(product);
 
+  console.log("Prices: ", priceData);
+
+  const {
+    data: recommendationsData,
+    isLoading: recommendationsLoading,
+    error: recommendationsError,
+  } = useProductRecommendations(product?._id, 8);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const formatNumber = (num) => {
-    return new Intl.NumberFormat("en-US").format(num);
-  };
-
   const openImageViewer = (index) => {
     setSelectedImageIndex(index);
     setImageViewerOpen(true);
+  };
+
+  const handleWishlistToggle = async () => {
+    if (!user) {
+      toast.error("Please login to add items to your wishlist");
+      return;
+    }
+
+    try {
+      await toggleWishlist(id);
+      const isInWishlist = wishlistCheck?.inWishlist;
+      toast.success(
+        isInWishlist 
+          ? "Removed from wishlist" 
+          : "Added to wishlist"
+      );
+    } catch {
+      toast.error("Failed to update wishlist");
+    }
   };
 
   if (productLoading) {
@@ -193,102 +225,16 @@ const ProductPage = () => {
                   </div>
                 ) : priceData ? (
                   <div className="space-y-4">
-                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-green-800 dark:text-green-200">
-                            {priceData?.store1?.platform}
-                          </span>
-
-                          <Badge variant="success">Best Price</Badge>
-                        </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <a
-                            href={priceData?.store1?.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Visit Store
-                          </a>
-                        </Button>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div>
-                          <p className="text-2xl font-bold text-green-600">
-                            Rs. {formatNumber(priceData?.store1?.price)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-4 bg-white dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-green-800 dark:text-green-200">
-                            {priceData?.store2?.platform}
-                          </span>
-                        </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <a
-                            href={priceData?.store2?.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Visit Store
-                          </a>
-                        </Button>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div>
-                          <p className="text-2xl font-bold text-green-600">
-                            Rs. {formatNumber(priceData?.store2?.price)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-4 bg-white dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-green-800 dark:text-green-200">
-                            {priceData?.store3?.platform}
-                          </span>
-                          {priceData?.store3?.isBestPrice && (
-                            <Badge variant="success">Best Price</Badge>
-                          )}
-                        </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <a
-                            href={priceData?.store3?.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Visit Store
-                          </a>
-                        </Button>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div>
-                          <p className="text-2xl font-bold text-green-600">
-                            Rs. {formatNumber(priceData?.store3?.price)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* <div className="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg border">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold">Other Platforms</span>
-                        <span className="text-sm text-muted-foreground">
-                          Coming Soon
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Price comparison from Daraz, PriceOye, and other
-                        platforms will be available soon.
-                      </p>
-                    </div> */}
+                    {priceData?.map((store, index) => {
+                      return (
+                        <PriceComparisonCard
+                          key={index}
+                          platform={store.platform}
+                          url={store.url}
+                          price={store.price}
+                        />
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="text-center py-8">
@@ -303,10 +249,33 @@ const ProductPage = () => {
               </CardContent>
             </Card>
 
-            <Button size="lg" className="w-full">
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              Add to Cart
-            </Button>
+            <div className="flex gap-3">
+              <Button size="lg" className="flex-1">
+                <ShoppingCart className="w-5 h-5 mr-2" />
+                Add to Cart
+              </Button>
+              {user && (
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleWishlistToggle}
+                  disabled={wishlistLoading}
+                  className={`${
+                    wishlistCheck?.inWishlist
+                      ? "text-red-600 border-red-600 hover:bg-red-50"
+                      : "hover:bg-gray-50"
+                  }`}
+                >
+                  <Heart 
+                    className={`w-5 h-5 ${
+                      wishlistCheck?.inWishlist 
+                        ? "fill-red-500 text-red-500" 
+                        : ""
+                    }`} 
+                  />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -345,12 +314,46 @@ const ProductPage = () => {
         </div>
       </div>
 
-      {/* Reviews Section */}
       <div className="w-full px-6 py-8">
         <ReviewsSection productId={product._id} />
       </div>
 
-      {/* Image Viewer Modal */}
+      <div className="w-full px-6 py-8 bg-muted/30">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-8">You might also like</h2>
+          {recommendationsLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-8 h-8 animate-spin mr-2" />
+              <span>Loading recommendations...</span>
+            </div>
+          ) : recommendationsError ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">
+                Failed to load recommendations
+              </p>
+              <Button onClick={() => window.location.reload()}>
+                Try Again
+              </Button>
+            </div>
+          ) : recommendationsData?.recommendations?.length > 0 ? (
+            <Carousel itemsPerView={4} className="w-full">
+              {recommendationsData.recommendations.map((recommendedProduct) => (
+                <ProductCard
+                  key={recommendedProduct._id}
+                  product={recommendedProduct}
+                />
+              ))}
+            </Carousel>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">
+                No recommendations available at the moment.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
       <ImageViewer
         images={product.images}
         isOpen={imageViewerOpen}
@@ -362,3 +365,34 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
+
+const PriceComparisonCard = ({ platform, url, price }) => {
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat("en-US").format(num);
+  };
+  return (
+    <div className="p-4 bg-white dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-green-800 dark:text-green-200">
+            {platform}
+          </span>
+          {/* {isBestPrice && <Badge variant="success">Best Price</Badge>} */}
+        </div>
+        <Button variant="outline" size="sm" asChild>
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Visit Store
+          </a>
+        </Button>
+      </div>
+      <div className="flex items-center gap-4">
+        <div>
+          <p className="text-2xl font-bold text-green-600">
+            Rs. {formatNumber(price)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};

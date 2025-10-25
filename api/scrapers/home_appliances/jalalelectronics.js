@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getPriceoyepkPrice(url) {
+export async function getJalalelectronicsPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,16 +23,14 @@ export async function getPriceoyepkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("span.summary-price.text-black.price-size-lg.bold span")
-      .first()
+    const priceText = $("p.price span.woocommerce-Price-amount bdi")
+      .last()
       .text()
       .trim();
-    const priceValue = Math.floor(
-      parseFloat(priceText.replace(/Rs|,|\s/g, "").trim())
-    );
+    const priceValue = Number(priceText.replace(/[^0-9]/g, ""));
 
     return {
-      platform: "priceoye.pk",
+      platform: "Jalalelectronics.com",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
@@ -40,7 +38,7 @@ export async function getPriceoyepkPrice(url) {
     };
   } catch (err) {
     console.error(
-      "Error scraping priceoye.pk:",
+      "Error scraping jalalelectronics.com:",
       err.response?.status,
       err.message
     );
@@ -49,17 +47,19 @@ export async function getPriceoyepkPrice(url) {
 }
 
 (async () => {
-  const result = await getPriceoyepkPrice(
-    "https://priceoye.pk/mobiles/samsung/samsung-galaxy-a06"
+  const result = await getJalalelectronicsPrice(
+    "https://jalalelectronics.com/product/43-inch-crystal-ua43du7000uswk-4k-uhd-smart-led-tv/"
   );
   console.log(result);
 })();
 
 {
-  /* <span class="summary-price text-black price-size-lg bold">
-  <span>
-    <sup>Rs</sup>
-    21,500
-  </span>
+  /* <span
+  class="woocommerce-Price-amount amount eez-nosnippet"
+  data-nosnippet="true"
+>
+  <bdi>
+    <span class="woocommerce-Price-currencySymbol">Rs</span>&nbsp;22,490
+  </bdi>
 </span>; */
 }

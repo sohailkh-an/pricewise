@@ -26,6 +26,9 @@ const AddProduct = () => {
       platformOneUrl: "",
       platformTwoUrl: "",
       platformThreeUrl: "",
+      platformFourUrl: "",
+      platformFiveUrl: "",
+      platformSixUrl: "",
     },
   });
 
@@ -33,14 +36,7 @@ const AddProduct = () => {
   const [error, setError] = useState("");
 
   const categories = {
-    Shoes: [
-      "Sneakers",
-      "Boots",
-      "Sandals",
-      "Heels",
-      "Sports Shoes",
-      "Casual Shoes",
-    ],
+    "Home Appliances": ["TV's", "Fridge"],
     Clothes: [
       "T-Shirts",
       "Jeans",
@@ -359,6 +355,41 @@ const AddProduct = () => {
                       value={formData.priceComparison.platformThreeUrl}
                       onChange={handlePriceComparisonChange}
                       placeholder="Enter third platform URL"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="platformFourUrl">Platform 4 URL</Label>
+                    <Input
+                      id="platformFourUrl"
+                      name="platformFourUrl"
+                      type="url"
+                      value={formData.priceComparison.platformFourUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter fourth platform URL"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="platformFiveUrl">Platform 5 URL</Label>
+                    <Input
+                      id="platformFiveUrl"
+                      name="platformFiveUrl"
+                      type="url"
+                      value={formData.priceComparison.platformFiveUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter fifth platform URL"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="platformSixUrl">Platform 6 URL</Label>
+                    <Input
+                      id="platformSixUrl"
+                      name="platformSixUrl"
+                      type="url"
+                      value={formData.priceComparison.platformSixUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter sixth platform URL"
                     />
                   </div>
                 </div>
