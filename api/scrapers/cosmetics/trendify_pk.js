@@ -45,12 +45,12 @@ export async function getTrendifypkPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getTrendifypkPrice(
-    "https://trendify.pk/collections/maybelline/products/maybelline-new-york-fit-me-matte-poreless-liquid-foundation-30-ml?variant=41166181498985"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getTrendifypkPrice(
+//     "https://trendify.pk/collections/maybelline/products/maybelline-new-york-fit-me-matte-poreless-liquid-foundation-30-ml?variant=41166181498985"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

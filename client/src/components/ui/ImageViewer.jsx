@@ -44,23 +44,21 @@ const ImageViewer = ({ images, isOpen, onClose, initialIndex = 0 }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
       <div className="relative max-w-4xl max-h-[90vh] w-full mx-4">
-        {/* Close button */}
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white"
+          className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white hover:text-white cursor-pointer"
           onClick={onClose}
         >
           <X className="w-6 h-6" />
         </Button>
 
-        {/* Navigation buttons */}
         {images.length > 1 && (
           <>
             <Button
               variant="ghost"
               size="icon"
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white hover:text-white cursor-pointer"
               onClick={goToPrevious}
             >
               <ChevronLeft className="w-6 h-6" />
@@ -68,7 +66,7 @@ const ImageViewer = ({ images, isOpen, onClose, initialIndex = 0 }) => {
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white hover:text-white cursor-pointer"
               onClick={goToNext}
             >
               <ChevronRight className="w-6 h-6" />
@@ -76,7 +74,6 @@ const ImageViewer = ({ images, isOpen, onClose, initialIndex = 0 }) => {
           </>
         )}
 
-        {/* Main image */}
         <div className="relative">
           <img
             src={images[currentIndex]}
@@ -85,13 +82,12 @@ const ImageViewer = ({ images, isOpen, onClose, initialIndex = 0 }) => {
           />
         </div>
 
-        {/* Thumbnail navigation */}
         {images.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute bottom-4 p-2 left-1/2 -translate-x-1/2 flex gap-2 rounded-lg bg-amber-50">
             {images.map((image, index) => (
               <button
                 key={index}
-                className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                className={`w-16 h-16 rounded-lg cursor-pointer overflow-hidden border-2 transition-all ${
                   index === currentIndex
                     ? "border-white scale-110"
                     : "border-transparent hover:border-white/50"
@@ -108,7 +104,6 @@ const ImageViewer = ({ images, isOpen, onClose, initialIndex = 0 }) => {
           </div>
         )}
 
-        {/* Image counter */}
         {images.length > 1 && (
           <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
             {currentIndex + 1} / {images.length}

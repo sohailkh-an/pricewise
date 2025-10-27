@@ -36,16 +36,8 @@ const AddProduct = () => {
   const [error, setError] = useState("");
 
   const categories = {
-    "Home Appliances": ["TV's", "Fridge"],
-    Clothes: [
-      "T-Shirts",
-      "Jeans",
-      "Dresses",
-      "Jackets",
-      "Shirts",
-      "Pants",
-      "Skirts",
-    ],
+    "Home Appliances": ["TV's", "Fridge", "Oven", "AC", "Washing Machine"],
+
     Tech: [
       "Smartphones",
       "Laptops",

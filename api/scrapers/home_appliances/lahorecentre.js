@@ -46,12 +46,12 @@ export async function getLahorecentrePrice(url) {
   }
 }
 
-(async () => {
-  const result = await getLahorecentrePrice(
-    "https://www.lahorecentre.com/samsung-crystal-uhd-4k-du7000/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getLahorecentrePrice(
+//     "https://www.lahorecentre.com/samsung-crystal-uhd-4k-du7000/"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

@@ -29,6 +29,8 @@ import {
   Heart,
 } from "lucide-react";
 
+import PlatformLogos from "@/static-data/platformLogos";
+
 const ProductPage = () => {
   const { id } = useParams();
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
@@ -76,9 +78,7 @@ const ProductPage = () => {
       await toggleWishlist(id);
       const isInWishlist = wishlistCheck?.inWishlist;
       toast.success(
-        isInWishlist 
-          ? "Removed from wishlist" 
-          : "Added to wishlist"
+        isInWishlist ? "Removed from wishlist" : "Added to wishlist"
       );
     } catch {
       toast.error("Failed to update wishlist");
@@ -125,8 +125,8 @@ const ProductPage = () => {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-          <div className="space-y-4 rounded-lg bg-gray-100 p-4">
-            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden relative group">
+          <div className="space-y-4 rounded-lg bg-gray-100 p-4 h-min">
+            <div className="border aspect-video bg-gray-100 rounded-lg overflow-hidden relative group">
               <img
                 src={product.images[0]}
                 alt={product.title}
@@ -147,7 +147,7 @@ const ProductPage = () => {
                 {product.images.slice(1).map((image, index) => (
                   <div
                     key={index}
-                    className="aspect-video bg-gray-100 rounded-lg overflow-hidden relative group cursor-pointer"
+                    className="border aspect-video bg-gray-100 rounded-lg overflow-hidden relative group cursor-pointer"
                     onClick={() => openImageViewer(index + 1)}
                   >
                     <img
@@ -260,18 +260,18 @@ const ProductPage = () => {
                   size="lg"
                   onClick={handleWishlistToggle}
                   disabled={wishlistLoading}
-                  className={`${
+                  className={`cursor-pointer ${
                     wishlistCheck?.inWishlist
                       ? "text-red-600 border-red-600 hover:bg-red-50"
                       : "hover:bg-gray-50"
                   }`}
                 >
-                  <Heart 
+                  <Heart
                     className={`w-5 h-5 ${
-                      wishlistCheck?.inWishlist 
-                        ? "fill-red-500 text-red-500" 
+                      wishlistCheck?.inWishlist
+                        ? "fill-red-500 text-red-500"
                         : ""
-                    }`} 
+                    }`}
                   />
                 </Button>
               )}
@@ -319,7 +319,7 @@ const ProductPage = () => {
       </div>
 
       <div className="w-full px-6 py-8 bg-muted/30">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl">
           <h2 className="text-3xl font-bold mb-8">You might also like</h2>
           {recommendationsLoading ? (
             <div className="flex items-center justify-center py-8">
@@ -367,6 +367,16 @@ const ProductPage = () => {
 export default ProductPage;
 
 const PriceComparisonCard = ({ platform, url, price }) => {
+  const getPlatformLogo = (platformUrl) => {
+    if (!platformUrl) return null;
+
+    const matchedPlatform = PlatformLogos.find(({ platform }) =>
+      platformUrl.includes(platform)
+    );
+
+    return matchedPlatform ? matchedPlatform.logo : null;
+  };
+
   const formatNumber = (num) => {
     return new Intl.NumberFormat("en-US").format(num);
   };
@@ -374,6 +384,19 @@ const PriceComparisonCard = ({ platform, url, price }) => {
     <div className="p-4 bg-white dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
+          {platform === "priceoye.pk" ? (
+            <img
+              src={getPlatformLogo(url)}
+              className="bg-[#48afff] p-0.5 h-[30px]"
+            />
+          ) : platform === "naheed.pk" ? (
+            <img
+              src={getPlatformLogo(url)}
+              className="bg-red-600 p-0.5 h-[30px]"
+            />
+          ) : (
+            <img src={getPlatformLogo(url)} className="h-[30px]" />
+          )}
           <span className="font-semibold text-green-800 dark:text-green-200">
             {platform}
           </span>

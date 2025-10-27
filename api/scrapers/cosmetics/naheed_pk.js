@@ -32,7 +32,7 @@ export async function getNaheedPrice(url) {
     );
 
     return {
-      platform: "neheed.pk",
+      platform: "naheed.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,

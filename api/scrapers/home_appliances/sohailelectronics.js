@@ -46,12 +46,12 @@ export async function getSohailelectronicsPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getSohailelectronicsPrice(
-    "https://sohailelectronics.com/product/samsung-crystal-uhd-43du7000-43inch/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getSohailelectronicsPrice(
+//     "https://sohailelectronics.com/product/samsung-crystal-uhd-43du7000-43inch/"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

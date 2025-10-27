@@ -45,9 +45,9 @@ export async function getFriendsHomePrice(url) {
   }
 }
 
-(async () => {
-  const result = await getFriendsHomePrice(
-    "https://friendshome.pk/products/samsung-43-inch-smart-4k-crystal-uhd-tv-model-43du7000?_pos=1&_psq=43DU7000&_ss=e&_v=1.0"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getFriendsHomePrice(
+//     "https://friendshome.pk/products/samsung-43-inch-smart-4k-crystal-uhd-tv-model-43du7000?_pos=1&_psq=43DU7000&_ss=e&_v=1.0"
+//   );
+//   console.log(result);
+// })();

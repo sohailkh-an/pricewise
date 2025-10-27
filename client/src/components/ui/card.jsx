@@ -8,7 +8,7 @@ const cardVariants = cva(
   {
     variants: {
       height: {
-        homescreen: "h-[510px]",
+        homescreen: "h-[480px]",
       },
       size: {
         no_pad: "p-0",

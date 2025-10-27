@@ -10,8 +10,8 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
   const categories = [
     { name: "Technology", key: "Tech" },
-    { name: "Home Appliances", key: "Home Appliances" },
     { name: "Cosmetics", key: "Cosmetics" },
+    { name: "Home Appliances", key: "Home Appliances" },
   ];
 
   useEffect(() => {
@@ -31,13 +31,13 @@ const HomePage = () => {
         </div>
       </section>
 
-      <section className="py-16 px-5 w-full bg-gray-50">
+      <section className="w-full bg-gray-50">
         {categories.map((category) => (
           <CategorySection key={category.key} category={category} />
         ))}
       </section>
 
-      <section className="bg-secondary/20 py-16">
+      {/* <section className="bg-secondary/20 py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
           <p className="text-muted-foreground mb-8">
@@ -52,7 +52,7 @@ const HomePage = () => {
             <Button>Subscribe</Button>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 };
@@ -116,7 +116,7 @@ const CategorySection = ({ category }) => {
   }
 
   return (
-    <div className="mb-16 w-full">
+    <div className="py-10 px-5 w-full border-b">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-bold">{category.name}</h2>
         <Button variant="outline" asChild>

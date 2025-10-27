@@ -46,12 +46,12 @@ export async function getJust4girlspkPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getJust4girlspkPrice(
-    "https://just4girls.pk/maybelline-fit-me-foundation-matte-pore-120-18ml-1711-6902395722410/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getJust4girlspkPrice(
+//     "https://just4girls.pk/maybelline-fit-me-foundation-matte-pore-120-18ml-1711-6902395722410/"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

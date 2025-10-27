@@ -16,6 +16,12 @@ import { getJapanelectronicsPrice } from "../scrapers/home_appliances/japanelect
 import { getLahorecentrePrice } from "../scrapers/home_appliances/lahorecentre.js";
 import { getMegapkPrice } from "../scrapers/home_appliances/megapk.js";
 import { getSohailelectronicsPrice } from "../scrapers/home_appliances/sohailelectronics.js";
+import { getDubuypkPrice } from "../scrapers/cosmetics/dubuy_pk.js";
+import { getMakeupcityshopPrice } from "../scrapers/cosmetics/makeupcityshop.js";
+import { getDermapkPrice } from "../scrapers/cosmetics/derma_pk.js";
+import { getMedogetPrice } from "../scrapers/cosmetics/medoget.js";
+import { getHighfypkPrice } from "../scrapers/cosmetics/highfy_pk.js";
+import { getReanapkPrice } from "../scrapers/cosmetics/reana_pk.js";
 
 import { getTelemartPrice } from "../scrapers/telemartpk.js";
 import { getShadenterprisespkPrice } from "../scrapers/shadenterprisespk.js";
@@ -71,7 +77,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Advanced search endpoint
 router.get("/search", async (req, res) => {
   try {
     const {
@@ -86,23 +91,19 @@ router.get("/search", async (req, res) => {
 
     const query = { isActive: true };
 
-    // Text search
     if (search) {
       query.$text = { $search: search };
     }
 
-    // Category filters
     if (category) query.category = category;
     if (subCategory) query.subCategory = subCategory;
 
-    // Rating filter
     if (minRating) {
       query.rating = { $gte: parseFloat(minRating) };
     }
 
     console.log("Search Query: ", query);
 
-    // Sort options
     let sortOptions = {};
     switch (sortBy) {
       case "newest":
@@ -143,7 +144,6 @@ router.get("/search", async (req, res) => {
   }
 });
 
-// Specific routes must come before generic :id route
 router.get("/test", (req, res) => {
   res.json({ message: "Test successful" });
 });
@@ -205,6 +205,18 @@ router.post("/price", async (req, res) => {
               pricePromises.push(getTrendifypkPrice(url));
             } else if (url.includes("vegas.pk")) {
               pricePromises.push(getVegaspkPrice(url));
+            } else if (url.includes("makeupcityshop")) {
+              pricePromises.push(getMakeupcityshopPrice(url));
+            } else if (url.includes("dubuypk.com")) {
+              pricePromises.push(getDubuypkPrice(url));
+            } else if (url.includes("derma.pk")) {
+              pricePromises.push(getDermapkPrice(url));
+            } else if (url.includes("medoget.com")) {
+              pricePromises.push(getMedogetPrice(url));
+            } else if (url.includes("highfy.pk")) {
+              pricePromises.push(getHighfypkPrice(url));
+            } else if (url.includes("reana.pk")) {
+              pricePromises.push(getReanapkPrice(url));
             } else {
               pricePromises.push("Unknown domain");
             }

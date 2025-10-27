@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getJapanelectronicsPrice(url) {
+export async function getDermapkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,22 +23,27 @@ export async function getJapanelectronicsPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("div.t4s-product-price ins span.money")
+    const priceText = $("div.t4s-product__price-review div.t4s-product-price")
       .first()
       .text()
       .trim();
-    const priceValue = Number(priceText.replace(/[^0-9]/g, ""));
+    let priceValueRaw = priceText
+      .replace(/Rs\.?/gi, "")
+      .replace(/,/g, "")
+      .trim();
+    priceValueRaw = priceValueRaw.replace(/[^0-9.]/g, "");
+    let priceValue = Math.floor(Number(priceValueRaw));
+    priceValue = isNaN(priceValue) ? 0 : priceValue;
 
     return {
-      platform: "Japanelectronics.com",
-      originalPrice: "N/A",
+      platform: "derma.pk",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
     console.error(
-      "Error scraping japanelectronics.com:",
+      "Error scraping derma.pk:",
       err.response?.status,
       err.message
     );
@@ -47,19 +52,8 @@ export async function getJapanelectronicsPrice(url) {
 }
 
 // (async () => {
-//   const result = await getJapanelectronicsPrice(
-//     "https://japanelectronics.com.pk/products/samsung-43-inch-43du7000-crystal-uhd-smart-tv-2024"
+//   const result = await getDermapkPrice(
+//     "https://derma.pk/products/loreal-glycolic-bright-serum-15ml"
 //   );
 //   console.log(result);
 // })();
-
-{
-  /* <span
-  class="woocommerce-Price-amount amount eez-nosnippet"
-  data-nosnippet="true"
->
-  <bdi>
-    <span class="woocommerce-Price-currencySymbol">Rs</span>&nbsp;22,490
-  </bdi>
-</span>; */
-}

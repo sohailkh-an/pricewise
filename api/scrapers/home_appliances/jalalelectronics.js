@@ -46,12 +46,12 @@ export async function getJalalelectronicsPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getJalalelectronicsPrice(
-    "https://jalalelectronics.com/product/43-inch-crystal-ua43du7000uswk-4k-uhd-smart-led-tv/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getJalalelectronicsPrice(
+//     "https://jalalelectronics.com/product/43-inch-crystal-ua43du7000uswk-4k-uhd-smart-led-tv/"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

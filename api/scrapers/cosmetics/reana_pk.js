@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getJapanelectronicsPrice(url) {
+export async function getReanapkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,14 +23,18 @@ export async function getJapanelectronicsPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("div.t4s-product-price ins span.money")
+    const priceText = $(
+      "div.ecom-product-single div.ecom-product-single__price--sale span.money"
+    )
       .first()
       .text()
       .trim();
-    const priceValue = Number(priceText.replace(/[^0-9]/g, ""));
+    const priceValue = Math.floor(
+      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
+    );
 
     return {
-      platform: "Japanelectronics.com",
+      platform: "reana.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
@@ -38,7 +42,7 @@ export async function getJapanelectronicsPrice(url) {
     };
   } catch (err) {
     console.error(
-      "Error scraping japanelectronics.com:",
+      "Error scraping reana.pk:",
       err.response?.status,
       err.message
     );
@@ -47,19 +51,8 @@ export async function getJapanelectronicsPrice(url) {
 }
 
 // (async () => {
-//   const result = await getJapanelectronicsPrice(
-//     "https://japanelectronics.com.pk/products/samsung-43-inch-43du7000-crystal-uhd-smart-tv-2024"
+//   const result = await getReanapkPrice(
+//     "https://reana.pk/products/garnier-bright-complete-vitamin-c-super-uv-matte-sunscreen-spf50-30ml"
 //   );
 //   console.log(result);
 // })();
-
-{
-  /* <span
-  class="woocommerce-Price-amount amount eez-nosnippet"
-  data-nosnippet="true"
->
-  <bdi>
-    <span class="woocommerce-Price-currencySymbol">Rs</span>&nbsp;22,490
-  </bdi>
-</span>; */
-}

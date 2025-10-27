@@ -50,9 +50,9 @@ export async function getChasevaluePrice(url) {
   }
 }
 
-(async () => {
-  const result = await getChasevaluePrice(
-    "https://chasevalue.pk/products/maybelline-fit-me-matte-poreless-liquid-foundation-120-classic-ivory-18ml-6902395722410-a12679120?_pos=1&_sid=e6b2a8ae9&_ss=r"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getChasevaluePrice(
+//     "https://chasevalue.pk/products/maybelline-fit-me-matte-poreless-liquid-foundation-120-classic-ivory-18ml-6902395722410-a12679120?_pos=1&_sid=e6b2a8ae9&_ss=r"
+//   );
+//   console.log(result);
+// })();

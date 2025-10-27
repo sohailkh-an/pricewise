@@ -41,9 +41,9 @@ export async function getMegapkPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getMegapkPrice(
-    "https://www.mega.pk/ledtv_products/26404/Samsung-43DU7000-43-Inch-Smart---4K-CRYSTAL-UHD-TV.html"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getMegapkPrice(
+//     "https://www.mega.pk/ledtv_products/26404/Samsung-43DU7000-43-Inch-Smart---4K-CRYSTAL-UHD-TV.html"
+//   );
+//   console.log(result);
+// })();

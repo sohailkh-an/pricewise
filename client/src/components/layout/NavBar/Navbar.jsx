@@ -3,6 +3,8 @@ import {
   NavigationMenuList,
   NavigationMenuItem,
   NavigationMenuLink,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
 } from "../../ui/navigation-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar";
 import { Button } from "../../ui/button";
@@ -22,6 +24,15 @@ import {
   UserPlus,
   Plus,
   Heart,
+  Laptop,
+  Smartphone,
+  Watch,
+  Headphones,
+  Tv,
+  Refrigerator,
+  Microwave,
+  WashingMachine,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
@@ -57,6 +68,69 @@ const NavBar = () => {
       navigate(`/search?q=${encodeURIComponent(debouncedSearchQuery.trim())}`);
     }
   };
+
+  const categories = [
+    {
+      name: "Tech",
+      items: [
+        { name: "Laptops", icon: Laptop, link: "/search?category=laptops" },
+        {
+          name: "Smartphones",
+          icon: Smartphone,
+          link: "/search?category=smartphones",
+        },
+        {
+          name: "Smartwatches",
+          icon: Watch,
+          link: "/search?category=smartwatches",
+        },
+        {
+          name: "Headphones",
+          icon: Headphones,
+          link: "/search?category=headphones",
+        },
+      ],
+    },
+    {
+      name: "Home Appliances",
+      items: [
+        { name: "TVs", icon: Tv, link: "/search?category=tvs" },
+        {
+          name: "Fridge",
+          icon: Refrigerator,
+          link: "/search?subCategory=fridge",
+        },
+        {
+          name: "Microwave Ovens",
+          icon: Microwave,
+          link: "/search?category=microwave",
+        },
+        {
+          name: "Washing Machine",
+          icon: WashingMachine,
+          link: "/search?category=washing-machine",
+        },
+      ],
+    },
+    {
+      name: "Cosmetics",
+      items: [
+        {
+          name: "Foundation",
+          icon: Sparkles,
+          link: "/search?category=foundation",
+        },
+        { name: "Eyeliner", icon: Sparkles, link: "/search?category=eyeliner" },
+        {
+          name: "Lipsticks",
+          icon: Sparkles,
+          link: "/search?category=lipsticks",
+        },
+        { name: "Shampoo", icon: Sparkles, link: "/search?category=shampoo" },
+      ],
+    },
+  ];
+
   return (
     <nav className="flex items-center justify-start px-6 py-4 bg-[#041d09] border-b">
       <Link to="/">
@@ -66,34 +140,56 @@ const NavBar = () => {
       <div className="flex items-center gap-20 justify-between px-20">
         <NavigationMenu>
           <NavigationMenuList>
-            <Link to="/">
-              <NavigationMenuItem>
-                <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
-                  Home
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </Link>
-            <Link to="/search">
-              <NavigationMenuItem>
-                <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
-                  Products
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </Link>
-            <Link to="/about">
-              <NavigationMenuItem>
-                <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
-                  About
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </Link>
-            <Link to="/contact">
-              <NavigationMenuItem>
-                <NavigationMenuLink className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
-                  Contact
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </Link>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+              >
+                <Link to="/">Home</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="px-4 py-2 text-sm font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors bg-transparent cursor-pointer">
+                Products
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="grid gap-3 p-6 w-[600px] grid-cols-3">
+                  {categories.map((category) => (
+                    <div key={category.name} className="space-y-3">
+                      <h4 className="font-semibold text-sm text-gray-900 mb-3">
+                        {category.name}
+                      </h4>
+                      <ul className="space-y-2">
+                        {category.items.map((item) => {
+                          const Icon = item.icon;
+                          return (
+                            <li key={item.name}>
+                              <Link
+                                to={item.link}
+                                className="flex items-center gap-2 text-sm text-gray-700 hover:text-green-600 hover:bg-gray-50 p-2 rounded-md transition-colors"
+                              >
+                                <Icon className="h-4 w-4" />
+                                {item.name}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className="px-4 py-2 text-sm cursor-pointer font-medium text-white hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+              >
+                <Link to="/about">About</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
 

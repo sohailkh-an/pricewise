@@ -46,12 +46,12 @@ export async function getAysonlinePrice(url) {
   }
 }
 
-(async () => {
-  const result = await getAysonlinePrice(
-    "https://www.aysonline.pk/samsung-nagina-43-inch-ultra-hd-display-led-tv-c-43du7000/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getAysonlinePrice(
+//     "https://www.aysonline.pk/samsung-nagina-43-inch-ultra-hd-display-led-tv-c-43du7000/"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

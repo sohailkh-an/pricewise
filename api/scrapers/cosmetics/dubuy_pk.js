@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getJapanelectronicsPrice(url) {
+export async function getDubuypkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,22 +23,38 @@ export async function getJapanelectronicsPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("div.t4s-product-price ins span.money")
-      .first()
-      .text()
-      .trim();
-    const priceValue = Number(priceText.replace(/[^0-9]/g, ""));
+
+    const extractPrice = () => {
+      const contentPrice = $("#ProductPrice-product-template").attr("content");
+      if (contentPrice) {
+        return {
+          value: Math.floor(parseFloat(contentPrice)),
+          text: $("#ProductPrice-product-template").text().trim(),
+        };
+      }
+
+      const priceText = $("#ProductPrice-product-template").text().trim();
+      if (priceText) {
+        return {
+          value: parseInt(priceText.replace(/[^0-9]/g, "")),
+          text: priceText,
+        };
+      }
+
+      return { value: 0, text: "N/A" };
+    };
+
+    const { value: priceValue, text: priceText } = extractPrice();
 
     return {
-      platform: "Japanelectronics.com",
-      originalPrice: "N/A",
+      platform: "dubuypk.com",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
     console.error(
-      "Error scraping japanelectronics.com:",
+      "Error scraping dubuypk.com:",
       err.response?.status,
       err.message
     );
@@ -47,19 +63,8 @@ export async function getJapanelectronicsPrice(url) {
 }
 
 // (async () => {
-//   const result = await getJapanelectronicsPrice(
-//     "https://japanelectronics.com.pk/products/samsung-43-inch-43du7000-crystal-uhd-smart-tv-2024"
+//   const result = await getDubuypkPrice(
+//     "https://dubuypk.com/products/od-glycolic-acid-7-toning-solution-240ml"
 //   );
 //   console.log(result);
 // })();
-
-{
-  /* <span
-  class="woocommerce-Price-amount amount eez-nosnippet"
-  data-nosnippet="true"
->
-  <bdi>
-    <span class="woocommerce-Price-currencySymbol">Rs</span>&nbsp;22,490
-  </bdi>
-</span>; */
-}

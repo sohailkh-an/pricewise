@@ -46,12 +46,12 @@ export async function getVegaspkPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getVegaspkPrice(
-    "https://www.vegas.pk/pd/maybelline-new-york-pakistan/maybelline-new-york-fit-me-matte-poreless-liquid-foundation-18ml"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getVegaspkPrice(
+//     "https://www.vegas.pk/pd/maybelline-new-york-pakistan/maybelline-new-york-fit-me-matte-poreless-liquid-foundation-18ml"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

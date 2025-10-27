@@ -50,9 +50,9 @@ export async function getMakeupstashpkPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getMakeupstashpkPrice(
-    "https://makeupstash.pk/products/maybelline-new-york-fit-me-mattelp?_pos=2&_psq=Maybelline+New+York+Fit+Me&_ss=e&_v=1.0"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getMakeupstashpkPrice(
+//     "https://makeupstash.pk/products/maybelline-new-york-fit-me-mattelp?_pos=2&_psq=Maybelline+New+York+Fit+Me&_ss=e&_v=1.0"
+//   );
+//   console.log(result);
+// })();

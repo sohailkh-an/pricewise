@@ -1,7 +1,23 @@
 import React from "react";
 import { Facebook, Twitter, Mail, MapPin, Phone, Linkedin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
+  const companyLinks = [
+    {
+      title: "Privacy Policy",
+      link: "/privacy-policy",
+    },
+    {
+      title: "Terms of Service",
+      link: "/terms-of-service",
+    },
+    {
+      title: "Cookie Policy",
+      link: "/cookie-policy",
+    },
+  ];
+
   return (
     <footer className="bg-[#041d09] text-white">
       <div className="max-w-7xl mx-auto px-4 py-12">
@@ -65,14 +81,7 @@ const Footer = () => {
               Customer Service
             </h4>
             <ul className="space-y-2">
-              {[
-                "About Us",
-                "Contact Us",
-                "Help Center",
-                "Returns & Refunds",
-                "Shipping Info",
-                "Track Order",
-              ].map((link) => (
+              {["About Us", "Help Center"].map((link) => (
                 <li key={link}>
                   <a
                     href="#"
@@ -133,19 +142,14 @@ const Footer = () => {
               © 2025 PriceWise. All rights reserved.
             </div>
             <div className="flex space-x-6">
-              {[
-                "Privacy Policy",
-                "Terms of Service",
-                "Cookie Policy",
-                "Sitemap",
-              ].map((link) => (
-                <a
-                  key={link}
-                  href="#"
+              {companyLinks.map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.link}
                   className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
                 >
-                  {link}
-                </a>
+                  {item.title}
+                </Link>
               ))}
             </div>
           </div>

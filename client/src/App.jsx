@@ -14,6 +14,11 @@ import AddProduct from "./pages/admin/add-product/add-product";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
 import Footer from "./components/layout/Footer/Footer";
+import AboutPage from "./pages/about/about";
+import PrivacyPolicy from "./pages/company/privacy-policy/privacy-policy";
+import TermsOfService from "./pages/company/terms-of-service/terms-of-service";
+import CookiePolicy from "./pages/company/cookie-policy/cookie-policy";
+import ScrollToTop from "./components/layout/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +27,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <Router>
+          <ScrollToTop />
           <Routes>
             <Route
               path="/login"
@@ -51,6 +57,16 @@ function App() {
                       <Route path="/search" element={<SearchPage />} />
                       <Route path="/wishlist" element={<WishlistPage />} />
                       <Route path="/product/:id" element={<ProductPage />} />
+                      <Route path="/about" element={<AboutPage />} />
+                      <Route path="/cookie-policy" element={<CookiePolicy />} />
+                      <Route
+                        path="/terms-of-service"
+                        element={<TermsOfService />}
+                      />
+                      <Route
+                        path="/privacy-policy"
+                        element={<PrivacyPolicy />}
+                      />
                       <Route
                         path="/admin/add-product"
                         element={
