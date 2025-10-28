@@ -209,13 +209,17 @@ const ProductPage = () => {
               {product.shortDescription}
             </p>
 
-            <Card background="priceComparison" size="priceComparison">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card
+              background="priceComparison"
+              className="overflow-hidden"
+              size="priceComparison"
+            >
+              {/* <CardHeader> */}
+              {/* <CardTitle className="flex items-center gap-2">
                   <TrendingDown className="w-5 h-5 text-green-600" />
                   Price Comparison
-                </CardTitle>
-              </CardHeader>
+                </CardTitle> */}
+              {/* </CardHeader> */}
               <CardContent>
                 {priceLoading ? (
                   <>
@@ -233,19 +237,21 @@ const ProductPage = () => {
                     </Button>
                   </div>
                 ) : priceData ? (
-                  <div className="space-y-4">
-                    {priceData?.map((store, index) => {
-                      return (
-                        <PriceComparisonCard
-                          key={index}
-                          platform={store.platform}
-                          url={store.url}
-                          price={store.price}
-                        />
-                      );
-                    })}
-                  </div>
+                  <PriceComparison comparisons={priceData} />
                 ) : (
+                  // <div className="space-y-4">
+                  //   {priceData?.map((store, index) => {
+                  //     return (
+                  //       <PriceComparisonCard
+                  //         key={index}
+                  //         platform={store.platform}
+                  //         url={store.url}
+                  //         isBestPrice={store.isBestPrice}
+                  //         price={store.price}
+                  //       />
+                  //     );
+                  //   })}
+                  // </div>
                   <div className="text-center py-8">
                     <p className="text-muted-foreground mb-4">
                       Price data not available
@@ -259,29 +265,33 @@ const ProductPage = () => {
             </Card>
 
             <div className="flex gap-3">
-              <Button size="lg" className="flex-1">
+              {/* <Button size="lg" className="flex-1">
                 <ShoppingCart className="w-5 h-5 mr-2" />
                 Add to Cart
-              </Button>
+              </Button> */}
               {user && (
                 <Button
                   variant="outline"
                   size="lg"
                   onClick={handleWishlistToggle}
                   disabled={wishlistLoading}
-                  className={`cursor-pointer ${
+                  className={`flex-1 cursor-pointer ${
                     wishlistCheck?.inWishlist
                       ? "text-red-600 border-red-600 hover:bg-red-50"
                       : "hover:bg-gray-50"
                   }`}
                 >
                   <Heart
-                    className={`w-5 h-5 ${
+                    className={`w-5 h-5 mr-5 ${
                       wishlistCheck?.inWishlist
                         ? "fill-red-500 text-red-500"
                         : ""
                     }`}
                   />
+
+                  {!wishlistCheck?.inWishlist
+                    ? "Add to Wishlist"
+                    : "Remove from Wishlist"}
                 </Button>
               )}
             </div>
@@ -375,60 +385,179 @@ const ProductPage = () => {
 
 export default ProductPage;
 
-const PriceComparisonCard = ({ platform, url, price }) => {
+const PriceComparison = ({ comparisons }) => {
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat("en-US").format(num);
+  };
+
+  const prices = comparisons?.map((c) => c.price) || [];
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const savings = maxPrice - minPrice;
+
+  return (
+    <div className="w-full space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+            <TrendingDown className="w-5 h-5 text-[#041d09] dark:text-green-400" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              Price Comparison
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {comparisons?.length} stores available
+            </p>
+          </div>
+        </div>
+
+        {savings > 0 && (
+          <Badge
+            variant="secondary"
+            className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+          >
+            Save up to Rs. {formatNumber(savings)}
+          </Badge>
+        )}
+      </div>
+
+      <div className="space-y-3">
+        {comparisons?.map((comparison, index) => (
+          <PriceComparisonCard
+            key={index}
+            platform={comparison.platform}
+            url={comparison.url}
+            price={comparison.price}
+            isBestPrice={comparison.isBestPrice}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const PriceComparisonCard = ({ platform, url, price, isBestPrice }) => {
   const getPlatformLogo = (platformUrl) => {
     if (!platformUrl) return null;
-
     const matchedPlatform = PlatformLogos.find(({ platform }) =>
       platformUrl.includes(platform)
     );
-
     return matchedPlatform ? matchedPlatform.logo : null;
   };
 
   const formatNumber = (num) => {
     return new Intl.NumberFormat("en-US").format(num);
   };
+
+  const getPlatformLogoClass = (platform) => {
+    const styles = {
+      "priceoye.pk": "bg-[#48afff] p-0.5",
+      "naheed.pk": "bg-red-600 p-0.5",
+      "myshop.pk": "bg-black p-0.5",
+    };
+    return styles[platform] || "";
+  };
+
   return (
-    <div className="p-4 bg-white dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          {platform === "priceoye.pk" ? (
-            <img
-              src={getPlatformLogo(url)}
-              className="bg-[#48afff] p-0.5 h-[30px]"
-            />
-          ) : platform === "naheed.pk" ? (
-            <img
-              src={getPlatformLogo(url)}
-              className="bg-red-600 p-0.5 h-[30px]"
-            />
-          ) : (
-            <img src={getPlatformLogo(url)} className="h-[30px]" />
-          )}
-          <span className="font-semibold text-green-800 dark:text-green-200">
-            {platform}
-          </span>
-          {/* {isBestPrice && <Badge variant="success">Best Price</Badge>} */}
+    <div
+      className={`
+        relative group
+        p-5 rounded-xl border-2 transition-all duration-300
+        ${
+          isBestPrice
+            ? "bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/20 border-[#041d09] dark:border-green-600"
+            : "bg-white dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700"
+        }
+      `}
+    >
+      {isBestPrice && (
+        <div className="absolute -top-3 -left-3 z-10">
+          <Badge
+            varient="secondary"
+            className="bg-white border-[#041d09] border-1 hover:bg-white text-black px-3 py-1.5 flex items-center gap-1"
+          >
+            <span className="text-xs font-semibold">🏆 Best Price</span>
+          </Badge>
         </div>
-        <Button variant="outline" size="sm" asChild>
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            <ExternalLink className="w-4 h-4 mr-2" />
-            Visit Store
+      )}
+
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          <div
+            className={`
+              w-35 h-10
+
+              shrink-0 rounded-lg overflow-hidden 
+              ${getPlatformLogoClass(platform)}
+              ring-2 ring-offset-2 ring-gray-100 dark:ring-gray-700 dark:ring-offset-gray-800
+              transition-transform duration-200 group-hover:scale-105
+            `}
+          >
+            <img
+              src={getPlatformLogo(url)}
+              alt={platform}
+              className="object-cover"
+            />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-gray-700 dark:text-gray-300 text-sm mb-1 truncate">
+              {platform}
+            </p>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Rs.
+              </span>
+              <span
+                className={`
+                  text-3xl font-bold tracking-tight
+                  ${
+                    isBestPrice
+                      ? "text-[#041d09] dark:text-green-400"
+                      : "text-gray-900 dark:text-gray-100"
+                  }
+                `}
+              >
+                {formatNumber(price)}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <Button
+          variant={isBestPrice ? "default" : "outline"}
+          size="sm"
+          asChild
+          className={`
+            flex-shrink-0 transition-all duration-200 min-w-[120px]
+            ${
+              isBestPrice
+                ? "bg-[#041d09] hover:bg-[#041d09] text-white shadow-md hover:shadow-lg hover:scale-105"
+                : "hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-green-500"
+            }
+          `}
+        >
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            <span className="font-medium">
+              {isBestPrice ? "Buy Now" : "Visit Store"}
+            </span>
           </a>
         </Button>
       </div>
-      <div className="flex items-center gap-4">
-        <div>
-          <p className="text-2xl font-bold text-green-600">
-            Rs. {formatNumber(price)}
-          </p>
-        </div>
-      </div>
+
+      {isBestPrice && (
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 pointer-events-none" />
+      )}
     </div>
   );
 };
-
 const PriceComparisonCardSkeleton = () => {
   return (
     <div className="p-4 bg-white dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800 animate-pulse">

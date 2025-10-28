@@ -46,7 +46,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
-import { useDebounce } from "../../../hooks/useDebounce";
 
 const NavBar = () => {
   const { user, logout } = useAuth();
@@ -55,7 +54,6 @@ const NavBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState(null);
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   const handleLogout = async () => {
     await logout();
@@ -78,11 +76,9 @@ const NavBar = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (debouncedSearchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(debouncedSearchQuery.trim())}`);
-      setMobileMenuOpen(false);
-      setShowMobileSearch(false);
-    }
+    navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    setMobileMenuOpen(false);
+    setShowMobileSearch(false);
   };
 
   const handleCategoryClick = (link) => {
@@ -270,15 +266,18 @@ const NavBar = () => {
                 {user.email}
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
                 Profile
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               {user.email === "sohail@studio2001.com" && (
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/admin/add-product" className="flex items-center">
+                    <Link
+                      to="/admin/add-product"
+                      className="cursor-pointer flex items-center"
+                    >
                       <Plus className="mr-2 h-4 w-4" />
                       Add Product
                     </Link>
@@ -441,19 +440,19 @@ const NavBar = () => {
 
               {user ? (
                 <div className="space-y-2 pt-4 border-t">
-                  <Link
+                  {/* <Link
                     to="/profile"
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-accent rounded-md transition-colors"
                   >
                     <User className="h-4 w-4" />
                     Profile
-                  </Link>
+                  </Link> */}
                   {user.email === "sohail@studio2001.com" && (
                     <Link
                       to="/admin/add-product"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-accent rounded-md transition-colors"
+                      className="flex cursor-pointer items-center gap-2 px-4 py-2 text-sm hover:bg-accent rounded-md transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       Add Product
@@ -461,7 +460,7 @@ const NavBar = () => {
                   )}
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    className="cursor-pointer w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                   >
                     <LogOut className="h-4 w-4" />
                     Logout

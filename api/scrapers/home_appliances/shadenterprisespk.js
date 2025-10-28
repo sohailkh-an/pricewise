@@ -29,7 +29,7 @@ export async function getShadenterprisespkPrice(url) {
     );
 
     return {
-      platform: "shadenterprises.pk",
+    platform: "shadenterprises.pk",
       originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,

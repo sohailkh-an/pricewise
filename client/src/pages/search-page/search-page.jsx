@@ -21,7 +21,7 @@ const SearchPage = () => {
   const [showFilters, setShowFilters] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
+  const debouncedSearchQuery = useDebounce(searchQuery, 1500);
 
   const [filters, setFilters] = useState({
     category: searchParams.get("category") || "",
@@ -201,11 +201,7 @@ const SearchPage = () => {
                 className="cursor-pointer w-40"
               >
                 {sortOptions.map((option) => (
-                  <SelectItem
-                    className="w-full"
-                    key={option.value}
-                    value={option.value}
-                  >
+                  <SelectItem className="w-full" value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
@@ -239,7 +235,7 @@ const SearchPage = () => {
                     >
                       <SelectItem value="">All Categories</SelectItem>
                       {categories.map((category) => (
-                        <SelectItem key={category.value} value={category.value}>
+                        <SelectItem value={category.value}>
                           {category.label}
                         </SelectItem>
                       ))}
@@ -257,16 +253,16 @@ const SearchPage = () => {
                         handleFilterChange("subCategory", value)
                       }
                       className="cursor-pointer w-full"
+                      disabled={!filters.category}
                     >
                       <SelectItem value="">Select a sub category</SelectItem>
 
-                      {subCategories[filters.category]?.map(
-                        (subCategory, index) => (
-                          <SelectItem key={index} value={subCategory}>
+                      {filters.category &&
+                        subCategories[filters.category]?.map((subCategory) => (
+                          <SelectItem key={subCategory} value={subCategory}>
                             {subCategory}
                           </SelectItem>
-                        )
-                      )}
+                        ))}
                     </Select>
                   </div>
 

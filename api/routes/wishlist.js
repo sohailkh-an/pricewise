@@ -13,10 +13,12 @@ router.get("/", authenticateToken, async (req, res) => {
       .populate("product")
       .sort({ createdAt: -1 });
 
+    const validItems = wishlistItems.filter((item) => item.product);
+
     res.json({
       success: true,
-      data: wishlistItems,
-      count: wishlistItems.length,
+      data: validItems,
+      count: validItems.length,
     });
   } catch (error) {
     console.error("Get wishlist error:", error);

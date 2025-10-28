@@ -23,11 +23,14 @@ export async function getJapanelectronicsPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("div.t4s-product-price ins span.money")
+    let priceText = $("div.t4s-product-price ins span.money")
       .first()
       .text()
       .trim();
-    const priceValue = Number(priceText.replace(/[^0-9]/g, ""));
+
+    const priceValue = Math.floor(
+      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
+    );
 
     return {
       platform: "Japanelectronics.com",
@@ -46,12 +49,12 @@ export async function getJapanelectronicsPrice(url) {
   }
 }
 
-// (async () => {
-//   const result = await getJapanelectronicsPrice(
-//     "https://japanelectronics.com.pk/products/samsung-43-inch-43du7000-crystal-uhd-smart-tv-2024"
-//   );
-//   console.log(result);
-// })();
+(async () => {
+  const result = await getJapanelectronicsPrice(
+    "https://japanelectronics.com.pk/products/samsung-43-inch-43du7000-crystal-uhd-smart-tv-2024"
+  );
+  console.log(result);
+})();
 
 {
   /* <span

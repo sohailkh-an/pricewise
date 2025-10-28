@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import productsRoutes from "./routes/products.js";
 import usersRoutes from "./routes/users.js";
-import deleteAllProductsRoutes from "./routes/deleteAllProducts.js";
+// import deleteAllProductsRoutes from "./routes/deleteAllProducts.js";
 import reviewsRoutes from "./routes/reviews.js";
 import wishlistRoutes from "./routes/wishlist.js";
 dotenv.config();
@@ -22,7 +22,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/products", productsRoutes);
-app.use("/api/deleteAllProducts", deleteAllProductsRoutes);
+// app.use("/api/deleteAllProducts", deleteAllProductsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/wishlist", wishlistRoutes);

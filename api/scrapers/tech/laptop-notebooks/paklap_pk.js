@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getDermapkPrice(url) {
+export async function getPaklappkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,34 +23,24 @@ export async function getDermapkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    let priceText = $("div.t4s-product__price-review div.t4s-product-price ins")
+    const priceText = $("span.price-container span.price-wrapper span.price")
       .first()
       .text()
       .trim();
-    if (priceText === "") {
-      priceText = $("div.t4s-product__price-review div.t4s-product-price")
-        .first()
-        .text()
-        .trim();
-    }
-
-    let priceValueRaw = priceText
-      .replace(/Rs\.?/gi, "")
-      .replace(/,/g, "")
-      .trim();
-    priceValueRaw = priceValueRaw.replace(/[^0-9.]/g, "");
-    let priceValue = Math.floor(Number(priceValueRaw));
-    priceValue = isNaN(priceValue) ? 0 : priceValue;
+    const priceValue = Math.floor(
+      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
+    );
 
     return {
-      platform: "derma.pk",
+      platform: "paklap.pk",
+      originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
     console.error(
-      "Error scraping derma.pk:",
+      "Error scraping paklap.pk:",
       err.response?.status,
       err.message
     );
@@ -58,10 +48,9 @@ export async function getDermapkPrice(url) {
   }
 }
 
-// (async () => {
-//   const result = await getDermapkPrice(
-//     "https://derma.pk/products/the-ordinary-niacinamide-10-zinc-1-serum-30ml"
-//     // "https://derma.pk/products/the-ordinary-glycolic-acid-7-toning-solution-240ml?variant=44461077332141"
-//   );
-//   console.log(result);
-// })();
+(async () => {
+  const result = await getPaklappkPrice(
+    "https://www.paklap.pk/dell-vostro-15-3530-13th-generation-core-i5-laptop-price-pakistan.html"
+  );
+  console.log(result);
+})();

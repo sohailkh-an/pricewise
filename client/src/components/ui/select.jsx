@@ -48,14 +48,16 @@ const Select = React.forwardRef(
         </DropdownMenuTrigger>
         {/* <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]"> */}
         <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
-          {React.Children.map(children, (child) =>
-            React.cloneElement(child, {
+          {React.Children.map(children, (child) => {
+            if (!child || !React.isValidElement(child)) return null;
+
+            return React.cloneElement(child, {
               onSelect: (value) => {
                 onValueChange?.(value);
                 setOpen(false);
               },
-            })
-          )}
+            });
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
     );

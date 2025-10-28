@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getDermapkPrice(url) {
+export async function getCellmartpkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,34 +23,22 @@ export async function getDermapkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    let priceText = $("div.t4s-product__price-review div.t4s-product-price ins")
-      .first()
+    const priceText = $("p.price span.woocommerce-Price-amount bdi")
+      .last()
       .text()
       .trim();
-    if (priceText === "") {
-      priceText = $("div.t4s-product__price-review div.t4s-product-price")
-        .first()
-        .text()
-        .trim();
-    }
-
-    let priceValueRaw = priceText
-      .replace(/Rs\.?/gi, "")
-      .replace(/,/g, "")
-      .trim();
-    priceValueRaw = priceValueRaw.replace(/[^0-9.]/g, "");
-    let priceValue = Math.floor(Number(priceValueRaw));
-    priceValue = isNaN(priceValue) ? 0 : priceValue;
+    const priceValue = Number(priceText.replace(/[^0-9]/g, ""));
 
     return {
-      platform: "derma.pk",
+      platform: "cellmart.pk",
+      originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
     console.error(
-      "Error scraping derma.pk:",
+      "Error scraping cellmart.pk:",
       err.response?.status,
       err.message
     );
@@ -59,9 +47,8 @@ export async function getDermapkPrice(url) {
 }
 
 // (async () => {
-//   const result = await getDermapkPrice(
-//     "https://derma.pk/products/the-ordinary-niacinamide-10-zinc-1-serum-30ml"
-//     // "https://derma.pk/products/the-ordinary-glycolic-acid-7-toning-solution-240ml?variant=44461077332141"
+//   const result = await getCellmartpkPrice(
+//     "https://cellmart.pk/samsung-galaxy-watch-ultra-47mm-lte-2025-l705f/"
 //   );
 //   console.log(result);
 // })();

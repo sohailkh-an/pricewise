@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function getDermapkPrice(url) {
+export async function getTechglobepkPrice(url) {
   try {
     const headers = {
       "User-Agent":
@@ -23,34 +23,24 @@ export async function getDermapkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    let priceText = $("div.t4s-product__price-review div.t4s-product-price ins")
+    const priceText = $("div.product-price span.price-sales")
       .first()
       .text()
       .trim();
-    if (priceText === "") {
-      priceText = $("div.t4s-product__price-review div.t4s-product-price")
-        .first()
-        .text()
-        .trim();
-    }
-
-    let priceValueRaw = priceText
-      .replace(/Rs\.?/gi, "")
-      .replace(/,/g, "")
-      .trim();
-    priceValueRaw = priceValueRaw.replace(/[^0-9.]/g, "");
-    let priceValue = Math.floor(Number(priceValueRaw));
-    priceValue = isNaN(priceValue) ? 0 : priceValue;
+    const priceValue = Math.floor(
+      parseFloat(priceText.replace(/Rs\.|,/g, "").trim())
+    );
 
     return {
-      platform: "derma.pk",
+      platform: "Techglobe.pk",
+      originalPrice: "N/A",
       price: priceValue,
       formatted: priceText,
       url,
     };
   } catch (err) {
     console.error(
-      "Error scraping derma.pk:",
+      "Error scraping Techglobe.pk:",
       err.response?.status,
       err.message
     );
@@ -59,9 +49,8 @@ export async function getDermapkPrice(url) {
 }
 
 // (async () => {
-//   const result = await getDermapkPrice(
-//     "https://derma.pk/products/the-ordinary-niacinamide-10-zinc-1-serum-30ml"
-//     // "https://derma.pk/products/the-ordinary-glycolic-acid-7-toning-solution-240ml?variant=44461077332141"
+//   const result = await getTechglobepkPrice(
+//     "https://www.techglobe.pk/laptops/dell/vostro/dell-vostro-3530-laptop-13th-gen-core-i3-1305u-8gb-ddr4-512gb-ssd-intel-uhd-graphics-15-6-fhd-"
 //   );
 //   console.log(result);
 // })();

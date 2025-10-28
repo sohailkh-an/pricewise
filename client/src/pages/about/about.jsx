@@ -203,7 +203,7 @@ const About = () => {
               <Card
                 size="sm"
                 key={index}
-                className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                className="bg-white/80 backdrop-blur-sm border-0 shadow-lg"
               >
                 <CardHeader className="text-center">
                   <div className="mx-auto mb-4 p-3 bg-[#c0f6cb] rounded-full w-fit">
@@ -217,7 +217,7 @@ const About = () => {
                   <p className="text-gray-600 text-center">
                     {feature.description}
                   </p>
-                </CardContent>
+              </CardContent>
               </Card>
             ))}
           </div>

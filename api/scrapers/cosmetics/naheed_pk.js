@@ -13,7 +13,7 @@ export async function getNaheedPrice(url) {
       "Cache-Control": "no-cache",
       Pragma: "no-cache",
       Connection: "keep-alive",
-      "Upgrade-Insecure-Requests": "1",
+      // "Upgrade-Insecure-Requests": "1",
       Referer: "https://www.google.com/",
     };
 
@@ -48,9 +48,9 @@ export async function getNaheedPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getNaheedPrice(
-    "https://www.naheed.pk/maybelline-new-york-fit-me-matte-poreless-liquid-foundation-120-classic-ivory-18ml"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getNaheedPrice(
+//     "https://www.naheed.pk/maybelline-new-york-fit-me-matte-poreless-liquid-foundation-120-classic-ivory-18ml"
+//   );
+//   console.log(result);
+// })();

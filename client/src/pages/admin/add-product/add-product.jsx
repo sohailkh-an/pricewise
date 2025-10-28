@@ -29,6 +29,10 @@ const AddProduct = () => {
       platformFourUrl: "",
       platformFiveUrl: "",
       platformSixUrl: "",
+      platformSevenUrl: "",
+      platformEightUrl: "",
+      platformNineUrl: "",
+      platformTenUrl: "",
     },
   });
 
@@ -382,6 +386,50 @@ const AddProduct = () => {
                       value={formData.priceComparison.platformSixUrl}
                       onChange={handlePriceComparisonChange}
                       placeholder="Enter sixth platform URL"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="platformSixUrl">Platform 7 URL</Label>
+                    <Input
+                      id="platformSevenUrl"
+                      name="platformSevenUrl"
+                      type="url"
+                      value={formData.priceComparison.platformSevenUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter seventh platform URL"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="platformSixUrl">Platform 8 URL</Label>
+                    <Input
+                      id="platformEightUrl"
+                      name="platformEightUrl"
+                      type="url"
+                      value={formData.priceComparison.platformEightUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter eigth platform URL"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="platformNineUrl">Platform 9 URL</Label>
+                    <Input
+                      id="platformNineUrl"
+                      name="platformNineUrl"
+                      type="url"
+                      value={formData.priceComparison.platformNineUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter nineth platform URL"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="platformTenUrl">Platform 10 URL</Label>
+                    <Input
+                      id="platformTenUrl"
+                      name="platformTenUrl"
+                      type="url"
+                      value={formData.priceComparison.platformTenUrl}
+                      onChange={handlePriceComparisonChange}
+                      placeholder="Enter tenth platform URL"
                     />
                   </div>
                 </div>

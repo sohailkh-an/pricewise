@@ -23,6 +23,13 @@ import { getMedogetPrice } from "../scrapers/cosmetics/medoget.js";
 import { getHighfypkPrice } from "../scrapers/cosmetics/highfy_pk.js";
 import { getReanapkPrice } from "../scrapers/cosmetics/reana_pk.js";
 import { getShadenterprisespkPrice } from "../scrapers/home_appliances/shadenterprisespk.js";
+import { getXcessorieshubPrice } from "../scrapers/tech/smartphones/xcessorieshub.js";
+import { getCellmartpkPrice } from "../scrapers/tech/smartphones/cellmart_pk.js";
+import { getGalaxypkPrice } from "../scrapers/tech/laptop-notebooks/galaxy_pk.js";
+import { getLaptophousepkPrice } from "../scrapers/tech/laptop-notebooks/laptophouse_pk.js";
+import { getTechglobepkPrice } from "../scrapers/tech/laptop-notebooks/techglobe_pk.js";
+import { getTechtreasurepkPrice } from "../scrapers/tech/laptop-notebooks/techtreasure_pk.js";
+import { getMyshoppkPrice } from "../scrapers/tech/laptop-notebooks/myshop_pk.js";
 
 const router = express.Router();
 
@@ -171,7 +178,11 @@ router.post("/price", async (req, res) => {
         product.priceComparison.platformThreeUrl,
         product.priceComparison.platformFourUrl,
         product.priceComparison.platformFiveUrl,
-        product.priceComparison.platformSixUrl
+        product.priceComparison.platformSixUrl,
+        product.priceComparison.platformSevenUrl,
+        product.priceComparison.platformEightUrl,
+        product.priceComparison.platformNineUrl,
+        product.priceComparison.platformTenUrl
       );
       console.log("URL Array: ", urlArray);
       const pricePromises = [];
@@ -180,28 +191,29 @@ router.post("/price", async (req, res) => {
         if (!url) continue;
 
         try {
-          if (product.subCategory.toLowerCase() === "laptops") {
+          if (product.category.toLowerCase() === "tech") {
             if (url.includes("priceoye")) {
               pricePromises.push(getPriceoyepkPrice(url));
             } else if (url.includes("eezepc")) {
               pricePromises.push(getEezepcComPrice(url));
+            } else if (url.includes("xcessorieshub")) {
+              pricePromises.push(getXcessorieshubPrice(url));
+            } else if (url.includes("cellmart.pk")) {
+              pricePromises.push(getCellmartpkPrice(url));
             } else if (url.includes("shophive")) {
               pricePromises.push(getShophiveComPrice(url));
+            } else if (url.includes("galaxy.pk")) {
+              pricePromises.push(getGalaxypkPrice(url));
+            } else if (url.includes("laptophouse.pk")) {
+              pricePromises.push(getLaptophousepkPrice(url));
+            } else if (url.includes("myshop.pk")) {
+              pricePromises.push(getMyshoppkPrice(url));
+            } else if (url.includes("techglobe.pk")) {
+              pricePromises.push(getTechglobepkPrice(url));
+            } else if (url.includes("techtreasure.pk")) {
+              pricePromises.push(getTechtreasurepkPrice(url));
             } else {
-              pricePromises.push("Unknown domain");
-            }
-          } else if (
-            product.subCategory.toLowerCase() === "smartphones" ||
-            product.subCategory.toLowerCase() === "smart watches"
-          ) {
-            if (url.includes("priceoye")) {
-              pricePromises.push(getPriceoyepkPrice(url));
-            } else if (url.includes("eezepc")) {
-              pricePromises.push(getEezepcComPrice(url));
-            } else if (url.includes("shophive")) {
-              pricePromises.push(getShophiveComPrice(url));
-            } else {
-              pricePromises.push("Unknown domain");
+              console.log("Unknown domain");
             }
           } else if (product.category.toLowerCase() === "cosmetics") {
             if (url.includes("chasevalue")) {
@@ -229,7 +241,7 @@ router.post("/price", async (req, res) => {
             } else if (url.includes("reana.pk")) {
               pricePromises.push(getReanapkPrice(url));
             } else {
-              pricePromises.push("Unknown domain");
+              console.log("Unknown domain");
             }
           } else if (product.category.toLowerCase() === "home appliances") {
             if (url.includes("aysonline")) {
@@ -244,8 +256,12 @@ router.post("/price", async (req, res) => {
               pricePromises.push(getLahorecentrePrice(url));
             } else if (url.includes("sohailelectronics")) {
               pricePromises.push(getSohailelectronicsPrice(url));
+            } else if (url.includes("shadenterprises")) {
+              pricePromises.push(getShadenterprisespkPrice(url));
+            } else if (url.includes("mega.pk")) {
+              pricePromises.push(getMegapkPrice(url));
             } else {
-              pricePromises.push("Unknown domain");
+              console.log("Unknown domain");
             }
           }
         } catch (error) {
@@ -265,6 +281,8 @@ router.post("/price", async (req, res) => {
       }
 
       validResults.sort((a, b) => a.price - b.price);
+
+      validResults[0]["isBestPrice"] = true;
 
       // const priceData = {};
       // validResults.forEach((result, i) => {

@@ -75,6 +75,22 @@ const productSchema = new mongoose.Schema(
         type: String,
         trim: true,
       },
+      platformSevenUrl: {
+        type: String,
+        trim: true,
+      },
+      platformEightUrl: {
+        type: String,
+        trim: true,
+      },
+      platformNineUrl: {
+        type: String,
+        trim: true,
+      },
+      platformTenUrl: {
+        type: String,
+        trim: true,
+      },
     },
     category: {
       type: String,
