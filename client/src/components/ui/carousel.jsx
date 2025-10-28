@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
-function Carousel({ children, className, itemsPerView = 4, ...props }) {
+function Carousel({ children, className, itemsPerView, ...props }) {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const totalItems = React.Children.count(children);
 
