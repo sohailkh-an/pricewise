@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useProduct, useProductRecommendations } from "../../hooks/useProducts";
 import { useMultiPriceComparison } from "../../hooks/useMultiPriceComparison";
 import { useToggleWishlist, useWishlistCheck } from "../../hooks/useWishlist";
@@ -114,11 +114,19 @@ const ProductPage = () => {
       <div className=" w-full px-6 py-8">
         <nav className="mb-8">
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-            <span>Home</span>
+            <Link to="/">
+              <span>Home</span>
+            </Link>
             <span>/</span>
-            <span className="capitalize">{product.category}</span>
+            <Link to={`/search?category=${product.category}`}>
+              <span className="capitalize">{product.category}</span>
+            </Link>
             <span>/</span>
-            <span className="capitalize">{product.subCategory}</span>
+            <Link
+              to={`/search?category=${product.category}&subCategory=${product.subCategory}`}
+            >
+              <span className="capitalize">{product.subCategory}</span>
+            </Link>
             <span>/</span>
             <span className="text-foreground">{product.title}</span>
           </div>
@@ -210,10 +218,11 @@ const ProductPage = () => {
               </CardHeader>
               <CardContent>
                 {priceLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="w-6 h-6 animate-spin mr-2" />
-                    <span>Loading price data...</span>
-                  </div>
+                  <>
+                    <PriceComparisonCardSkeleton />
+                    <PriceComparisonCardSkeleton />
+                    <PriceComparisonCardSkeleton />
+                  </>
                 ) : priceError ? (
                   <div className="text-center py-8">
                     <p className="text-muted-foreground mb-4">
@@ -415,6 +424,26 @@ const PriceComparisonCard = ({ platform, url, price }) => {
             Rs. {formatNumber(price)}
           </p>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const PriceComparisonCardSkeleton = () => {
+  return (
+    <div className="p-4 bg-white dark:bg-green-900/20 rounded-lg border border-grey dark:border-green-800 animate-pulse">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <div className="h-[30px] w-[80px] bg-gray-200 dark:bg-gray-700 rounded shimmer" />
+
+          <div className="h-5 w-24 bg-gray-200 dark:bg-gray-700 rounded shimmer" />
+        </div>
+
+        <div className="h-9 w-28 bg-gray-200 dark:bg-gray-700 rounded shimmer" />
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded shimmer" />
       </div>
     </div>
   );

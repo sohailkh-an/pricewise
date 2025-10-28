@@ -73,42 +73,50 @@ const NavBar = () => {
     {
       name: "Tech",
       items: [
-        { name: "Laptops", icon: Laptop, link: "/search?category=laptops" },
+        {
+          name: "Laptops",
+          icon: Laptop,
+          link: "/search?category=Tech&subCategory=Laptops",
+        },
         {
           name: "Smartphones",
           icon: Smartphone,
-          link: "/search?category=smartphones",
+          link: "/search?category=Tech&subCategory=Smartphones",
         },
         {
           name: "Smartwatches",
           icon: Watch,
-          link: "/search?category=smartwatches",
+          link: "/search?category=Tech&subCategory=Smart Watches",
         },
         {
           name: "Headphones",
           icon: Headphones,
-          link: "/search?category=headphones",
+          link: "/search?category=Tech&subCategory=Headphones",
         },
       ],
     },
     {
       name: "Home Appliances",
       items: [
-        { name: "TVs", icon: Tv, link: "/search?category=tvs" },
+        {
+          name: "TVs",
+          icon: Tv,
+          link: "/search?category=Home Appliances&subCategory=TV's",
+        },
         {
           name: "Fridge",
           icon: Refrigerator,
-          link: "/search?subCategory=fridge",
+          link: "/search?category=Home Appliances&subCategory=Fridge",
         },
         {
           name: "Microwave Ovens",
           icon: Microwave,
-          link: "/search?category=microwave",
+          link: "/search?category=Home Appliances&subCategory=Oven",
         },
         {
           name: "Washing Machine",
           icon: WashingMachine,
-          link: "/search?category=washing-machine",
+          link: "/search?category=Home Appliances&subCategory=Washing Machine",
         },
       ],
     },
@@ -116,17 +124,25 @@ const NavBar = () => {
       name: "Cosmetics",
       items: [
         {
-          name: "Foundation",
+          name: "Skincare",
           icon: Sparkles,
-          link: "/search?category=foundation",
+          link: "/search?category=Cosmetics&subCategory=Skincare",
         },
-        { name: "Eyeliner", icon: Sparkles, link: "/search?category=eyeliner" },
         {
-          name: "Lipsticks",
+          name: "Hair Care",
           icon: Sparkles,
-          link: "/search?category=lipsticks",
+          link: "/search?category=Cosmetics&subCategory=Hair Care",
         },
-        { name: "Shampoo", icon: Sparkles, link: "/search?category=shampoo" },
+        {
+          name: "Fragrances",
+          icon: Sparkles,
+          link: "/search?category=Cosmetics&subCategory=Fragrances",
+        },
+        {
+          name: "Shampoo",
+          icon: Sparkles,
+          link: "/search?subCategory=shampoo",
+        },
       ],
     },
   ];

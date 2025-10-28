@@ -21,7 +21,7 @@ const SearchPage = () => {
   const [showFilters, setShowFilters] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
 
   const [filters, setFilters] = useState({
     category: searchParams.get("category") || "",
@@ -30,6 +30,17 @@ const SearchPage = () => {
     sortBy: searchParams.get("sortBy") || "relevance",
     page: parseInt(searchParams.get("page")) || 1,
   });
+
+  useEffect(() => {
+    setFilters({
+      category: searchParams.get("category") || "",
+      subCategory: searchParams.get("subCategory") || "",
+      minRating: searchParams.get("minRating") || "",
+      sortBy: searchParams.get("sortBy") || "relevance",
+      page: parseInt(searchParams.get("page")) || 1,
+    });
+    setSearchQuery(searchParams.get("q") || "");
+  }, [searchParams]);
 
   const { data, isLoading, error } = useSearchProducts({
     search: debouncedSearchQuery,
@@ -71,9 +82,23 @@ const SearchPage = () => {
   const categories = [
     { value: "Home Appliances", label: "Home Appliances" },
     { value: "Cosmetics", label: "Cosmetics" },
-    { value: "clothes", label: "Clothes" },
-    { value: "Tech", label: "Technology" },
+    { value: "Tech", label: "Tech" },
   ];
+
+  const subCategories = {
+    "Home Appliances": ["TV's", "Fridge", "Oven", "AC", "Washing Machine"],
+
+    Tech: [
+      "Smartphones",
+      "Laptops",
+      "Smart Watches",
+      "Headphones",
+      "Cameras",
+      "Gaming",
+      "Accessories",
+    ],
+    Cosmetics: ["Makeup", "Skincare", "Hair Care", "Fragrances"],
+  };
 
   const sortOptions = [
     { value: "relevance", label: "Most Relevant" },
@@ -225,14 +250,24 @@ const SearchPage = () => {
                     <label className="text-sm font-medium mb-2 block">
                       Sub Category
                     </label>
-                    <Input
-                      type="text"
-                      placeholder="Enter sub category..."
+
+                    <Select
                       value={filters.subCategory}
-                      onChange={(e) =>
-                        handleFilterChange("subCategory", e.target.value)
+                      onValueChange={(value) =>
+                        handleFilterChange("subCategory", value)
                       }
-                    />
+                      className="cursor-pointer w-full"
+                    >
+                      <SelectItem value="">Select a sub category</SelectItem>
+
+                      {subCategories[filters.category]?.map(
+                        (subCategory, index) => (
+                          <SelectItem key={index} value={subCategory}>
+                            {subCategory}
+                          </SelectItem>
+                        )
+                      )}
+                    </Select>
                   </div>
 
                   <div>
@@ -283,7 +318,7 @@ const SearchPage = () => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mb-8">
                   {products.map((product) => (
                     <ProductCard key={product._id} product={product} />
                   ))}

@@ -43,6 +43,11 @@ const checkAdminAuth = (req, res, next) => {
   next();
 };
 
+router.get("/get-all-products", async (req, res) => {
+  const products = await Product.find();
+  res.json({ products });
+});
+
 router.get("/", async (req, res) => {
   try {
     const { page = 1, limit = 10, category, subCategory, search } = req.query;
@@ -89,11 +94,18 @@ router.get("/search", async (req, res) => {
       sortBy = "relevance",
     } = req.query;
 
+    console.log("Subcat", subCategory);
+
     const query = { isActive: true };
 
     if (search) {
       query.$text = { $search: search };
     }
+
+    const capitalize = (str) => {
+      if (!str) return "";
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    };
 
     if (category) query.category = category;
     if (subCategory) query.subCategory = subCategory;

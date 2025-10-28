@@ -1,16 +1,18 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import User from "../models/User.js";
 import { authenticateToken } from "../middleware/auth.js";
+import { Resend } from "resend";
+import dotenv from "dotenv";
+dotenv.config();
 
 const router = express.Router();
 
-// Register route
 router.post("/register", async (req, res) => {
   try {
     const { email, password, fullName } = req.body;
 
-    // Validation
     if (!email || !password || !fullName) {
       return res.status(400).json({
         success: false,
@@ -18,7 +20,6 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // Email format validation
     const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
@@ -27,7 +28,6 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // Password strength validation
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
     if (!passwordRegex.test(password)) {
@@ -38,7 +38,6 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -48,7 +47,6 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // Create new user
     const user = new User({
       email,
       password,
@@ -57,17 +55,15 @@ router.post("/register", async (req, res) => {
 
     await user.save();
 
-    // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.status(201).json({
@@ -98,12 +94,10 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login route
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validation
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -111,7 +105,6 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({
@@ -120,7 +113,6 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -129,11 +121,9 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // Update last login
     user.lastLogin = new Date();
     await user.save();
 
-    // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -163,7 +153,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Logout route
 router.post("/logout", (req, res) => {
   res.clearCookie("token");
   res.json({
@@ -172,7 +161,6 @@ router.post("/logout", (req, res) => {
   });
 });
 
-// Get current user
 router.get("/me", authenticateToken, (req, res) => {
   res.json({
     success: true,
@@ -180,7 +168,6 @@ router.get("/me", authenticateToken, (req, res) => {
   });
 });
 
-// Update user profile
 router.put("/profile", authenticateToken, async (req, res) => {
   try {
     const { fullName, email } = req.body;
@@ -219,6 +206,146 @@ router.put("/profile", authenticateToken, async (req, res) => {
       });
     }
 
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+console.log("API key:", process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid email address",
+      });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({
+        success: true,
+        message:
+          "If an account with that email exists, we've sent a password reset link.",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = resetTokenExpires;
+    await user.save();
+
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
+
+    try {
+      await resend.emails.send({
+        from: "Pricewise <noreply@pricewise.com>", // Replace with your verified domain
+        to: [email],
+        subject: "Password Reset Request - Pricewise",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #059669; text-align: center;">Password Reset Request</h2>
+            <p>Hello ${user.fullName},</p>
+            <p>You requested a password reset for your Pricewise account. Click the button below to reset your password:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetUrl}" style="background-color: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Reset Password</a>
+            </div>
+            <p>This link will expire in 15 minutes for security reasons.</p>
+            <p>If you didn't request this password reset, please ignore this email.</p>
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+            <p style="color: #6b7280; font-size: 14px; text-align: center;">
+              This email was sent from Pricewise. If you have any questions, please contact our support team.
+            </p>
+          </div>
+        `,
+      });
+
+      res.json({
+        success: true,
+        message:
+          "If an account with that email exists, we've sent a password reset link.",
+      });
+    } catch (emailError) {
+      console.error("Email sending error:", emailError);
+
+      user.resetPasswordToken = null;
+      user.resetPasswordExpires = null;
+      await user.save();
+
+      res.status(500).json({
+        success: false,
+        message: "Failed to send reset email. Please try again later.",
+      });
+    }
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Token and password are required",
+      });
+    }
+
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+      });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired reset token",
+      });
+    }
+
+    user.password = password;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Password reset successfully",
+    });
+  } catch (error) {
+    console.error("Reset password error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",

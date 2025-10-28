@@ -10,6 +10,8 @@ import SearchPage from "./pages/search-page/search-page";
 import WishlistPage from "./pages/wishlist/wishlist";
 import Login from "./pages/auth/login/login";
 import Register from "./pages/auth/register/register";
+import ForgetPassword from "./pages/auth/forget-password/forget-password";
+import ResetPassword from "./pages/auth/reset-password/reset-password";
 import AddProduct from "./pages/admin/add-product/add-product";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
@@ -42,6 +44,22 @@ function App() {
               element={
                 <PublicRoute>
                   <Register />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <PublicRoute>
+                  <ForgetPassword />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/reset-password"
+              element={
+                <PublicRoute>
+                  <ResetPassword />
                 </PublicRoute>
               }
             />

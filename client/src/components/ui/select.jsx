@@ -46,7 +46,8 @@ const Select = React.forwardRef(
             <ChevronDown className="h-4 w-4 opacity-50" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
+        {/* <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]"> */}
+        <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
           {React.Children.map(children, (child) =>
             React.cloneElement(child, {
               onSelect: (value) => {
@@ -68,7 +69,7 @@ const SelectItem = React.forwardRef(
       <DropdownMenuItem
         ref={ref}
         className={cn(
-          "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+          "relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
           className
         )}
         onSelect={(e) => {

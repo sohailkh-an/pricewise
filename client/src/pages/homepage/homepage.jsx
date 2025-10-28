@@ -64,7 +64,8 @@ const CategorySection = ({ category }) => {
 
   if (isLoading) {
     return (
-      <div className="mb-16 w-full bg-gray-50">
+      // <div className="mb-16 w-full bg-gray-50">
+      <div className="mb-16 w-full bg-[#f5f5f7]">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold">{category.name}</h2>
           <Button variant="outline" disabled>

@@ -23,7 +23,8 @@ export async function getTrendifypkPrice(url) {
     });
 
     const $ = cheerio.load(data);
-    const priceText = $("div.prices span.price").first().text().trim();
+    // const priceText = $("div.prices span.price").first().text().trim();
+    const priceText = $("div.t4s-product-price ins").first().text().trim();
     const priceValue = Math.floor(
       Number(priceText.replace(/[^0-9]/g, "")) / 100
     );

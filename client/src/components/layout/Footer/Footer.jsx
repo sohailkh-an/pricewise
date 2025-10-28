@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   const companyLinks = [
+    { title: "About Us", link: "/about" },
     {
       title: "Privacy Policy",
       link: "/privacy-policy",
@@ -63,10 +64,10 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-white">Quick Links</h4>
             <ul className="space-y-2">
-              {["Electronics", "Cosmetics", "Tech", "Shoes"].map((category) => (
+              {["Tech", "Cosmetics", "Home Appliances"].map((category) => (
                 <li key={category}>
                   <a
-                    href="#"
+                    href={`/search?category=${category}`}
                     className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
                   >
                     {category}
@@ -77,25 +78,26 @@ const Footer = () => {
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">
-              Customer Service
-            </h4>
+            <h4 className="text-lg font-semibold text-white">Company</h4>
             <ul className="space-y-2">
-              {["About Us", "Help Center"].map((link) => (
-                <li key={link}>
-                  <a
-                    href="#"
+              {companyLinks.map((item, index) => (
+                <li key={index}>
+                  <Link
+                    key={index}
+                    to={item.link}
                     className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
                   >
-                    {link}
-                  </a>
+                    {item.title}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">Stay Connected</h4>
+            <h4 className="text-lg font-semibold text-white">
+              Connect with us
+            </h4>
 
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
@@ -115,42 +117,15 @@ const Footer = () => {
                 </span>
               </div>
             </div>
-
-            {/* <div className="space-y-3">
-              <p className="text-gray-300 text-sm">
-                Get the latest deals and price alerts delivered to your inbox.
-              </p>
-              <div className="flex space-x-2">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-3 py-2 bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
-                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 text-sm font-medium">
-                  Subscribe
-                </button>
-              </div>
-            </div> */}
           </div>
         </div>
       </div>
 
       <div className="border-t border-gray-700">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0">
             <div className="text-gray-300 text-sm">
               © 2025 PriceWise. All rights reserved.
-            </div>
-            <div className="flex space-x-6">
-              {companyLinks.map((item, index) => (
-                <Link
-                  key={index}
-                  to={item.link}
-                  className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
-                >
-                  {item.title}
-                </Link>
-              ))}
             </div>
           </div>
         </div>
