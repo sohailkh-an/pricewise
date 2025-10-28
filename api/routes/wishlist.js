@@ -5,11 +5,10 @@ import { authenticateToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Get user's wishlist
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const userId = req.user._id;
-    
+
     const wishlistItems = await Wishlist.find({ user: userId })
       .populate("product")
       .sort({ createdAt: -1 });
@@ -28,7 +27,6 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
-// Add product to wishlist
 router.post("/", authenticateToken, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -41,7 +39,6 @@ router.post("/", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if product exists
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({
@@ -50,7 +47,6 @@ router.post("/", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if already in wishlist
     const existingWishlistItem = await Wishlist.findOne({
       user: userId,
       product: productId,
@@ -63,7 +59,6 @@ router.post("/", authenticateToken, async (req, res) => {
       });
     }
 
-    // Add to wishlist
     const wishlistItem = new Wishlist({
       user: userId,
       product: productId,
@@ -79,7 +74,7 @@ router.post("/", authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error("Add to wishlist error:", error);
-    
+
     if (error.code === 11000) {
       return res.status(409).json({
         success: false,
@@ -94,7 +89,6 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
-// Remove product from wishlist
 router.delete("/:productId", authenticateToken, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -125,7 +119,6 @@ router.delete("/:productId", authenticateToken, async (req, res) => {
   }
 });
 
-// Check if product is in wishlist
 router.get("/check/:productId", authenticateToken, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -149,7 +142,6 @@ router.get("/check/:productId", authenticateToken, async (req, res) => {
   }
 });
 
-// Clear entire wishlist
 router.delete("/", authenticateToken, async (req, res) => {
   try {
     const userId = req.user._id;

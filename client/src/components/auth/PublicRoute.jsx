@@ -17,7 +17,6 @@ const PublicRoute = ({ children }) => {
   }
 
   if (user) {
-    // Redirect authenticated users away from auth pages
     return <Navigate to="/" replace />;
   }
 

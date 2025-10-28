@@ -245,7 +245,7 @@ router.post("/forgot-password", async (req, res) => {
     }
 
     const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+    const resetTokenExpires = new Date(Date.now() + 15 * 60 * 1000);
 
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = resetTokenExpires;
@@ -255,7 +255,7 @@ router.post("/forgot-password", async (req, res) => {
 
     try {
       await resend.emails.send({
-        from: "Pricewise <noreply@pricewise.com>", // Replace with your verified domain
+        from: "Pricewise <noreply@pricewise.com>",
         to: [email],
         subject: "Password Reset Request - Pricewise",
         html: `

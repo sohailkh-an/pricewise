@@ -3,14 +3,20 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Eye, EyeOff, Loader2, ArrowLeft, CheckCircle } from "lucide-react";
 import axios from "axios";
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -19,7 +25,7 @@ const ResetPassword = () => {
   const [success, setSuccess] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [tokenError, setTokenError] = useState("");
-  
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
@@ -30,7 +36,6 @@ const ResetPassword = () => {
     }
   }, [token]);
 
-  // Validation functions
   const validatePassword = (password) => {
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
@@ -39,7 +44,7 @@ const ResetPassword = () => {
 
   const validateField = (name, value) => {
     let error = "";
-    
+
     switch (name) {
       case "password":
         if (!value) {
@@ -61,25 +66,23 @@ const ResetPassword = () => {
       default:
         break;
     }
-    
+
     return error;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
-    // Clear general error
+
     if (error) setError("");
-    
-    // Validate field and update field errors
+
     const fieldError = validateField(name, value);
-    setFieldErrors(prev => ({
+    setFieldErrors((prev) => ({
       ...prev,
-      [name]: fieldError
+      [name]: fieldError,
     }));
   };
 
@@ -88,7 +91,6 @@ const ResetPassword = () => {
     setIsLoading(true);
     setError("");
 
-    // Validate all fields
     const newFieldErrors = {};
     let hasErrors = false;
 
@@ -122,16 +124,15 @@ const ResetPassword = () => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/users/reset-password`,
-        { 
+        {
           token,
-          password: formData.password 
+          password: formData.password,
         },
         { withCredentials: true }
       );
 
       if (response.data.success) {
         setSuccess(true);
-        // Redirect to login after 3 seconds
         setTimeout(() => {
           navigate("/login");
         }, 3000);
@@ -139,8 +140,8 @@ const ResetPassword = () => {
     } catch (error) {
       console.error("Reset password error:", error);
       setError(
-        error.response?.data?.message || 
-        "An error occurred while resetting your password. Please try again."
+        error.response?.data?.message ||
+          "An error occurred while resetting your password. Please try again."
       );
     } finally {
       setIsLoading(false);
@@ -162,9 +163,7 @@ const ResetPassword = () => {
           <CardContent className="space-y-4">
             <div className="text-center">
               <Link to="/forgot-password">
-                <Button className="w-full">
-                  Request New Reset Link
-                </Button>
+                <Button className="w-full">Request New Reset Link</Button>
               </Link>
               <Link to="/login">
                 <Button variant="ghost" className="w-full mt-2">
@@ -199,11 +198,9 @@ const ResetPassword = () => {
               <p>You can now sign in with your new password.</p>
               <p className="mt-2">Redirecting to login page...</p>
             </div>
-            
+
             <Link to="/login">
-              <Button className="w-full">
-                Go to Login
-              </Button>
+              <Button className="w-full">Go to Login</Button>
             </Link>
           </CardContent>
         </Card>
@@ -229,7 +226,7 @@ const ResetPassword = () => {
                 {error}
               </div>
             )}
-            
+
             <div className="space-y-2">
               <Label htmlFor="password">New Password</Label>
               <div className="relative">
@@ -242,7 +239,9 @@ const ResetPassword = () => {
                   placeholder="Enter your new password"
                   required
                   disabled={isLoading}
-                  className={`w-full pr-10 ${fieldErrors.password ? 'border-red-500' : ''}`}
+                  className={`w-full pr-10 ${
+                    fieldErrors.password ? "border-red-500" : ""
+                  }`}
                 />
                 <button
                   type="button"
@@ -258,7 +257,9 @@ const ResetPassword = () => {
                 </button>
               </div>
               {fieldErrors.password && (
-                <p className="text-sm text-red-600 dark:text-red-400">{fieldErrors.password}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {fieldErrors.password}
+                </p>
               )}
               <div className="text-xs text-gray-500 dark:text-gray-400">
                 Password must contain at least 8 characters with uppercase,
@@ -278,7 +279,9 @@ const ResetPassword = () => {
                   placeholder="Confirm your new password"
                   required
                   disabled={isLoading}
-                  className={`w-full pr-10 ${fieldErrors.confirmPassword ? 'border-red-500' : ''}`}
+                  className={`w-full pr-10 ${
+                    fieldErrors.confirmPassword ? "border-red-500" : ""
+                  }`}
                 />
                 <button
                   type="button"
@@ -294,15 +297,13 @@ const ResetPassword = () => {
                 </button>
               </div>
               {fieldErrors.confirmPassword && (
-                <p className="text-sm text-red-600 dark:text-red-400">{fieldErrors.confirmPassword}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {fieldErrors.confirmPassword}
+                </p>
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -18,10 +18,8 @@ const wishlistSchema = new mongoose.Schema(
   }
 );
 
-// Ensure unique combination of user and product
 wishlistSchema.index({ user: 1, product: 1 }, { unique: true });
 
-// Virtual for populated product data
 wishlistSchema.virtual("productData", {
   ref: "Product",
   localField: "product",
@@ -29,7 +27,6 @@ wishlistSchema.virtual("productData", {
   justOne: true,
 });
 
-// Ensure virtual fields are serialized
 wishlistSchema.set("toJSON", { virtuals: true });
 wishlistSchema.set("toObject", { virtuals: true });
 

@@ -3,7 +3,7 @@ import { ProductCard } from "../../components/ui/ProductCard";
 import { Carousel } from "../../components/ui/carousel";
 import { Button } from "../../components/ui/button";
 import { useProductsByCategory } from "../../hooks/useProducts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -61,6 +61,18 @@ const CategorySection = ({ category }) => {
   const { data, isLoading, error } = useProductsByCategory(category.key, {
     limit: 8,
   });
+
+  const [itemsPerView, setItemsPerView] = useState(4);
+
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      setItemsPerView(window.innerWidth < 768 ? 1 : 4);
+    };
+
+    updateItemsPerView();
+    window.addEventListener("resize", updateItemsPerView);
+    return () => window.removeEventListener("resize", updateItemsPerView);
+  }, []);
 
   if (isLoading) {
     return (
@@ -127,7 +139,7 @@ const CategorySection = ({ category }) => {
         </Button>
       </div>
 
-      <Carousel itemsPerView={4} className="mb-4 w-full">
+      <Carousel itemsPerView={itemsPerView} className="mb-4 w-full">
         {products.map((product) => (
           <ProductCard key={product._id || product.id} product={product} />
         ))}

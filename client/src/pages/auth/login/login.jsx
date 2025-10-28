@@ -3,23 +3,28 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  
+
   const navigate = useNavigate();
 
-  // Validation functions
   const validateEmail = (email) => {
     const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
     return emailRegex.test(email);
@@ -27,7 +32,7 @@ const Login = () => {
 
   const validateField = (name, value) => {
     let error = "";
-    
+
     switch (name) {
       case "email":
         if (!value.trim()) {
@@ -44,25 +49,23 @@ const Login = () => {
       default:
         break;
     }
-    
+
     return error;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
-    // Clear general error
+
     if (error) setError("");
-    
-    // Validate field and update field errors
+
     const fieldError = validateField(name, value);
-    setFieldErrors(prev => ({
+    setFieldErrors((prev) => ({
       ...prev,
-      [name]: fieldError
+      [name]: fieldError,
     }));
   };
 
@@ -71,11 +74,9 @@ const Login = () => {
     setIsLoading(true);
     setError("");
 
-    // Validate all fields
     const newFieldErrors = {};
     let hasErrors = false;
 
-    // Check if all required fields are filled
     if (!formData.email.trim()) {
       newFieldErrors.email = "Email is required";
       hasErrors = true;
@@ -104,17 +105,15 @@ const Login = () => {
       );
 
       if (response.data.success) {
-        // Store user data in localStorage for client-side access
         localStorage.setItem("user", JSON.stringify(response.data.user));
         navigate("/");
-        // Reload to update the app state
         window.location.reload();
       }
     } catch (error) {
       console.error("Login error:", error);
       setError(
-        error.response?.data?.message || 
-        "An error occurred during login. Please try again."
+        error.response?.data?.message ||
+          "An error occurred during login. Please try again."
       );
     } finally {
       setIsLoading(false);
@@ -139,7 +138,7 @@ const Login = () => {
                 {error}
               </div>
             )}
-            
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -151,10 +150,14 @@ const Login = () => {
                 placeholder="Enter your email"
                 required
                 disabled={isLoading}
-                className={`w-full ${fieldErrors.email ? 'border-red-500' : ''}`}
+                className={`w-full ${
+                  fieldErrors.email ? "border-red-500" : ""
+                }`}
               />
               {fieldErrors.email && (
-                <p className="text-sm text-red-600 dark:text-red-400">{fieldErrors.email}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {fieldErrors.email}
+                </p>
               )}
             </div>
 
@@ -170,7 +173,9 @@ const Login = () => {
                   placeholder="Enter your password"
                   required
                   disabled={isLoading}
-                  className={`w-full pr-10 ${fieldErrors.password ? 'border-red-500' : ''}`}
+                  className={`w-full pr-10 ${
+                    fieldErrors.password ? "border-red-500" : ""
+                  }`}
                 />
                 <button
                   type="button"
@@ -186,15 +191,13 @@ const Login = () => {
                 </button>
               </div>
               {fieldErrors.password && (
-                <p className="text-sm text-red-600 dark:text-red-400">{fieldErrors.password}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {fieldErrors.password}
+                </p>
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

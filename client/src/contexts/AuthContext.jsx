@@ -21,13 +21,11 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      // First check localStorage for user data
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
 
-      // Then verify with server
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/users/me`,
         { withCredentials: true }
@@ -37,13 +35,11 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.user);
         localStorage.setItem("user", JSON.stringify(response.data.user));
       } else {
-        // Server says user is not authenticated, clear local storage
         setUser(null);
         localStorage.removeItem("user");
       }
     } catch (error) {
       console.error("Auth check failed:", error);
-      // If server check fails, clear everything
       setUser(null);
       localStorage.removeItem("user");
     } finally {
@@ -66,9 +62,9 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      return { 
-        success: false, 
-        message: error.response?.data?.message || "Login failed" 
+      return {
+        success: false,
+        message: error.response?.data?.message || "Login failed",
       };
     }
   };
@@ -88,9 +84,9 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Registration error:", error);
-      return { 
-        success: false, 
-        message: error.response?.data?.message || "Registration failed" 
+      return {
+        success: false,
+        message: error.response?.data?.message || "Registration failed",
       };
     }
   };
@@ -125,9 +121,9 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Profile update error:", error);
-      return { 
-        success: false, 
-        message: error.response?.data?.message || "Profile update failed" 
+      return {
+        success: false,
+        message: error.response?.data?.message || "Profile update failed",
       };
     }
   };
@@ -139,12 +135,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
-    checkAuthStatus
+    checkAuthStatus,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

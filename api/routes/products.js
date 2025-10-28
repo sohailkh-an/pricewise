@@ -22,9 +22,8 @@ import { getDermapkPrice } from "../scrapers/cosmetics/derma_pk.js";
 import { getMedogetPrice } from "../scrapers/cosmetics/medoget.js";
 import { getHighfypkPrice } from "../scrapers/cosmetics/highfy_pk.js";
 import { getReanapkPrice } from "../scrapers/cosmetics/reana_pk.js";
+import { getShadenterprisespkPrice } from "../scrapers/home_appliances/shadenterprisespk.js";
 
-import { getTelemartPrice } from "../scrapers/telemartpk.js";
-import { getShadenterprisespkPrice } from "../scrapers/shadenterprisespk.js";
 const router = express.Router();
 
 const checkAdminAuth = (req, res, next) => {
