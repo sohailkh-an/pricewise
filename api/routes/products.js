@@ -1,8 +1,8 @@
 import express from "express";
 import Product from "../models/Product.js";
-import { getPriceoyepkPrice } from "../scrapers/tech/laptop-notebooks/priceoyepk.js";
-import { getEezepcComPrice } from "../scrapers/tech/laptop-notebooks/eezepc_com.js";
-import { getShophiveComPrice } from "../scrapers/tech/laptop-notebooks/shophive_com.js";
+import { getPriceoyepkPrice } from "../scrapers/tech/priceoyepk.js";
+import { getEezepcComPrice } from "../scrapers/tech/eezepc_com.js";
+import { getShophiveComPrice } from "../scrapers/tech/shophive_com.js";
 import { getChasevaluePrice } from "../scrapers/cosmetics/chasevalue.js";
 import { getJust4girlspkPrice } from "../scrapers/cosmetics/just4girls_pk.js";
 import { getMakeupstashpkPrice } from "../scrapers/cosmetics/makeupstash_pk.js";
@@ -23,13 +23,13 @@ import { getMedogetPrice } from "../scrapers/cosmetics/medoget.js";
 import { getHighfypkPrice } from "../scrapers/cosmetics/highfy_pk.js";
 import { getReanapkPrice } from "../scrapers/cosmetics/reana_pk.js";
 import { getShadenterprisespkPrice } from "../scrapers/home_appliances/shadenterprisespk.js";
-import { getXcessorieshubPrice } from "../scrapers/tech/smartphones/xcessorieshub.js";
-import { getCellmartpkPrice } from "../scrapers/tech/smartphones/cellmart_pk.js";
-import { getGalaxypkPrice } from "../scrapers/tech/laptop-notebooks/galaxy_pk.js";
-import { getLaptophousepkPrice } from "../scrapers/tech/laptop-notebooks/laptophouse_pk.js";
-import { getTechglobepkPrice } from "../scrapers/tech/laptop-notebooks/techglobe_pk.js";
-import { getTechtreasurepkPrice } from "../scrapers/tech/laptop-notebooks/techtreasure_pk.js";
-import { getMyshoppkPrice } from "../scrapers/tech/laptop-notebooks/myshop_pk.js";
+import { getXcessorieshubPrice } from "../scrapers/tech/xcessorieshub.js";
+import { getCellmartpkPrice } from "../scrapers/tech/cellmart_pk.js";
+import { getGalaxypkPrice } from "../scrapers/tech/galaxy_pk.js";
+import { getLaptophousepkPrice } from "../scrapers/tech/laptophouse_pk.js";
+import { getTechglobepkPrice } from "../scrapers/tech/techglobe_pk.js";
+import { getTechtreasurepkPrice } from "../scrapers/tech/techtreasure_pk.js";
+import { getMyshoppkPrice } from "../scrapers/tech/myshop_pk.js";
 
 const router = express.Router();
 
