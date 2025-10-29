@@ -4,7 +4,20 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true,
+});
+
+// Attach Authorization header from localStorage token if present
+api.interceptors.request.use((config) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  } catch (_) {
+    // ignore
+  }
+  return config;
 });
 
 export const productsAPI = {

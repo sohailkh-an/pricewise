@@ -21,9 +21,15 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setUser(null);
+        localStorage.removeItem("user");
+        return;
+      }
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/users/me`,
-        { withCredentials: true }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.data.success) {
@@ -46,13 +52,17 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/users/login`,
-        { email, password },
-        { withCredentials: true }
+        { email, password }
       );
+
+      console.log("Response: ", response);
 
       if (response.data.success) {
         setUser(response.data.user);
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        if (response.data.token) {
+          localStorage.setItem("token", response.data.token);
+        }
         return { success: true, user: response.data.user };
       }
     } catch (error) {
@@ -68,13 +78,17 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/users/register`,
-        userData,
-        { withCredentials: true }
+        userData
       );
+
+      console.log("Response: ", response);
 
       if (response.data.success) {
         setUser(response.data.user);
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        if (response.data.token) {
+          localStorage.setItem("token", response.data.token);
+        }
         return { success: true, user: response.data.user };
       }
     } catch (error) {
@@ -89,11 +103,8 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
       setUser(null);
-
-      await axios.get(`${import.meta.env.VITE_API_URL}/api/users/logout`, {
-        withCredentials: true,
-      });
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -101,10 +112,11 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/users/profile`,
         profileData,
-        { withCredentials: true }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.data.success) {

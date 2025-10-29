@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import axios from "axios";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +27,7 @@ const Register = () => {
   const [fieldErrors, setFieldErrors] = useState({});
 
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const validateEmail = (email) => {
     const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -155,27 +156,21 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/users/register`,
-        {
-          email: formData.email,
-          password: formData.password,
-          fullName: formData.fullName,
-        },
-        { withCredentials: true }
-      );
+      const { success, message } = await register({
+        email: formData.email,
+        password: formData.password,
+        fullName: formData.fullName,
+      });
 
-      if (response.data.success) {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+      if (success) {
         navigate("/");
         window.location.reload();
+      } else {
+        setError(message || "Registration failed. Please try again.");
       }
-    } catch (error) {
-      console.error("Registration error:", error);
-      setError(
-        error.response?.data?.message ||
-          "An error occurred during registration. Please try again."
-      );
+    } catch (err) {
+      console.error("Registration error:", err);
+      setError("An error occurred during registration. Please try again.");
     } finally {
       setIsLoading(false);
     }

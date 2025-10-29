@@ -59,13 +59,6 @@ router.post("/register", async (req, res) => {
       expiresIn: "7d",
     });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
     res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -74,6 +67,7 @@ router.post("/register", async (req, res) => {
         email: user.email,
         fullName: user.fullName,
       },
+      token,
     });
   } catch (error) {
     console.error("Registration error:", error);
@@ -128,13 +122,6 @@ router.post("/login", async (req, res) => {
       expiresIn: "7d",
     });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
     res.json({
       success: true,
       message: "Login successful",
@@ -143,6 +130,7 @@ router.post("/login", async (req, res) => {
         email: user.email,
         fullName: user.fullName,
       },
+      token,
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -151,20 +139,6 @@ router.post("/login", async (req, res) => {
       message: "Internal server error",
     });
   }
-});
-
-router.get("/logout", (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    path: "/",
-  });
-
-  res.json({
-    success: true,
-    message: "Logout successful",
-  });
 });
 
 router.get("/me", authenticateToken, (req, res) => {

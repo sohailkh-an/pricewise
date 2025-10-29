@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import axios from "axios";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +24,7 @@ const Login = () => {
   const [fieldErrors, setFieldErrors] = useState({});
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const validateEmail = (email) => {
     const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -98,23 +99,16 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/users/login`,
-        formData,
-        { withCredentials: true }
-      );
-
-      if (response.data.success) {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+      const { success, message } = await login(formData.email, formData.password);
+      if (success) {
         navigate("/");
         window.location.reload();
+      } else {
+        setError(message || "An error occurred during login. Please try again.");
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      setError(
-        error.response?.data?.message ||
-          "An error occurred during login. Please try again."
-      );
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An error occurred during login. Please try again.");
     } finally {
       setIsLoading(false);
     }
