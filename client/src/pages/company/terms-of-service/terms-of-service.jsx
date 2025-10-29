@@ -83,18 +83,7 @@ export default function TermsOfService() {
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                6. Affiliate Relationships
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
-                PriceWise may earn commissions from certain retailers when users
-                make purchases through our links. This does not affect the
-                prices you pay or influence our product listings and rankings.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                7. Intellectual Property
+                6. Intellectual Property
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 All content on PriceWise, including logos, designs, text,
@@ -107,7 +96,7 @@ export default function TermsOfService() {
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                8. Limitation of Liability
+                7. Limitation of Liability
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 PriceWise is provided "as is" without warranties of any kind. We
@@ -120,7 +109,7 @@ export default function TermsOfService() {
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                9. Account Termination
+                8. Account Termination
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 We reserve the right to suspend or terminate your account at any
@@ -132,7 +121,7 @@ export default function TermsOfService() {
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                10. Changes to Terms
+                9. Changes to Terms
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 We may modify these Terms of Service at any time. We will notify
@@ -144,7 +133,7 @@ export default function TermsOfService() {
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                11. Governing Law
+                10. Governing Law
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 These Terms of Service shall be governed by and construed in
@@ -155,7 +144,7 @@ export default function TermsOfService() {
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                12. Contact Information
+                11. Contact Information
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 If you have any questions about these Terms of Service, please

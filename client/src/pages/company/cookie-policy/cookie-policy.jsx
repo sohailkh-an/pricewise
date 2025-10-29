@@ -17,8 +17,8 @@ export default function CookiePolicy() {
                 Cookies are small text files that are placed on your device when
                 you visit a website. They are widely used to make websites work
                 more efficiently and provide a better user experience. Cookies
-                allow websites to remember your preferences, analyze site
-                traffic, and deliver personalized content.
+                allow websites to remember your preferences and deliver
+                personalized content.
               </p>
             </section>
 
@@ -29,7 +29,7 @@ export default function CookiePolicy() {
               <p className="text-gray-700 leading-relaxed mb-4">
                 We use cookies to enhance your experience on PriceWise and to
                 improve our services. The cookies we use serve various purposes,
-                including functionality, performance, and analytics.
+                including functionality, performance.
               </p>
             </section>
 
@@ -70,38 +70,6 @@ export default function CookiePolicy() {
                   </p>
                 </div>
 
-                <div className="border-l-4 border-yellow-500 pl-4">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Analytics Cookies
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    We use analytics cookies to understand how visitors interact
-                    with our website. This information helps us improve our
-                    Service by analyzing user behavior, popular products, and
-                    site performance.
-                  </p>
-                  <p className="text-gray-600 text-sm mt-2">
-                    Examples: Google Analytics, page view tracking, user journey
-                    analysis
-                  </p>
-                </div>
-
-                <div className="border-l-4 border-purple-500 pl-4">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Marketing Cookies
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    These cookies track your browsing activity to deliver
-                    relevant advertisements and measure the effectiveness of our
-                    marketing campaigns. They may be set by us or our
-                    advertising partners.
-                  </p>
-                  <p className="text-gray-600 text-sm mt-2">
-                    Examples: Retargeting pixels, conversion tracking, ad
-                    personalization
-                  </p>
-                </div>
-
                 <div className="border-l-4 border-red-500 pl-4">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     Third-Party Cookies
@@ -112,8 +80,7 @@ export default function CookiePolicy() {
                     reviewing the privacy policies of these third parties.
                   </p>
                   <p className="text-gray-600 text-sm mt-2">
-                    Examples: Social media widgets, embedded content, affiliate
-                    tracking
+                    Examples: Embedded content, affiliate tracking
                   </p>
                 </div>
               </div>
@@ -159,14 +126,9 @@ export default function CookiePolicy() {
               </p>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
                 <li>
-                  Our cookie consent banner that appears when you first visit
-                  the site
-                </li>
-                <li>
                   Your browser settings (most browsers allow you to refuse or
                   delete cookies)
                 </li>
-                <li>The cookie management tools in your account settings</li>
               </ul>
               <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-gray-700">
@@ -204,20 +166,7 @@ export default function CookiePolicy() {
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                7. Do Not Track Signals
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
-                Some browsers offer a "Do Not Track" feature that signals
-                websites not to track your browsing. Currently, there is no
-                universal standard for how to respond to these signals. We
-                respect your privacy choices and encourage you to use our cookie
-                management tools.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                8. Changes to This Cookie Policy
+                7. Changes to This Cookie Policy
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 We may update this Cookie Policy from time to time to reflect
@@ -229,7 +178,7 @@ export default function CookiePolicy() {
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                9. Contact Us
+                8. Contact Us
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
                 If you have any questions about our use of cookies or this

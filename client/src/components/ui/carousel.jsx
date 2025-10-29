@@ -41,7 +41,7 @@ function Carousel({ children, className, itemsPerView, ...props }) {
             <div
               key={index}
               className="w-full flex-shrink-0"
-              style={{ width: `${100 / itemsPerView}%` }}
+              style={{ width: `${100 / 4.17}%` }}
             >
               {child}
             </div>
