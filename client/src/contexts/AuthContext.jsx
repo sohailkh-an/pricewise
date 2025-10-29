@@ -90,9 +90,9 @@ export const AuthProvider = ({ children }) => {
     try {
       localStorage.removeItem("user");
       setUser(null);
-      
+
       await axios.get(`${import.meta.env.VITE_API_URL}/api/users/logout`, {
-        withCredentials: true
+        withCredentials: true,
       });
     } catch (error) {
       console.error("Logout error:", error);

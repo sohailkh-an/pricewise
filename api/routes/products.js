@@ -74,7 +74,7 @@ router.get("/", async (req, res) => {
 
     const total = await Product.countDocuments(query);
 
-    console.log("Products: ", products);
+    // console.log("Products: ", products);
 
     res.json({
       products,
@@ -289,7 +289,7 @@ router.post("/price", async (req, res) => {
       //   priceData[`store${i + 1}`] = result;
       // });
 
-      console.log("Multi-URL price data: ", validResults);
+      // console.log("Multi-URL price data: ", validResults);
       return res.json(validResults);
     }
 
