@@ -153,8 +153,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/logout", (req, res) => {
-  res.clearCookie("token");
+router.get("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    path: "/",
+  });
+
   res.json({
     success: true,
     message: "Logout successful",

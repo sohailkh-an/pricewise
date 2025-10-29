@@ -21,11 +21,6 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/users/me`,
         { withCredentials: true }
@@ -93,16 +88,14 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/users/logout`,
-        {},
-        { withCredentials: true }
-      );
+      localStorage.removeItem("user");
+      setUser(null);
+      
+      await axios.get(`${import.meta.env.VITE_API_URL}/api/users/logout`, {
+        withCredentials: true
+      });
     } catch (error) {
       console.error("Logout error:", error);
-    } finally {
-      setUser(null);
-      localStorage.removeItem("user");
     }
   };
 
