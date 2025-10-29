@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
@@ -13,6 +14,7 @@ const AddReviewForm = ({
   isSubmitting,
 }) => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     rating: 5,
     comment: "",
@@ -48,8 +50,6 @@ const AddReviewForm = ({
 
     if (!formData.comment.trim()) {
       newErrors.comment = "Review comment is required";
-    } else if (formData.comment.trim().length < 10) {
-      newErrors.comment = "Review must be at least 10 characters long";
     }
 
     setErrors(newErrors);
@@ -64,9 +64,48 @@ const AddReviewForm = ({
     }
 
     try {
-      await addReviewMutation.mutateAsync({
+      const data = await addReviewMutation.mutateAsync({
         productId,
         ...formData,
+      });
+
+      const newReview = data?.review || data;
+
+      const matchingQueries = queryClient.getQueriesData({
+        queryKey: ["productReviews", productId],
+      });
+
+      matchingQueries.forEach(([queryKey, cached]) => {
+        if (!cached) return;
+        const params = Array.isArray(queryKey) ? queryKey[2] : undefined;
+        const limit = params?.limit || undefined;
+        const updatedReviews = [newReview, ...(cached.reviews || [])];
+        const trimmedReviews =
+          typeof limit === "number"
+            ? updatedReviews.slice(0, limit)
+            : updatedReviews;
+
+        queryClient.setQueryData(queryKey, {
+          ...cached,
+          reviews: trimmedReviews,
+          totalReviews: (cached.totalReviews || 0) + 1,
+        });
+      });
+
+      queryClient.setQueryData(["reviewStats", productId], (old) => {
+        if (!old) return old;
+        const total = (old.totalReviews || 0) + 1;
+        const rating = Number(newReview?.rating) || 0;
+        const sum = (old.averageRating || 0) * (old.totalReviews || 0) + rating;
+        const newAvg = total > 0 ? sum / total : 0;
+        const dist = { ...(old.ratingDistribution || {}) };
+        dist[rating] = (dist[rating] || 0) + 1;
+        return {
+          ...old,
+          totalReviews: total,
+          averageRating: newAvg,
+          ratingDistribution: dist,
+        };
       });
 
       setFormData({
@@ -74,7 +113,7 @@ const AddReviewForm = ({
         comment: "",
       });
 
-      onReviewAdded();
+      onReviewAdded?.(newReview);
     } catch (error) {
       setErrors({
         submit: error.message || "Failed to submit review. Please try again.",

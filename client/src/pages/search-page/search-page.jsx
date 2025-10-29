@@ -18,7 +18,7 @@ import { Loader2 } from "lucide-react";
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
 
   const debouncedSearchQuery = useDebounce(searchQuery, 1500);
