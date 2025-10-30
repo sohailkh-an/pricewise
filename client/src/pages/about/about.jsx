@@ -314,12 +314,12 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-20 px-6 bg-[#041d09]">
+      <section className="py-20 px-6 bg-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
+          <h2 className="text-4xl font-bold text-black mb-6">
             Ready to Start Saving?
           </h2>
-          <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-500 mb-8 max-w-2xl mx-auto">
             Join thousands of smart shoppers who trust PriceWise to find the
             best deals
           </p>
@@ -327,7 +327,7 @@ const About = () => {
             <Button
               asChild
               size="lg"
-              className="bg-white text-[#041d09] hover:bg-gray-100"
+              className="bg-black text-white hover:bg-gray-800"
             >
               <Link to="/search">
                 <Search className="mr-2 h-5 w-5" />
@@ -338,7 +338,7 @@ const About = () => {
               variant="outline"
               asChild
               size="lg"
-              className="border-white text-white hover:bg-white hover:text-[#041d09]"
+              className="border-black text-black hover:bg-white hover:text-[#041d09]"
             >
               <Link to="/register">
                 <Star className="mr-2 h-5 w-5" />
@@ -346,18 +346,6 @@ const About = () => {
               </Link>
             </Button>
           </div>
-        </div>
-      </section>
-
-      <section className="py-12 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-gray-600 mb-4">
-            <strong>PriceWise</strong> - Your trusted partner in smart shopping
-          </p>
-          <p className="text-sm text-gray-500">
-            © 2024 PriceWise. All rights reserved. | Making online shopping
-            smarter.
-          </p>
         </div>
       </section>
     </div>

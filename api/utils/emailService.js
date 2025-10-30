@@ -15,7 +15,7 @@ export const sendPriceDropEmail = async ({
     const discountPercent = ((discount / oldPrice) * 100).toFixed(1);
 
     const { data, error } = await resend.emails.send({
-      from: "PriceWise <onboarding@resend.dev>",
+      from: "Pricewise <alerts@dotivia.com>",
       to: [to],
       subject: `🔔 Price Drop Alert: ${productTitle}`,
       html: `

@@ -6,7 +6,6 @@ import { useProductsByCategory } from "../../hooks/useProducts";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import HeaderImg from "/header_img2.jpg";
 
 const HomePage = () => {
   const categories = [
@@ -22,8 +21,8 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <section
-        className="relative bg-cover bg-center min-h-[90vh] flex items-center justify-center"
-        style={{ backgroundImage: "url('/header_img2.jpg')" }}
+        className="relative bg-top bg-cover bg-center min-h-[50vh] flex items-center justify-center"
+        style={{ backgroundImage: "url('/header_img.webp')" }}
       >
         <div className="absolute inset-0 bg-black/40"></div>
 
@@ -42,23 +41,6 @@ const HomePage = () => {
           <CategorySection key={category.key} category={category} />
         ))}
       </section>
-
-      {/* <section className="bg-secondary/20 py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
-          <p className="text-muted-foreground mb-8">
-            Get the latest deals and product updates delivered to your inbox
-          </p>
-          <div className="flex max-w-md mx-auto gap-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-            <Button>Subscribe</Button>
-          </div>
-        </div>
-      </section> */}
     </div>
   );
 };
@@ -82,7 +64,6 @@ const CategorySection = ({ category }) => {
 
   if (isLoading) {
     return (
-      // <div className="mb-16 w-full bg-gray-50">
       <div className="mb-16 w-full bg-[#f5f5f7]">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold">{category.name}</h2>

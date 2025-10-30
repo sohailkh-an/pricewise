@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./button";
 import { Input } from "./input";
 import { Label } from "./label";
@@ -19,9 +19,17 @@ export const PriceAlertForm = ({
   currentLowestPrice,
   open,
   onOpenChange,
+  initialTargetPrice,
+  onSuccess,
 }) => {
-  const [targetPrice, setTargetPrice] = useState("");
+  const [targetPrice, setTargetPrice] = useState(initialTargetPrice || "");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setTargetPrice(initialTargetPrice || "");
+    }
+  }, [open, initialTargetPrice]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,10 +55,16 @@ export const PriceAlertForm = ({
         productId: product._id,
         targetPrice: price,
       });
-
+      const alert = response.data?.data;
+      const isUpdate = !!initialTargetPrice;
       toast.success(
-        "Price alert created! We'll email you when the price drops."
+        isUpdate
+          ? "Price alert updated successfully."
+          : "Price alert created! We'll email you when the price drops."
       );
+      if (onSuccess && alert) {
+        onSuccess(alert);
+      }
       onOpenChange(false);
       setTargetPrice("");
     } catch (error) {
@@ -68,7 +82,7 @@ export const PriceAlertForm = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Bell className="w-5 h-5 text-green-600" />
-            Set Price Drop Alert
+            {initialTargetPrice ? "Update Price Alert" : "Set Price Drop Alert"}
           </DialogTitle>
           <DialogDescription>
             Get notified via email when the price drops to your target price
@@ -153,12 +167,12 @@ export const PriceAlertForm = ({
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Creating...
+                  {initialTargetPrice ? "Saving..." : "Creating..."}
                 </>
               ) : (
                 <>
                   <Bell className="w-4 h-4 mr-2" />
-                  Create Alert
+                  {initialTargetPrice ? "Save Alert" : "Create Alert"}
                 </>
               )}
             </Button>

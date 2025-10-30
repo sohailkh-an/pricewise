@@ -31,11 +31,14 @@ import {
 import PlatformLogos from "@/static-data/platformLogos";
 
 import { PriceAlertForm } from "../../components/ui/PriceAlertForm";
+import { api } from "../../services/api";
 const ProductPage = () => {
   const { id } = useParams();
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [alertDialogOpen, setAlertDialogOpen] = useState(false); // NEW
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+  const [existingAlert, setExistingAlert] = useState(null);
+  const [alertsLoading, setAlertsLoading] = useState(false);
 
   const { user } = useAuth();
   const { data: wishlistCheck } = useWishlistCheck(id);
@@ -62,6 +65,26 @@ const ProductPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    const fetchExistingAlert = async () => {
+      if (!user || !product?._id) return;
+      try {
+        setAlertsLoading(true);
+        const response = await api.get("/api/price-alerts");
+        const alerts = response.data?.data || [];
+        const matched = alerts.find(
+          (a) => (a.product?._id || a.product) === product._id
+        );
+        setExistingAlert(matched || null);
+      } catch {
+        setExistingAlert(null);
+      } finally {
+        setAlertsLoading(false);
+      }
+    };
+    fetchExistingAlert();
+  }, [user, product?._id]);
 
   const openImageViewer = (index) => {
     setSelectedImageIndex(index);
@@ -97,6 +120,19 @@ const ProductPage = () => {
     }
 
     setAlertDialogOpen(true);
+  };
+
+  const handleRemovePriceAlert = async () => {
+    if (!existingAlert?._id) return;
+    try {
+      await api.delete(`/api/price-alerts/${existingAlert._id}`);
+      toast.success("Price alert removed");
+      setExistingAlert(null);
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Failed to remove price alert";
+      toast.error(message);
+    }
   };
 
   const currentLowestPrice =
@@ -290,16 +326,41 @@ const ProductPage = () => {
                       : "Remove from Wishlist"}
                   </Button>
 
-                  <Button
-                    variant="default"
-                    size="lg"
-                    onClick={handlePriceAlert}
-                    disabled={!currentLowestPrice || priceLoading}
-                    className="flex-1 cursor-pointer bg-[#041d09] hover:bg-[#1f5229]"
-                  >
-                    <Bell className="w-5 h-5 mr-2" />
-                    Set Price Alert
-                  </Button>
+                  {!existingAlert ? (
+                    <Button
+                      variant="default"
+                      size="lg"
+                      onClick={handlePriceAlert}
+                      disabled={
+                        !currentLowestPrice || priceLoading || alertsLoading
+                      }
+                      className="flex-1 cursor-pointer bg-[#041d09] hover:bg-[#1f5229]"
+                    >
+                      <Bell className="w-5 h-5 mr-2" />
+                      Set Price Alert
+                    </Button>
+                  ) : (
+                    <>
+                      <Button
+                        variant="default"
+                        size="lg"
+                        onClick={() => setAlertDialogOpen(true)}
+                        disabled={!currentLowestPrice || priceLoading}
+                        className="flex-1 cursor-pointer bg-[#041d09] hover:bg-[#1f5229]"
+                      >
+                        <Bell className="w-5 h-5 mr-2" />
+                        Modify Price Alert
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={handleRemovePriceAlert}
+                        className="flex-1 cursor-pointer text-red-600 border-red-600 hover:bg-red-50"
+                      >
+                        Remove Price Alert
+                      </Button>
+                    </>
+                  )}
                 </>
               )}
 
@@ -390,6 +451,8 @@ const ProductPage = () => {
           currentLowestPrice={currentLowestPrice}
           open={alertDialogOpen}
           onOpenChange={setAlertDialogOpen}
+          initialTargetPrice={existingAlert?.targetPrice}
+          onSuccess={(alert) => setExistingAlert(alert)}
         />
       )}
     </div>

@@ -376,6 +376,35 @@ router.post("/", checkAdminAuth, async (req, res) => {
   }
 });
 
+router.put("/editProductImage/:productId", async (req, res) => {
+  const imageURL =
+    "https://images.priceoye.pk/samsung-galaxy-a06-pakistan-priceoye-hvk7q-500x500.webp";
+
+  try {
+    const product = await Product.findById(req.params.productId);
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    if (product.images && product.images.length > 0) {
+      product.images[0] = imageURL;
+    } else {
+      product.images = [imageURL];
+    }
+
+    await product.save();
+
+    res.json({
+      message: "Product image updated successfully",
+      product,
+    });
+  } catch (error) {
+    console.error("Error updating product image:", error);
+    res.status(500).json({ error: "Failed to update product image" });
+  }
+});
+
 router.put("/:id", checkAdminAuth, async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
