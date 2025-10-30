@@ -126,7 +126,7 @@ router.post("/check-prices", verifyCronSecret, async (req, res) => {
                 oldPrice:
                   oldPrice > currentPrice ? oldPrice : alert.targetPrice + 1000,
                 newPrice: currentPrice,
-                productUrl: `${process.env.FRONTEND_URL}/product/${alert.product._id}`,
+                productUrl: `${process.env.CLIENT_URL}/product/${alert.product._id}`,
                 productImage: alert.product.images[0],
               });
 
@@ -214,7 +214,7 @@ router.post("/check-prices", verifyCronSecret, async (req, res) => {
   }
 });
 
-router.post("/test-alert/:alertId", verifyCronSecret, async (req, res) => {
+router.post("/test-alert/:alertId", async (req, res) => {
   try {
     const alert = await PriceAlert.findById(req.params.alertId)
       .populate("product")
@@ -240,7 +240,7 @@ router.post("/test-alert/:alertId", verifyCronSecret, async (req, res) => {
     }
 
     const emailResult = await sendPriceDropEmail({
-      to: alert.user.email,
+      to: "pindigamer@gmail.com",
       productTitle: alert.product.title,
       oldPrice: alert.targetPrice + 1000,
       newPrice: priceData.lowestPrice,

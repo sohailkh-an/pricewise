@@ -15,7 +15,7 @@ export const sendPriceDropEmail = async ({
     const discountPercent = ((discount / oldPrice) * 100).toFixed(1);
 
     const { data, error } = await resend.emails.send({
-      from: "PriceWise <onboarding@resend.dev>", // Free domain for testing
+      from: "PriceWise <onboarding@resend.dev>",
       to: [to],
       subject: `🔔 Price Drop Alert: ${productTitle}`,
       html: `
@@ -33,6 +33,9 @@ export const sendPriceDropEmail = async ({
                 padding: 0;
                 background-color: #f4f4f4;
               }
+              a {
+              color: white;
+              }
               .container { 
                 max-width: 600px; 
                 margin: 20px auto;
@@ -42,7 +45,7 @@ export const sendPriceDropEmail = async ({
                 box-shadow: 0 4px 6px rgba(0,0,0,0.1);
               }
               .header { 
-                background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+                background-color:  #041d09;
                 color: white; 
                 padding: 40px 30px;
                 text-align: center;
@@ -110,7 +113,7 @@ export const sendPriceDropEmail = async ({
                 margin: 10px 0;
               }
               .discount-badge { 
-                background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+                background-color: #041d09;
                 color: white;
                 padding: 10px 20px;
                 border-radius: 25px;
@@ -121,7 +124,7 @@ export const sendPriceDropEmail = async ({
                 box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3);
               }
               .cta-button { 
-                background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+                background-color: #041d09;
                 color: white;
                 padding: 16px 40px;
                 text-decoration: none;
@@ -130,7 +133,6 @@ export const sendPriceDropEmail = async ({
                 margin: 30px 0;
                 font-weight: 600;
                 font-size: 16px;
-                box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3);
                 transition: all 0.3s ease;
               }
               .cta-button:hover {
@@ -186,8 +188,8 @@ export const sendPriceDropEmail = async ({
           <body>
             <div class="container">
               <div class="header">
-                <h1>🎉 Price Drop Alert!</h1>
-                <p>The product you're tracking just got cheaper</p>
+                <h1>Price Drop Alert!</h1>
+                <p>The price of the product you're tracking has dropped </p>
               </div>
               
               <div class="content">
@@ -208,28 +210,20 @@ export const sendPriceDropEmail = async ({
                   
                   <div style="text-align: center;">
                     <span class="discount-badge">
-                      💰 Save Rs. ${discount.toLocaleString()} (${discountPercent}% OFF)
+                      Save Rs. ${discount.toLocaleString()} (${discountPercent}% OFF)
                     </span>
                   </div>
                 </div>
 
                 <div class="cta-wrapper">
                   <a href="${productUrl}" class="cta-button">
-                    🛒 View Product Details
+                    View Product Details
                   </a>
-                </div>
-
-                <div class="info-text">
-                  <strong>💡 Quick Tip:</strong> Prices can change quickly! We recommend checking the product page soon to take advantage of this deal.
                 </div>
               </div>
               
               <div class="footer">
-                <p><strong>PriceWise</strong> - Your Smart Shopping Companion</p>
                 <p>© ${new Date().getFullYear()} PriceWise. All rights reserved.</p>
-                <p style="margin-top: 15px; font-size: 12px;">
-                  You received this email because you set a price alert for this product.
-                </p>
               </div>
             </div>
           </body>
@@ -238,14 +232,14 @@ export const sendPriceDropEmail = async ({
     });
 
     if (error) {
-      console.error("❌ Email send error:", error);
+      console.error("Email send error:", error);
       return { success: false, error };
     }
 
-    console.log("✅ Email sent successfully:", data);
+    console.log("Email sent successfully:", data);
     return { success: true, data };
   } catch (error) {
-    console.error("❌ Email service error:", error);
+    console.error("Email service error:", error);
     return { success: false, error: error.message };
   }
 };
