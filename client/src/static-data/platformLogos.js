@@ -68,6 +68,10 @@ const PlatformLogos = [
     logo: "https://dubuypk.com/cdn/shop/files/cccc_300x.png?v=1623941629",
   },
   {
+    platform: "pinexport",
+    logo: "https://dubuypk.com/cdn/shop/files/cccc_300x.png?v=1623941629",
+  },
+  {
     platform: "derma.pk",
     logo: "https://derma.pk/cdn/shop/files/Derma.pk-logo-scaled-1536x409-1.webp?v=1747151944&width=180",
   },

@@ -42,6 +42,8 @@ const AddProduct = () => {
   const categories = {
     "Home Appliances": ["TV's", "Fridge", "Oven", "AC", "Washing Machine"],
 
+    "Dry Fruits": ["Pinenuts"],
+
     Tech: [
       "Smartphones",
       "Laptops",

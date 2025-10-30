@@ -29,6 +29,7 @@ import {
   getSohailelectronicsPrice,
   getShadenterprisespkPrice,
   getMegapkPrice,
+  getPinexportPrice,
 } from "../routes/products.js";
 
 export const scrapeProductPrice = async (product) => {
@@ -112,6 +113,8 @@ const getPlatformScraper = (url, category) => {
     if (url.includes("myshop.pk")) return getMyshoppkPrice;
     if (url.includes("techglobe.pk")) return getTechglobepkPrice;
     if (url.includes("techtreasure.pk")) return getTechtreasurepkPrice;
+  } else if (category === "dry fruits") {
+    if (url.includes("pinexport")) return getPinexportPrice;
   } else if (category === "cosmetics") {
     if (url.includes("chasevalue")) return getChasevaluePrice;
     if (url.includes("just4girls")) return getJust4girlspkPrice;

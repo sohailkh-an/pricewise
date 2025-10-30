@@ -11,8 +11,13 @@ const verifyCronSecret = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(" ")[1];
 
+  console.log("Received Authorization Header:", authHeader);
+  console.log("Extracted Token:", token);
+  console.log("Expected Secret from ENV:", process.env.CRON_SECRET);
+  console.log("Match:", token === process.env.CRON_SECRET);
+
   if (token !== process.env.CRON_SECRET) {
-    console.error("Unauthorized cron access attempt");
+    console.error("Unauthorized: Token mismatch");
     return res.status(401).json({
       success: false,
       message: "Unauthorized",
@@ -62,7 +67,7 @@ router.post("/check-prices", verifyCronSecret, async (req, res) => {
     };
 
     const BATCH_SIZE = 5;
-    const DELAY_BETWEEN_BATCHES = 3000; // 3 seconds
+    const DELAY_BETWEEN_BATCHES = 3000;
 
     for (let i = 0; i < alerts.length; i += BATCH_SIZE) {
       const batch = alerts.slice(i, i + BATCH_SIZE);

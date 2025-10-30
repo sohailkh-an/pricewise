@@ -30,6 +30,7 @@ import { getLaptophousepkPrice } from "../scrapers/tech/laptophouse_pk.js";
 import { getTechglobepkPrice } from "../scrapers/tech/techglobe_pk.js";
 import { getTechtreasurepkPrice } from "../scrapers/tech/techtreasure_pk.js";
 import { getMyshoppkPrice } from "../scrapers/tech/myshop_pk.js";
+import { getPinexportPrice } from "../scrapers/testScraper.js";
 
 const router = express.Router();
 
@@ -73,7 +74,6 @@ router.get("/", async (req, res) => {
       .skip((page - 1) * limit);
 
     const total = await Product.countDocuments(query);
-
 
     res.json({
       products,
@@ -213,6 +213,10 @@ router.post("/price", async (req, res) => {
               pricePromises.push(getTechtreasurepkPrice(url));
             } else {
               console.log("Unknown domain");
+            }
+          } else if (product.subCategory.toLowerCase() === "pinenuts") {
+            if (url.includes("pinexport")) {
+              pricePromises.push(getPinexportPrice(url));
             }
           } else if (product.category.toLowerCase() === "cosmetics") {
             if (url.includes("chasevalue")) {
@@ -447,4 +451,5 @@ export {
   getSohailelectronicsPrice,
   getShadenterprisespkPrice,
   getMegapkPrice,
+  getPinexportPrice,
 };
