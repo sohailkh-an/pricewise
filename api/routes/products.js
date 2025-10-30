@@ -74,7 +74,6 @@ router.get("/", async (req, res) => {
 
     const total = await Product.countDocuments(query);
 
-    // console.log("Products: ", products);
 
     res.json({
       products,
@@ -284,12 +283,6 @@ router.post("/price", async (req, res) => {
 
       validResults[0]["isBestPrice"] = true;
 
-      // const priceData = {};
-      // validResults.forEach((result, i) => {
-      //   priceData[`store${i + 1}`] = result;
-      // });
-
-      // console.log("Multi-URL price data: ", validResults);
       return res.json(validResults);
     }
 
@@ -422,3 +415,36 @@ router.delete("/:id", checkAdminAuth, async (req, res) => {
 });
 
 export default router;
+
+export {
+  getPriceoyepkPrice,
+  getEezepcComPrice,
+  getXcessorieshubPrice,
+  getCellmartpkPrice,
+  getShophiveComPrice,
+  getGalaxypkPrice,
+  getLaptophousepkPrice,
+  getMyshoppkPrice,
+  getTechglobepkPrice,
+  getTechtreasurepkPrice,
+  getChasevaluePrice,
+  getJust4girlspkPrice,
+  getMakeupstashpkPrice,
+  getNaheedPrice,
+  getTrendifypkPrice,
+  getVegaspkPrice,
+  getMakeupcityshopPrice,
+  getDubuypkPrice,
+  getDermapkPrice,
+  getMedogetPrice,
+  getHighfypkPrice,
+  getReanapkPrice,
+  getAysonlinePrice,
+  getFriendsHomePrice,
+  getJalalelectronicsPrice,
+  getJapanelectronicsPrice,
+  getLahorecentrePrice,
+  getSohailelectronicsPrice,
+  getShadenterprisespkPrice,
+  getMegapkPrice,
+};

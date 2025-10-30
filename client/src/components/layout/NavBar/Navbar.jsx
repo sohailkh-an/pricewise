@@ -171,8 +171,8 @@ const NavBar = () => {
 
   return (
     <nav className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 bg-[#041d09] border-b">
-      <Link to="/" className="flex-shrink-0">
-        <img src="/logo1.jpg" alt="Logo" className="h-12 md:h-15" />
+      <Link to="/" className="bg-transparent shrink-0">
+        <img src="/logo1.png" alt="Logo" className="h-12 md:h-15" />
       </Link>
 
       <div className="hidden lg:flex items-center gap-8 xl:gap-20 flex-1 px-8 xl:px-20">

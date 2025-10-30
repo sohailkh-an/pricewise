@@ -6,6 +6,7 @@ import { useProductsByCategory } from "../../hooks/useProducts";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import HeaderImg from "/header_img2.jpg";
 
 const HomePage = () => {
   const categories = [
@@ -20,12 +21,17 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="bg-gradient-to-r from-primary/10 to-secondary/10 py-16">
-        <div className="container mx-auto px-4 text-center">
+      <section
+        className="relative bg-cover bg-center min-h-[90vh] flex items-center justify-center"
+        style={{ backgroundImage: "url('/header_img2.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <div className="relative text-center text-white px-4">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
             Welcome to PriceWise
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-xl text-gray-200">
             Discover amazing products at unbeatable prices
           </p>
         </div>

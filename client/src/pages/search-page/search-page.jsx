@@ -212,7 +212,7 @@ const SearchPage = () => {
 
         <div className="flex gap-8">
           {showFilters && (
-            <div className="w-80 flex-shrink-0">
+            <div className="w-55 flex-shrink-0">
               <Card size="sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -314,7 +314,7 @@ const SearchPage = () => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
                   {products.map((product) => (
                     <ProductCard key={product._id} product={product} />
                   ))}

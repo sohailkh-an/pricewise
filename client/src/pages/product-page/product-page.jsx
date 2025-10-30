@@ -20,21 +20,23 @@ import { Carousel } from "../../components/ui/carousel";
 import { ProductCard } from "../../components/ui/ProductCard";
 import {
   Star,
-  ShoppingCart,
   ExternalLink,
   TrendingDown,
-  TrendingUp,
   Loader2,
   Maximize2,
   Heart,
+  Bell,
 } from "lucide-react";
 
 import PlatformLogos from "@/static-data/platformLogos";
 
+import { PriceAlertForm } from "../../components/ui/PriceAlertForm";
 const ProductPage = () => {
   const { id } = useParams();
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false); // NEW
+
   const { user } = useAuth();
   const { data: wishlistCheck } = useWishlistCheck(id);
   const { toggleWishlist, isLoading: wishlistLoading } = useToggleWishlist();
@@ -50,8 +52,6 @@ const ProductPage = () => {
     isLoading: priceLoading,
     error: priceError,
   } = useMultiPriceComparison(product);
-
-  console.log("Prices: ", priceData);
 
   const {
     data: recommendationsData,
@@ -85,6 +85,25 @@ const ProductPage = () => {
     }
   };
 
+  const handlePriceAlert = () => {
+    if (!user) {
+      toast.error("Please login to set price alerts");
+      return;
+    }
+
+    if (!priceData || priceData.length === 0) {
+      toast.error("Price data not available");
+      return;
+    }
+
+    setAlertDialogOpen(true);
+  };
+
+  const currentLowestPrice =
+    priceData && priceData.length > 0
+      ? Math.min(...priceData.map((p) => p.price))
+      : null;
+
   if (productLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -111,7 +130,7 @@ const ProductPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className=" w-full px-6 py-8">
+      <div className="w-full px-6 py-8">
         <nav className="mb-8">
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <Link to="/">
@@ -214,12 +233,6 @@ const ProductPage = () => {
               className="overflow-hidden"
               size="priceComparison"
             >
-              {/* <CardHeader> */}
-              {/* <CardTitle className="flex items-center gap-2">
-                  <TrendingDown className="w-5 h-5 text-green-600" />
-                  Price Comparison
-                </CardTitle> */}
-              {/* </CardHeader> */}
               <CardContent>
                 {priceLoading ? (
                   <>
@@ -239,19 +252,6 @@ const ProductPage = () => {
                 ) : priceData ? (
                   <PriceComparison comparisons={priceData} />
                 ) : (
-                  // <div className="space-y-4">
-                  //   {priceData?.map((store, index) => {
-                  //     return (
-                  //       <PriceComparisonCard
-                  //         key={index}
-                  //         platform={store.platform}
-                  //         url={store.url}
-                  //         isBestPrice={store.isBestPrice}
-                  //         price={store.price}
-                  //       />
-                  //     );
-                  //   })}
-                  // </div>
                   <div className="text-center py-8">
                     <p className="text-muted-foreground mb-4">
                       Price data not available
@@ -265,34 +265,53 @@ const ProductPage = () => {
             </Card>
 
             <div className="flex gap-3">
-              {/* <Button size="lg" className="flex-1">
-                <ShoppingCart className="w-5 h-5 mr-2" />
-                Add to Cart
-              </Button> */}
               {user && (
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={handleWishlistToggle}
-                  disabled={wishlistLoading}
-                  className={`flex-1 cursor-pointer ${
-                    wishlistCheck?.inWishlist
-                      ? "text-red-600 border-red-600 hover:bg-red-50"
-                      : "hover:bg-gray-50"
-                  }`}
-                >
-                  <Heart
-                    className={`w-5 h-5 mr-5 ${
+                <>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={handleWishlistToggle}
+                    disabled={wishlistLoading}
+                    className={`flex-1 cursor-pointer ${
                       wishlistCheck?.inWishlist
-                        ? "fill-red-500 text-red-500"
-                        : ""
+                        ? "text-red-600 border-red-600 hover:bg-red-50"
+                        : "hover:bg-gray-50"
                     }`}
-                  />
+                  >
+                    <Heart
+                      className={`w-5 h-5 mr-2 ${
+                        wishlistCheck?.inWishlist
+                          ? "fill-red-500 text-red-500"
+                          : ""
+                      }`}
+                    />
+                    {!wishlistCheck?.inWishlist
+                      ? "Add to Wishlist"
+                      : "Remove from Wishlist"}
+                  </Button>
 
-                  {!wishlistCheck?.inWishlist
-                    ? "Add to Wishlist"
-                    : "Remove from Wishlist"}
-                </Button>
+                  <Button
+                    variant="default"
+                    size="lg"
+                    onClick={handlePriceAlert}
+                    disabled={!currentLowestPrice || priceLoading}
+                    className="flex-1 cursor-pointer bg-[#041d09] hover:bg-[#1f5229]"
+                  >
+                    <Bell className="w-5 h-5 mr-2" />
+                    Set Price Alert
+                  </Button>
+                </>
+              )}
+
+              {!user && (
+                <div className="w-full p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
+                  <p className="text-sm text-blue-800 mb-2">
+                    Login to track price drops and save to wishlist
+                  </p>
+                  <Button asChild size="sm">
+                    <Link to="/login">Login</Link>
+                  </Button>
+                </div>
               )}
             </div>
           </div>
@@ -313,63 +332,48 @@ const ProductPage = () => {
               )}
             </CardContent>
           </Card>
-
-          {product.tags && product.tags.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Tags</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {product.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
-      </div>
 
-      <div className="w-full px-6 py-8">
-        <ReviewsSection productId={product._id} />
-      </div>
+        <div className="w-full px-6 py-8">
+          <ReviewsSection productId={product._id} />
+        </div>
 
-      <div className="w-full px-6 py-8 bg-muted/30">
-        <div className="max-w-7xl">
-          <h2 className="text-3xl font-bold mb-8">You might also like</h2>
-          {recommendationsLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-8 h-8 animate-spin mr-2" />
-              <span>Loading recommendations...</span>
-            </div>
-          ) : recommendationsError ? (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">
-                Failed to load recommendations
-              </p>
-              <Button onClick={() => window.location.reload()}>
-                Try Again
-              </Button>
-            </div>
-          ) : recommendationsData?.recommendations?.length > 0 ? (
-            <Carousel itemsPerView={4} className="w-full">
-              {recommendationsData.recommendations.map((recommendedProduct) => (
-                <ProductCard
-                  key={recommendedProduct._id}
-                  product={recommendedProduct}
-                />
-              ))}
-            </Carousel>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
-                No recommendations available at the moment.
-              </p>
-            </div>
-          )}
+        <div className="w-full px-6 py-8 bg-muted/30">
+          <div className="max-w-7xl">
+            <h2 className="text-3xl font-bold mb-8">You might also like</h2>
+            {recommendationsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-8 h-8 animate-spin mr-2" />
+                <span>Loading recommendations...</span>
+              </div>
+            ) : recommendationsError ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">
+                  Failed to load recommendations
+                </p>
+                <Button onClick={() => window.location.reload()}>
+                  Try Again
+                </Button>
+              </div>
+            ) : recommendationsData?.recommendations?.length > 0 ? (
+              <Carousel itemsPerView={4} className="w-full">
+                {recommendationsData.recommendations.map(
+                  (recommendedProduct) => (
+                    <ProductCard
+                      key={recommendedProduct._id}
+                      product={recommendedProduct}
+                    />
+                  )
+                )}
+              </Carousel>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">
+                  No recommendations available at the moment.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -379,6 +383,15 @@ const ProductPage = () => {
         onClose={() => setImageViewerOpen(false)}
         initialIndex={selectedImageIndex}
       />
+
+      {user && currentLowestPrice && (
+        <PriceAlertForm
+          product={product}
+          currentLowestPrice={currentLowestPrice}
+          open={alertDialogOpen}
+          onOpenChange={setAlertDialogOpen}
+        />
+      )}
     </div>
   );
 };
@@ -530,7 +543,7 @@ const PriceComparisonCard = ({ platform, url, price, isBestPrice }) => {
           size="sm"
           asChild
           className={`
-            flex-shrink-0 transition-all duration-200 min-w-[120px]
+            shrink-0 transition-all duration-200 min-w-[120px]
             ${
               isBestPrice
                 ? "bg-[#041d09] hover:bg-[#041d09] text-white shadow-md hover:shadow-lg hover:scale-105"
@@ -553,7 +566,7 @@ const PriceComparisonCard = ({ platform, url, price, isBestPrice }) => {
       </div>
 
       {isBestPrice && (
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 pointer-events-none" />
       )}
     </div>
   );

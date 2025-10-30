@@ -51,9 +51,8 @@ const About = () => {
   ];
 
   const stats = [
-    { number: "10K+", label: "Products Tracked" },
-    { number: "50+", label: "Partner Stores" },
-    { number: "1M+", label: "Price Updates Daily" },
+    { number: "50+", label: "Products Tracked" },
+    { number: "30+", label: "Partner Stores" },
     { number: "95%", label: "User Satisfaction" },
   ];
 
@@ -123,7 +122,7 @@ const About = () => {
 
       <section className="py-16 px-6 bg-white/50">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-4xl font-bold text-[#041d09] mb-2">
@@ -217,7 +216,7 @@ const About = () => {
                   <p className="text-gray-600 text-center">
                     {feature.description}
                   </p>
-              </CardContent>
+                </CardContent>
               </Card>
             ))}
           </div>
