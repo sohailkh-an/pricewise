@@ -8,6 +8,8 @@ import usersRoutes from "./routes/users.js";
 // import deleteAllProductsRoutes from "./routes/deleteAllProducts.js";
 import reviewsRoutes from "./routes/reviews.js";
 import wishlistRoutes from "./routes/wishlist.js";
+import priceAlertRoutes from "./routes/priceAlert.js";
+import cronRoutes from "./routes/cron.js";
 dotenv.config();
 
 const app = express();
@@ -26,6 +28,8 @@ app.use("/api/products", productsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/price-alerts", priceAlertRoutes);
+app.use("/api/cron", cronRoutes);
 
 const PORT = process.env.PORT || 3000;
 

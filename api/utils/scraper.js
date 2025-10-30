@@ -29,7 +29,7 @@ import {
   getSohailelectronicsPrice,
   getShadenterprisespkPrice,
   getMegapkPrice,
-} from "../routes/products";
+} from "../routes/products.js";
 
 export const scrapeProductPrice = async (product) => {
   try {
