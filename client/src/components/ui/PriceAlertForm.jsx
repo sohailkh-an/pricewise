@@ -49,7 +49,7 @@ export const PriceAlertForm = ({
       });
 
       toast.success(
-        "🎉 Price alert created! We'll email you when the price drops."
+        "Price alert created! We'll email you when the price drops."
       );
       onOpenChange(false);
       setTargetPrice("");
@@ -107,7 +107,7 @@ export const PriceAlertForm = ({
                 <Input
                   id="targetPrice"
                   type="number"
-                  placeholder="e.g., 4500"
+                  placeholder=""
                   value={targetPrice}
                   onChange={(e) => setTargetPrice(e.target.value)}
                   className="pl-10 text-lg"
@@ -127,7 +127,7 @@ export const PriceAlertForm = ({
               parseInt(targetPrice) < currentLowestPrice && (
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-sm text-green-800">
-                    💰 You'll save{" "}
+                    You'll save{" "}
                     <span className="font-bold">
                       Rs.{" "}
                       {(
