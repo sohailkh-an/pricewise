@@ -80,7 +80,7 @@ function ProductCard({ product }) {
           <div className="flex items-center justify-between gap-2 mb-2 min-h-[24px]">
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="secondary" className="text-xs whitespace-nowrap">
-                {product.category}
+                {product.subCategory}
               </Badge>
               {product.brand && (
                 <Badge variant="outline" className="text-xs whitespace-nowrap">

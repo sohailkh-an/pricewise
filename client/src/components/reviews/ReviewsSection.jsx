@@ -27,7 +27,6 @@ const ReviewsSection = ({ productId }) => {
   const addReviewMutation = useAddReview();
   const deleteReviewMutation = useDeleteReview();
 
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -70,7 +69,7 @@ const ReviewsSection = ({ productId }) => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <MessageCircle className="w-5 h-5" />
+            <Star className="w-5 h-5" />
             Customer Reviews
           </CardTitle>
         </CardHeader>
@@ -90,10 +89,10 @@ const ReviewsSection = ({ productId }) => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <MessageCircle className="w-5 h-5" />
-              Customer Reviews & Ratings
+              <Star className="w-5 h-5" />
+              Rating
             </CardTitle>
-            {user  ? (
+            {user ? (
               <Button
                 onClick={() => setShowAddReview(!showAddReview)}
                 variant="outline"
@@ -204,7 +203,10 @@ const ReviewsSection = ({ productId }) => {
           return (
             <Card size="sm">
               <CardHeader>
-                <CardTitle>Recent Reviews</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageCircle className="w-5 h-5" />
+                  Recent Reviews
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {sortedReviews.map((review) => {

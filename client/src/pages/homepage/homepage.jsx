@@ -47,7 +47,7 @@ const HomePage = () => {
 
 const CategorySection = ({ category }) => {
   const { data, isLoading, error } = useProductsByCategory(category.key, {
-    limit: 8,
+    limit: 10,
   });
 
   const [itemsPerView, setItemsPerView] = useState(4);

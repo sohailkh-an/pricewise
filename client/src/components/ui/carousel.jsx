@@ -3,26 +3,56 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
-function Carousel({ children, className, itemsPerView, ...props }) {
+function Carousel({ children, className, ...props }) {
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [itemsPerView, setItemsPerView] = React.useState(4);
   const totalItems = React.Children.count(children);
 
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerView(1); // Mobile
+      } else if (window.innerWidth < 768) {
+        setItemsPerView(2); // Tablet
+      } else if (window.innerWidth < 1024) {
+        setItemsPerView(3); // Small desktop
+      } else {
+        setItemsPerView(4); // Desktop
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Reset index when items per view changes
+  React.useEffect(() => {
+    setCurrentIndex(0);
+  }, [itemsPerView]);
+
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex + itemsPerView >= totalItems ? 0 : prevIndex + itemsPerView
-    );
+    setCurrentIndex((prevIndex) => {
+      const maxIndex = Math.max(0, totalItems - itemsPerView);
+      return prevIndex >= maxIndex
+        ? 0
+        : Math.min(prevIndex + itemsPerView, maxIndex);
+    });
   };
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0
-        ? Math.max(0, totalItems - itemsPerView)
-        : prevIndex - itemsPerView
+      prevIndex === 0 ? 0 : Math.max(0, prevIndex - itemsPerView)
     );
   };
 
   const canGoNext = currentIndex + itemsPerView < totalItems;
   const canGoPrev = currentIndex > 0;
+
+  // Calculate translateX based on current index and gap
+  const itemWidth = 100 / itemsPerView;
+  const gap = 1.5; // 1.5% gap between items (equivalent to gap-6 at 24px)
+  const translatePercent = currentIndex * itemWidth + currentIndex * gap;
 
   return (
     <div
@@ -30,18 +60,23 @@ function Carousel({ children, className, itemsPerView, ...props }) {
       className={cn("relative w-full", className)}
       {...props}
     >
+      {/* Overflow container */}
       <div className="overflow-hidden w-full">
         <div
-          className="flex transition-transform duration-300 ease-in-out gap-4 py-4"
+          className="flex transition-transform duration-500 ease-out gap-6"
           style={{
-            transform: `translateX(-${(currentIndex / totalItems) * 100}%)`,
+            transform: `translateX(-${translatePercent}%)`,
           }}
         >
           {React.Children.map(children, (child, index) => (
             <div
               key={index}
-              className="w-full flex-shrink-0"
-              style={{ width: `${100 / 4.17}%` }}
+              className="flex-shrink-0"
+              style={{
+                width: `calc(${itemWidth}% - ${
+                  (gap * (itemsPerView - 1)) / itemsPerView
+                }%)`,
+              }}
             >
               {child}
             </div>
@@ -49,14 +84,19 @@ function Carousel({ children, className, itemsPerView, ...props }) {
         </div>
       </div>
 
+      {/* Navigation Buttons */}
       {canGoPrev && (
         <Button
           variant="outline"
           size="icon"
-          className="absolute left-2 cursor-pointer top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background"
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 cursor-pointer
+                     bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl
+                     border-2 hover:border-primary transition-all duration-200
+                     disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={prevSlide}
+          aria-label="Previous products"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-5 w-5" />
         </Button>
       )}
 
@@ -64,11 +104,39 @@ function Carousel({ children, className, itemsPerView, ...props }) {
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-2 cursor-pointer top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm hover:bg-background"
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 cursor-pointer
+                     bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl
+                     border-2 hover:border-primary transition-all duration-200
+                     disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={nextSlide}
+          aria-label="Next products"
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-5 w-5" />
         </Button>
+      )}
+
+      {/* Dots indicator (optional) */}
+      {totalItems > itemsPerView && (
+        <div className="flex justify-center gap-2 mt-6">
+          {Array.from({
+            length: Math.ceil(totalItems / itemsPerView),
+          }).map((_, index) => {
+            const dotIndex = index * itemsPerView;
+            return (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(dotIndex)}
+                className={cn(
+                  "w-2 h-2 rounded-full transition-all duration-200",
+                  currentIndex === dotIndex
+                    ? "bg-primary w-6"
+                    : "bg-gray-300 hover:bg-gray-400"
+                )}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            );
+          })}
+        </div>
       )}
     </div>
   );

@@ -114,7 +114,7 @@ const SearchPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="px-6 py-8">
+      <div className="px-6 py-8 bg-muted/30">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Search Products</h1>
 

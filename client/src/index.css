@@ -150,3 +150,15 @@
   );
   background-size: 1000px 100%;
 }
+
+.carousel-container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .carousel-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}

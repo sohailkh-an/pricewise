@@ -65,7 +65,7 @@ const WishlistPage = () => {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Card className="w-full max-w-md mx-auto">
+        <Card size="sm" className="w-full max-w-md mx-auto">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -102,7 +102,7 @@ const WishlistPage = () => {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Card className="w-full max-w-md mx-auto">
+        <Card size="sm" className="w-full max-w-md mx-auto">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <AlertCircle className="h-12 w-12 text-red-400 mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -121,8 +121,8 @@ const WishlistPage = () => {
   const itemCount = wishlistData?.count || 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className=" px-6 py-6 bg-muted/30 rounded-xl m-6">
+      <div>
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
@@ -144,8 +144,8 @@ const WishlistPage = () => {
         </div>
 
         {itemCount === 0 ? (
-          <Card className="w-full">
-            <CardContent className="flex flex-col items-center justify-center py-16">
+          <Card size="lg">
+            <CardContent className="flex flex-col items-center justify-center">
               <Heart className="h-16 w-16 text-gray-300 mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 Your wishlist is empty
