@@ -46,12 +46,12 @@ export async function getLaptophousepkPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getLaptophousepkPrice(
-    "https://laptophouse.pk/product/dell-vostro-3530-intel-core-i7/"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getLaptophousepkPrice(
+//     "https://laptophouse.pk/product/dell-vostro-3530-intel-core-i7/"
+//   );
+//   console.log(result);
+// })();
 
 {
   /* <span

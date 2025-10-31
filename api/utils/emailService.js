@@ -1,5 +1,8 @@
 import { Resend } from "resend";
+import dotenv from "dotenv";
+dotenv.config();
 
+console.log("resend key: ", process.env.RESEND_API_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendPriceDropEmail = async ({
@@ -17,7 +20,7 @@ export const sendPriceDropEmail = async ({
     const { data, error } = await resend.emails.send({
       from: "Pricewise <alerts@dotivia.com>",
       to: [to],
-      subject: `🔔 Price Drop Alert: ${productTitle}`,
+      subject: `Price Drop Alert: ${productTitle}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -237,6 +240,167 @@ export const sendPriceDropEmail = async ({
     }
 
     console.log("Email sent successfully:", data);
+    return { success: true, data };
+  } catch (error) {
+    console.error("Email service error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const sendVerificationCodeEmail = async ({ to, code, fullName }) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "Pricewise <register@dotivia.com>",
+      to: [to],
+      subject: "Verify Your Email - Pricewise",
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6; 
+                color: #333;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+              }
+              .container { 
+                max-width: 600px; 
+                margin: 20px auto;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+              }
+              .header { 
+                background-color: #041d09;
+                color: white; 
+                padding: 40px 30px;
+                text-align: center;
+              }
+              .header h1 {
+                margin: 0 0 10px 0;
+                font-size: 28px;
+                font-weight: 700;
+              }
+              .header p {
+                margin: 0;
+                font-size: 16px;
+                opacity: 0.95;
+              }
+              .content { 
+                padding: 40px 30px;
+              }
+              .code-box {
+                background: #f9fafb;
+                border: 2px dashed #059669;
+                border-radius: 12px;
+                padding: 30px;
+                text-align: center;
+                margin: 30px 0;
+              }
+              .verification-code {
+                font-size: 36px;
+                font-weight: 700;
+                color: #041d09;
+                letter-spacing: 8px;
+                font-family: 'Courier New', monospace;
+                margin: 20px 0;
+              }
+              .code-label {
+                color: #6b7280;
+                font-size: 14px;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 10px;
+              }
+              .info-text {
+                margin-top: 30px;
+                padding: 20px;
+                background: #eff6ff;
+                border-left: 4px solid #3b82f6;
+                border-radius: 4px;
+                color: #1e40af;
+                font-size: 14px;
+                line-height: 1.6;
+              }
+              .footer { 
+                text-align: center;
+                padding: 30px;
+                background: #f9fafb;
+                color: #6b7280;
+                font-size: 13px;
+                border-top: 1px solid #e5e7eb;
+              }
+              .footer p {
+                margin: 5px 0;
+              }
+              @media only screen and (max-width: 600px) {
+                .container {
+                  margin: 10px;
+                  border-radius: 8px;
+                }
+                .header {
+                  padding: 30px 20px;
+                }
+                .header h1 {
+                  font-size: 24px;
+                }
+                .content {
+                  padding: 30px 20px;
+                }
+                .verification-code {
+                  font-size: 28px;
+                  letter-spacing: 6px;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>Verify Your Email</h1>
+                <p>Welcome to Pricewise!</p>
+              </div>
+              
+              <div class="content">
+                <p>Hello ${fullName},</p>
+                <p>Thank you for signing up for Pricewise. Please use the verification code below to complete your registration:</p>
+                
+                <div class="code-box">
+                  <div class="code-label">Verification Code</div>
+                  <div class="verification-code">${code}</div>
+                </div>
+
+                <p>This code will expire in 15 minutes for security reasons.</p>
+                
+                <div class="info-text">
+                  <strong>Didn't request this code?</strong><br>
+                  If you didn't create an account with Pricewise, please ignore this email.
+                </div>
+              </div>
+              
+              <div class="footer">
+                <p>© ${new Date().getFullYear()} PriceWise. All rights reserved.</p>
+                <p>This email was sent to ${to}</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error("Email send error:", error);
+      return { success: false, error };
+    }
+
+    console.log("Verification email sent successfully:", data);
     return { success: true, data };
   } catch (error) {
     console.error("Email service error:", error);

@@ -1,10 +1,10 @@
 import express from "express";
 import Review from "../models/Review.js";
 import mongoose from "mongoose";
-import { authenticateToken } from "../middleware/auth.js";
+import { authenticateToken, optionalAuth } from "../middleware/auth.js";
 const router = express.Router();
 
-router.get("/product/:productId", async (req, res) => {
+router.get("/product/:productId", optionalAuth, async (req, res) => {
   try {
     const { productId } = req.params;
     const { page = 1, limit = 10 } = req.query;
@@ -19,7 +19,7 @@ router.get("/product/:productId", async (req, res) => {
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .populate("product", "title")
-      .populate("user", "name email");
+      .populate("user", "fullName email");
 
     const total = await Review.countDocuments({ product: productObjectId });
 
@@ -45,6 +45,7 @@ router.get("/product/:productId", async (req, res) => {
       totalReviews: reviewCount,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
+      // currentUserId: req.user?._id?.toString() || null,
     });
   } catch (error) {
     console.error("Error fetching reviews:", error);
@@ -57,6 +58,8 @@ router.post("/", authenticateToken, async (req, res) => {
     const { productId, rating, comment } = req.body;
     const userId = req.user._id;
 
+    console.log("Review productId and userId:", productId, userId);
+
     if (!productId || !rating || !comment) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -65,6 +68,7 @@ router.post("/", authenticateToken, async (req, res) => {
       return res.status(400).json({ error: "Rating must be between 1 and 5" });
     }
 
+    // Check if user has already reviewed this product
     const existingReview = await Review.findOne({
       product: productId,
       user: userId,
@@ -101,9 +105,23 @@ router.post("/", authenticateToken, async (req, res) => {
       });
     }
     if (error.code === 11000) {
+      // Handle duplicate key error - could be from old index or current index
+      // Double-check if review exists
+      const existingReview = await Review.findOne({
+        product: productId,
+        user: userId,
+      });
+      if (existingReview) {
+        return res
+          .status(400)
+          .json({ error: "You have already reviewed this product" });
+      }
+      // If no existing review found, it might be an old index issue
       return res
         .status(400)
-        .json({ error: "You have already reviewed this product" });
+        .json({
+          error: "Unable to add review. Please try again or contact support.",
+        });
     }
     res.status(500).json({ error: "Failed to add review" });
   }
@@ -175,7 +193,38 @@ router.delete("/:id", authenticateToken, async (req, res) => {
         .json({ error: "You can only delete your own reviews" });
     }
 
+    const productId = review.product.toString();
+
     await Review.findByIdAndDelete(req.params.id);
+
+    // Update product rating after deletion
+    try {
+      const Product = mongoose.model("Product");
+      const reviews = await Review.find({ product: productId });
+
+      if (reviews.length > 0) {
+        const totalRating = reviews.reduce(
+          (sum, review) => sum + review.rating,
+          0
+        );
+        const averageRating = totalRating / reviews.length;
+
+        await Product.findByIdAndUpdate(productId, {
+          rating: Math.round(averageRating * 10) / 10,
+          reviews: reviews.length,
+        });
+      } else {
+        await Product.findByIdAndUpdate(productId, {
+          rating: 0,
+          reviews: 0,
+        });
+      }
+    } catch (error) {
+      console.error(
+        "Error updating product rating after review deletion:",
+        error
+      );
+    }
 
     res.json({ message: "Review deleted successfully" });
   } catch (error) {

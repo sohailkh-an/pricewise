@@ -20,14 +20,19 @@ const Register = () => {
     confirmPassword: "",
     fullName: "",
   });
+  const [verificationCode, setVerificationCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
+  const [showVerificationStep, setShowVerificationStep] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState("");
 
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, verifyEmail, resendVerificationCode } = useAuth();
 
   const validateEmail = (email) => {
     const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -163,8 +168,9 @@ const Register = () => {
       });
 
       if (success) {
-        navigate("/");
-        window.location.reload();
+        setPendingEmail(formData.email);
+        setShowVerificationStep(true);
+        setError("");
       } else {
         setError(message || "Registration failed. Please try again.");
       }
@@ -175,6 +181,167 @@ const Register = () => {
       setIsLoading(false);
     }
   };
+
+  const handleVerifyCode = async (e) => {
+    e.preventDefault();
+    setIsVerifying(true);
+    setError("");
+
+    if (!verificationCode.trim()) {
+      setError("Please enter the verification code");
+      setIsVerifying(false);
+      return;
+    }
+
+    if (verificationCode.length !== 6) {
+      setError("Verification code must be 6 digits");
+      setIsVerifying(false);
+      return;
+    }
+
+    try {
+      const { success, message } = await verifyEmail(
+        pendingEmail,
+        verificationCode
+      );
+
+      if (success) {
+        navigate("/");
+        window.location.reload();
+      } else {
+        setError(message || "Verification failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Verification error:", err);
+      setError("An error occurred during verification. Please try again.");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    setIsResending(true);
+    setError("");
+
+    try {
+      const { success, message } = await resendVerificationCode(pendingEmail);
+
+      if (success) {
+        setError("");
+        alert(message || "Verification code resent successfully!");
+      } else {
+        setError(message || "Failed to resend verification code.");
+      }
+    } catch (err) {
+      console.error("Resend code error:", err);
+      setError("Failed to resend verification code. Please try again.");
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  const handleCodeChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 6);
+    setVerificationCode(value);
+    if (error) setError("");
+  };
+
+  if (showVerificationStep) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800 px-4 py-8">
+        <Card className="w-full max-w-md" size="auth">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+              Verify Your Email
+            </CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400">
+              We've sent a 6-digit code to {pendingEmail}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleVerifyCode} className="space-y-4">
+              {error && (
+                <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
+                  {error}
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="verificationCode">Verification Code</Label>
+                <Input
+                  id="verificationCode"
+                  name="verificationCode"
+                  type="text"
+                  value={verificationCode}
+                  onChange={handleCodeChange}
+                  placeholder="000000"
+                  required
+                  disabled={isVerifying}
+                  className="w-full text-center text-2xl tracking-widest font-mono"
+                  maxLength={6}
+                  autoComplete="one-time-code"
+                  autoFocus
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                  Enter the 6-digit code sent to your email
+                </p>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isVerifying || verificationCode.length !== 6}
+              >
+                {isVerifying ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  "Verify Email"
+                )}
+              </Button>
+
+              <div className="text-center space-y-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Didn't receive the code?
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResendCode}
+                  disabled={isResending}
+                  className="text-sm font-medium text-green-600 hover:text-green-500 dark:text-green-400 dark:hover:text-green-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isResending ? (
+                    <>
+                      <Loader2 className="inline mr-2 h-3 w-3 animate-spin" />
+                      Resending...
+                    </>
+                  ) : (
+                    "Resend Code"
+                  )}
+                </button>
+              </div>
+
+              <div className="text-center mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowVerificationStep(false);
+                    setVerificationCode("");
+                    setError("");
+                  }}
+                  className="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  ← Back to registration
+                </button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800 px-4 py-8">

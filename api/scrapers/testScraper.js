@@ -42,9 +42,9 @@ export async function getPinexportPrice(url) {
   }
 }
 
-(async () => {
-  const result = await getPinexportPrice(
-    "https://pinexport.vercel.app/products/cmdd5katk0001p4gomh0wanyt"
-  );
-  console.log(result);
-})();
+// (async () => {
+//   const result = await getPinexportPrice(
+//     "https://pinexport.vercel.app/products/cmdd5katk0001p4gomh0wanyt"
+//   );
+//   console.log(result);
+// })();

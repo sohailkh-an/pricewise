@@ -27,6 +27,7 @@ import {
   Heart,
   Bell,
 } from "lucide-react";
+import { SmartRecommendations } from "@/components/recommendations/SmartRecommendations";
 
 import PlatformLogos from "@/static-data/platformLogos";
 
@@ -395,12 +396,13 @@ const ProductPage = () => {
           </Card>
         </div>
 
-        <div className="w-full px-6 py-8">
+        <div className="w-full py-8">
           <ReviewsSection productId={product._id} />
         </div>
 
-        <div className="w-full px-6 py-8 bg-muted/30">
-          <div className="max-w-7xl">
+        <div className="w-full px-6 py-6 bg-muted/30 rounded-xl mt-10">
+          <SmartRecommendations productId={product._id} />
+          {/* <div className="max-w-7xl">
             <h2 className="text-3xl font-bold mb-8">You might also like</h2>
             {recommendationsLoading ? (
               <div className="flex items-center justify-center py-8">
@@ -434,7 +436,7 @@ const ProductPage = () => {
                 </p>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 

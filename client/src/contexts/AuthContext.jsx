@@ -81,7 +81,24 @@ export const AuthProvider = ({ children }) => {
         userData
       );
 
-      console.log("Response: ", response);
+      if (response.data.success) {
+        return { success: true, message: response.data.message };
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      return {
+        success: false,
+        message: error.response?.data?.message || "Registration failed",
+      };
+    }
+  };
+
+  const verifyEmail = async (email, code) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/users/verify-email`,
+        { email, code }
+      );
 
       if (response.data.success) {
         setUser(response.data.user);
@@ -92,10 +109,30 @@ export const AuthProvider = ({ children }) => {
         return { success: true, user: response.data.user };
       }
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Email verification error:", error);
       return {
         success: false,
-        message: error.response?.data?.message || "Registration failed",
+        message: error.response?.data?.message || "Verification failed",
+      };
+    }
+  };
+
+  const resendVerificationCode = async (email) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/users/resend-verification-code`,
+        { email }
+      );
+
+      if (response.data.success) {
+        return { success: true, message: response.data.message };
+      }
+    } catch (error) {
+      console.error("Resend verification code error:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || "Failed to resend verification code",
       };
     }
   };
@@ -138,6 +175,8 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     register,
+    verifyEmail,
+    resendVerificationCode,
     logout,
     updateProfile,
     checkAuthStatus,

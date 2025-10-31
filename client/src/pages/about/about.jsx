@@ -30,12 +30,7 @@ const About = () => {
       description:
         "Compare prices across multiple online stores instantly with our intelligent search engine.",
     },
-    {
-      icon: <Zap className="h-8 w-8 text-[#041d09]" />,
-      title: "Real-time Updates",
-      description:
-        "Get the latest prices and deals as they happen with our real-time monitoring system.",
-    },
+
     {
       icon: <Heart className="h-8 w-8 text-[#041d09]" />,
       title: "Wishlist & Alerts",
@@ -197,7 +192,7 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <Card
                 size="sm"
@@ -316,7 +311,7 @@ const About = () => {
 
       <section className="py-20 px-6 bg-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-black mb-6">
+          <h2 className="text-4xl font-bold text-[#041d09] mb-6">
             Ready to Start Saving?
           </h2>
           <p className="text-xl text-gray-500 mb-8 max-w-2xl mx-auto">
@@ -327,7 +322,7 @@ const About = () => {
             <Button
               asChild
               size="lg"
-              className="bg-black text-white hover:bg-gray-800"
+              className="bg-[#041d09] text-white hover:bg-black"
             >
               <Link to="/search">
                 <Search className="mr-2 h-5 w-5" />
@@ -338,7 +333,7 @@ const About = () => {
               variant="outline"
               asChild
               size="lg"
-              className="border-black text-black hover:bg-white hover:text-[#041d09]"
+              className="border-[#041d09] text-[#041d09] hover:bg-white hover:text-[#041d09]"
             >
               <Link to="/register">
                 <Star className="mr-2 h-5 w-5" />
