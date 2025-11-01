@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as React from "react";
 import { useParams, Link } from "react-router-dom";
-import { useProduct, useProductRecommendations } from "../../hooks/useProducts";
+import { useProduct } from "../../hooks/useProducts";
 import { useMultiPriceComparison } from "../../hooks/useMultiPriceComparison";
 import { useToggleWishlist, useWishlistCheck } from "../../hooks/useWishlist";
 import { useAuth } from "../../contexts/AuthContext";
@@ -16,8 +16,6 @@ import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import ImageViewer from "../../components/ui/ImageViewer";
 import { ReviewsSection } from "../../components/reviews";
-import { Carousel } from "../../components/ui/carousel";
-import { ProductCard } from "../../components/ui/ProductCard";
 import {
   Star,
   ExternalLink,
@@ -56,12 +54,6 @@ const ProductPage = () => {
     isLoading: priceLoading,
     error: priceError,
   } = useMultiPriceComparison(product);
-
-  const {
-    data: recommendationsData,
-    isLoading: recommendationsLoading,
-    error: recommendationsError,
-  } = useProductRecommendations(product?._id, 8);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -521,9 +513,9 @@ const PriceComparisonCard = ({ platform, url, price, isBestPrice }) => {
         <div className="absolute -top-3 -left-3 z-10">
           <Badge
             varient="secondary"
-            className="bg-white border-[#041d09] border-1 hover:bg-white text-black px-3 py-1.5 flex items-center gap-1"
+            className="bg-white border-[#041d09] border hover:bg-white text-black px-3 py-1.5 flex items-center gap-1"
           >
-            <span className="text-xs font-semibold">🏆 Best Price</span>
+            <span className="text-xs font-semibold">Best Price</span>
           </Badge>
         </div>
       )}

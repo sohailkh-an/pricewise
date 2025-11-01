@@ -2,7 +2,6 @@ import React from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
@@ -22,7 +21,11 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { useAuth } from "@/contexts/AuthContext";
+
 const About = () => {
+  const { user } = useAuth();
+  console.log(user);
   const features = [
     {
       icon: <Search className="h-8 w-8 text-[#041d09]" />,
@@ -73,7 +76,7 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7]">
+    <div className="min-h-screen bg-linear-to-br from-[#f0fdf4] to-[#dcfce7]">
       <section className="relative py-20 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <div className="mb-8">
@@ -103,14 +106,16 @@ const About = () => {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button
-              variant="outline"
-              asChild
-              size="lg"
-              className="border-[#041d09] text-[#041d09] hover:bg-[#041d09] hover:text-white"
-            >
-              <Link to="/register">Join PriceWise</Link>
-            </Button>
+            {!user && (
+              <Button
+                variant="outline"
+                asChild
+                size="lg"
+                className="border-[#041d09] text-[#041d09] hover:bg-[#041d09] hover:text-white"
+              >
+                <Link to="/register">Join PriceWise</Link>
+              </Button>
+            )}
           </div>
         </div>
       </section>
@@ -134,7 +139,7 @@ const About = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12">
             <Card
-              size="sm"
+              size="lg"
               className="bg-white/80 backdrop-blur-sm border-0 shadow-xl"
             >
               <CardHeader>
@@ -156,7 +161,7 @@ const About = () => {
             </Card>
 
             <Card
-              size="sm"
+              size="lg"
               className="bg-white/80 backdrop-blur-sm border-0 shadow-xl"
             >
               <CardHeader>
@@ -329,17 +334,19 @@ const About = () => {
                 Start Shopping
               </Link>
             </Button>
-            <Button
-              variant="outline"
-              asChild
-              size="lg"
-              className="border-[#041d09] text-[#041d09] hover:bg-white hover:text-[#041d09]"
-            >
-              <Link to="/register">
-                <Star className="mr-2 h-5 w-5" />
-                Create Account
-              </Link>
-            </Button>
+            {!user && (
+              <Button
+                variant="outline"
+                asChild
+                size="lg"
+                className="border-[#041d09] text-[#041d09] hover:bg-white hover:text-[#041d09]"
+              >
+                <Link to="/register">
+                  <Star className="mr-2 h-5 w-5" />
+                  Create Account
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       </section>

@@ -105,7 +105,6 @@ export function useDeleteReview() {
       return { ...data, reviewId };
     },
     onSuccess: () => {
-      // Invalidate all product reviews queries to refresh the list
       queryClient.invalidateQueries({
         queryKey: ["productReviews"],
       });

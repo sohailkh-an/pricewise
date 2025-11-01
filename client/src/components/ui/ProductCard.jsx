@@ -44,7 +44,7 @@ function ProductCard({ product }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <CardHeader className="p-4 pb-0 flex-shrink-0">
+        <CardHeader className="p-4 pb-0 shrink-0">
           <div className="relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4">
             {product.images ? (
               <img
@@ -89,7 +89,7 @@ function ProductCard({ product }) {
               )}
             </div>
 
-            <div className="flex items-center pr-2 flex-shrink-0">
+            <div className="flex items-center pr-2 shrink-0">
               {[...Array(5)].map((_, i) => (
                 <span
                   key={i}
@@ -113,7 +113,7 @@ function ProductCard({ product }) {
           </CardTitle>
         </CardHeader>
 
-        <CardFooter className="p-4 pt-0 mt-auto flex-shrink-0">
+        <CardFooter className="p-4 pt-0 mt-auto shrink-0">
           <Button className="w-full" size="sm">
             View Product
           </Button>

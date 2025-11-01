@@ -212,7 +212,7 @@ const SearchPage = () => {
 
         <div className="flex gap-8">
           {showFilters && (
-            <div className="w-55 flex-shrink-0">
+            <div className="w-55 shrink-0">
               <Card size="sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">

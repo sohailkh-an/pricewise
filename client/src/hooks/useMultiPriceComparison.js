@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { productsAPI } from "../services/api";
 import axios from "axios";
 
 export function useMultiPriceComparison(product) {

@@ -4,8 +4,10 @@ import crypto from "crypto";
 import User from "../models/User.js";
 import EmailVerification from "../models/EmailVerification.js";
 import { authenticateToken } from "../middleware/auth.js";
-import { Resend } from "resend";
-import { sendVerificationCodeEmail } from "../utils/emailService.js";
+import {
+  sendVerificationCodeEmail,
+  sendPasswordResetEmail,
+} from "../utils/emailService.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -15,32 +17,6 @@ router.post("/register", async (req, res) => {
   try {
     const { email, password, fullName } = req.body;
 
-    if (!email || !password || !fullName) {
-      return res.status(400).json({
-        success: false,
-        message: "Email, password, and full name are required",
-      });
-    }
-
-    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        message: "Please enter a valid email address",
-      });
-    }
-
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-      });
-    }
-
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({
@@ -49,14 +25,13 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // Generate 6-digit verification code
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+    const verificationCode = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
-    // Delete any existing verification entries for this email
     await EmailVerification.deleteMany({ email: email.toLowerCase() });
 
-    // Store verification code and user data temporarily
     const emailVerification = new EmailVerification({
       email: email.toLowerCase(),
       code: verificationCode,
@@ -70,7 +45,6 @@ router.post("/register", async (req, res) => {
 
     await emailVerification.save();
 
-    // Send verification email
     const emailResult = await sendVerificationCodeEmail({
       to: email,
       code: verificationCode,
@@ -119,7 +93,6 @@ router.post("/verify-email", async (req, res) => {
       });
     }
 
-    // Find the verification entry
     const emailVerification = await EmailVerification.findOne({
       email: email.toLowerCase(),
       code: code,
@@ -127,7 +100,6 @@ router.post("/verify-email", async (req, res) => {
     });
 
     if (!emailVerification) {
-      // Check if it exists but expired
       const expiredVerification = await EmailVerification.findOne({
         email: email.toLowerCase(),
         code: code,
@@ -140,7 +112,6 @@ router.post("/verify-email", async (req, res) => {
         });
       }
 
-      // Check if max attempts reached
       const verificationAttempt = await EmailVerification.findOne({
         email: email.toLowerCase(),
       });
@@ -165,7 +136,6 @@ router.post("/verify-email", async (req, res) => {
       });
     }
 
-    // Check if user already exists (edge case)
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       await EmailVerification.deleteOne({ _id: emailVerification._id });
@@ -175,7 +145,6 @@ router.post("/verify-email", async (req, res) => {
       });
     }
 
-    // Create the user
     const user = new User({
       email: emailVerification.userData.email,
       password: emailVerification.userData.password,
@@ -185,10 +154,8 @@ router.post("/verify-email", async (req, res) => {
 
     await user.save();
 
-    // Delete the verification entry
     await EmailVerification.deleteOne({ _id: emailVerification._id });
 
-    // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -249,7 +216,6 @@ router.post("/resend-verification-code", async (req, res) => {
       });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(409).json({
@@ -258,7 +224,6 @@ router.post("/resend-verification-code", async (req, res) => {
       });
     }
 
-    // Check if there's a pending verification
     const existingVerification = await EmailVerification.findOne({
       email: email.toLowerCase(),
     });
@@ -271,16 +236,16 @@ router.post("/resend-verification-code", async (req, res) => {
       });
     }
 
-    // Generate new verification code
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+    const verificationCode = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
     existingVerification.code = verificationCode;
     existingVerification.expiresAt = expiresAt;
-    existingVerification.attempts = 0; // Reset attempts
+    existingVerification.attempts = 0;
     await existingVerification.save();
 
-    // Send verification email
     const emailResult = await sendVerificationCodeEmail({
       to: email,
       code: verificationCode,
@@ -296,7 +261,8 @@ router.post("/resend-verification-code", async (req, res) => {
 
     res.json({
       success: true,
-      message: "Verification code resent to your email. Please check your inbox.",
+      message:
+        "Verification code resent to your email. Please check your inbox.",
     });
   } catch (error) {
     console.error("Resend verification code error:", error);
@@ -412,8 +378,6 @@ router.put("/profile", authenticateToken, async (req, res) => {
   }
 });
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 router.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
@@ -451,46 +415,28 @@ router.post("/forgot-password", async (req, res) => {
 
     const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
 
-    try {
-      await resend.emails.send({
-        from: "Pricewise <noreply@pricewise.com>",
-        to: [email],
-        subject: "Password Reset Request - Pricewise",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <h2 style="color: #059669; text-align: center;">Password Reset Request</h2>
-            <p>Hello ${user.fullName},</p>
-            <p>You requested a password reset for your Pricewise account. Click the button below to reset your password:</p>
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetUrl}" style="background-color: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Reset Password</a>
-            </div>
-            <p>This link will expire in 15 minutes for security reasons.</p>
-            <p>If you didn't request this password reset, please ignore this email.</p>
-            <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
-            <p style="color: #6b7280; font-size: 14px; text-align: center;">
-              This email was sent from Pricewise. If you have any questions, please contact our support team.
-            </p>
-          </div>
-        `,
-      });
+    const emailResult = await sendPasswordResetEmail({
+      to: email,
+      resetUrl,
+      fullName: user.fullName,
+    });
 
-      res.json({
-        success: true,
-        message:
-          "If an account with that email exists, we've sent a password reset link.",
-      });
-    } catch (emailError) {
-      console.error("Email sending error:", emailError);
-
+    if (!emailResult.success) {
       user.resetPasswordToken = null;
       user.resetPasswordExpires = null;
       await user.save();
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: "Failed to send reset email. Please try again later.",
       });
     }
+
+    res.json({
+      success: true,
+      message:
+        "If an account with that email exists, we've sent a password reset link.",
+    });
   } catch (error) {
     console.error("Forgot password error:", error);
     res.status(500).json({
@@ -508,16 +454,6 @@ router.post("/reset-password", async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Token and password are required",
-      });
-    }
-
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
       });
     }
 

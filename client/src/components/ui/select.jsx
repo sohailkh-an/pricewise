@@ -46,8 +46,7 @@ const Select = React.forwardRef(
             <ChevronDown className="h-4 w-4 opacity-50" />
           </button>
         </DropdownMenuTrigger>
-        {/* <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]"> */}
-        <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
+        <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width)">
           {React.Children.map(children, (child) => {
             if (!child || !React.isValidElement(child)) return null;
 

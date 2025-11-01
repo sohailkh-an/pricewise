@@ -45,7 +45,6 @@ router.get("/product/:productId", optionalAuth, async (req, res) => {
       totalReviews: reviewCount,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
-      // currentUserId: req.user?._id?.toString() || null,
     });
   } catch (error) {
     console.error("Error fetching reviews:", error);
@@ -68,7 +67,6 @@ router.post("/", authenticateToken, async (req, res) => {
       return res.status(400).json({ error: "Rating must be between 1 and 5" });
     }
 
-    // Check if user has already reviewed this product
     const existingReview = await Review.findOne({
       product: productId,
       user: userId,
@@ -105,8 +103,6 @@ router.post("/", authenticateToken, async (req, res) => {
       });
     }
     if (error.code === 11000) {
-      // Handle duplicate key error - could be from old index or current index
-      // Double-check if review exists
       const existingReview = await Review.findOne({
         product: productId,
         user: userId,
@@ -116,12 +112,9 @@ router.post("/", authenticateToken, async (req, res) => {
           .status(400)
           .json({ error: "You have already reviewed this product" });
       }
-      // If no existing review found, it might be an old index issue
-      return res
-        .status(400)
-        .json({
-          error: "Unable to add review. Please try again or contact support.",
-        });
+      return res.status(400).json({
+        error: "Unable to add review. Please try again or contact support.",
+      });
     }
     res.status(500).json({ error: "Failed to add review" });
   }
@@ -197,7 +190,6 @@ router.delete("/:id", authenticateToken, async (req, res) => {
 
     await Review.findByIdAndDelete(req.params.id);
 
-    // Update product rating after deletion
     try {
       const Product = mongoose.model("Product");
       const reviews = await Review.find({ product: productId });

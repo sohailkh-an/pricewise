@@ -226,7 +226,7 @@ export const sendPriceDropEmail = async ({
               </div>
               
               <div class="footer">
-                <p>© ${new Date().getFullYear()} PriceWise. All rights reserved.</p>
+                <p>© ${new Date().getFullYear()} Pricewise. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -401,6 +401,166 @@ export const sendVerificationCodeEmail = async ({ to, code, fullName }) => {
     }
 
     console.log("Verification email sent successfully:", data);
+    return { success: true, data };
+  } catch (error) {
+    console.error("Email service error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const sendPasswordResetEmail = async ({ to, resetUrl, fullName }) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "Pricewise <noreply@dotivia.com>",
+      to: [to],
+      subject: "Password Reset Request - Pricewise",
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6; 
+                color: #333;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+              }
+              a {
+                color: white;
+              }
+              .container { 
+                max-width: 600px; 
+                margin: 20px auto;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+              }
+              .header { 
+                background-color: #041d09;
+                color: white; 
+                padding: 40px 30px;
+                text-align: center;
+              }
+              .header h1 {
+                margin: 0 0 10px 0;
+                font-size: 28px;
+                font-weight: 700;
+              }
+              .header p {
+                margin: 0;
+                font-size: 16px;
+                opacity: 0.95;
+              }
+              .content { 
+                padding: 40px 30px;
+              }
+              .cta-button { 
+                background-color: #041d09;
+                color: white;
+                padding: 16px 40px;
+                text-decoration: none;
+                border-radius: 8px;
+                display: inline-block;
+                margin: 30px 0;
+                font-weight: 600;
+                font-size: 16px;
+                transition: all 0.3s ease;
+              }
+              .cta-button:hover {
+                box-shadow: 0 6px 12px rgba(4, 29, 9, 0.4);
+              }
+              .cta-wrapper {
+                text-align: center;
+                margin: 30px 0;
+              }
+              .info-text {
+                margin-top: 30px;
+                padding: 20px;
+                background: #eff6ff;
+                border-left: 4px solid #3b82f6;
+                border-radius: 4px;
+                color: #1e40af;
+                font-size: 14px;
+                line-height: 1.6;
+              }
+              .footer { 
+                text-align: center;
+                padding: 30px;
+                background: #f9fafb;
+                color: #6b7280;
+                font-size: 13px;
+                border-top: 1px solid #e5e7eb;
+              }
+              .footer p {
+                margin: 5px 0;
+              }
+              @media only screen and (max-width: 600px) {
+                .container {
+                  margin: 10px;
+                  border-radius: 8px;
+                }
+                .header {
+                  padding: 30px 20px;
+                }
+                .header h1 {
+                  font-size: 24px;
+                }
+                .content {
+                  padding: 30px 20px;
+                }
+                .cta-button {
+                  padding: 14px 32px;
+                  font-size: 15px;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>Password Reset Request</h1>
+                <p>Reset your Pricewise account password</p>
+              </div>
+              
+              <div class="content">
+                <p>Hello ${fullName},</p>
+                <p>You requested a password reset for your Pricewise account. Click the button below to reset your password:</p>
+                
+                <div class="cta-wrapper">
+                  <a href="${resetUrl}" class="cta-button">
+                    Reset Password
+                  </a>
+                </div>
+
+                <p>This link will expire in 15 minutes for security reasons.</p>
+                
+                <div class="info-text">
+                  <strong>Didn't request this?</strong><br>
+                  If you didn't request a password reset, please ignore this email. Your password will remain unchanged.
+                </div>
+              </div>
+              
+              <div class="footer">
+                <p>© ${new Date().getFullYear()} PriceWise. All rights reserved.</p>
+                <p>This email was sent to ${to}</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error("Email send error:", error);
+      return { success: false, error };
+    }
+
+    console.log("Password reset email sent successfully:", data);
     return { success: true, data };
   } catch (error) {
     console.error("Email service error:", error);

@@ -221,7 +221,6 @@ const WishlistPage = () => {
                           </span>
                         </div>
                       </div>
-                      {/* )} */}
                     </div>
                   </CardContent>
 

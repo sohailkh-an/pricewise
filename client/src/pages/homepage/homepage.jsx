@@ -1,10 +1,10 @@
 import * as React from "react";
 import { ProductCard } from "../../components/ui/ProductCard";
+import { ProductCardSkeleton } from "../../components/ui/ProductCardSkeleton";
 import { Carousel } from "../../components/ui/carousel";
 import { Button } from "../../components/ui/button";
 import { useProductsByCategory } from "../../hooks/useProducts";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
@@ -21,7 +21,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <section
-        className="relative bg-top bg-cover bg-center min-h-[50vh] flex items-center justify-center"
+        className="relative bg-top bg-cover min-h-[50vh] flex items-center justify-center"
         style={{ backgroundImage: "url('/header_img.webp')" }}
       >
         <div className="absolute inset-0 bg-black/40"></div>
@@ -64,17 +64,19 @@ const CategorySection = ({ category }) => {
 
   if (isLoading) {
     return (
-      <div className="mb-16 w-full bg-[#f5f5f7]">
+      <div className="py-10 px-5 w-full border-b">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold">{category.name}</h2>
           <Button variant="outline" disabled>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             Loading...
           </Button>
         </div>
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin" />
-        </div>
+
+        <Carousel itemsPerView={itemsPerView} className="mb-4 w-full">
+          {Array.from({ length: itemsPerView }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </Carousel>
       </div>
     );
   }

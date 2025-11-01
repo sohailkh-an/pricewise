@@ -11,13 +11,13 @@ function Carousel({ children, className, ...props }) {
   React.useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
-        setItemsPerView(1); // Mobile
+        setItemsPerView(1);
       } else if (window.innerWidth < 768) {
-        setItemsPerView(2); // Tablet
+        setItemsPerView(2);
       } else if (window.innerWidth < 1024) {
-        setItemsPerView(3); // Small desktop
+        setItemsPerView(3);
       } else {
-        setItemsPerView(4); // Desktop
+        setItemsPerView(4);
       }
     };
 
@@ -26,7 +26,6 @@ function Carousel({ children, className, ...props }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Reset index when items per view changes
   React.useEffect(() => {
     setCurrentIndex(0);
   }, [itemsPerView]);
@@ -49,9 +48,8 @@ function Carousel({ children, className, ...props }) {
   const canGoNext = currentIndex + itemsPerView < totalItems;
   const canGoPrev = currentIndex > 0;
 
-  // Calculate translateX based on current index and gap
   const itemWidth = 100 / itemsPerView;
-  const gap = 1.5; // 1.5% gap between items (equivalent to gap-6 at 24px)
+  const gap = 1.5;
   const translatePercent = currentIndex * itemWidth + currentIndex * gap;
 
   return (
@@ -60,7 +58,6 @@ function Carousel({ children, className, ...props }) {
       className={cn("relative w-full", className)}
       {...props}
     >
-      {/* Overflow container */}
       <div className="overflow-hidden w-full">
         <div
           className="flex transition-transform duration-500 ease-out gap-6"
@@ -71,7 +68,7 @@ function Carousel({ children, className, ...props }) {
           {React.Children.map(children, (child, index) => (
             <div
               key={index}
-              className="flex-shrink-0"
+              className="shrink-0"
               style={{
                 width: `calc(${itemWidth}% - ${
                   (gap * (itemsPerView - 1)) / itemsPerView
@@ -84,7 +81,6 @@ function Carousel({ children, className, ...props }) {
         </div>
       </div>
 
-      {/* Navigation Buttons */}
       {canGoPrev && (
         <Button
           variant="outline"
@@ -115,7 +111,6 @@ function Carousel({ children, className, ...props }) {
         </Button>
       )}
 
-      {/* Dots indicator (optional) */}
       {totalItems > itemsPerView && (
         <div className="flex justify-center gap-2 mt-6">
           {Array.from({

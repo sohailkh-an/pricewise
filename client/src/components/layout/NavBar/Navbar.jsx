@@ -170,7 +170,7 @@ const NavBar = () => {
   ];
 
   return (
-    <nav className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 bg-[#041d09] border-b">
+    <nav className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 bg-[#041d09]">
       <Link to="/" className="bg-transparent shrink-0">
         <img src="/logo1.png" alt="Logo" className="h-12 md:h-15" />
       </Link>

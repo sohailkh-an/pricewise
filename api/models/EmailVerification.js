@@ -46,7 +46,6 @@ const emailVerificationSchema = new mongoose.Schema(
   }
 );
 
-// Clean up expired documents
 emailVerificationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const EmailVerification = mongoose.model(

@@ -6,15 +6,6 @@ import { scrapeProductPrice } from "../utils/scraper.js";
 
 const router = express.Router();
 
-// router.get("/deleteAllPriceAlerts", async (req, res) => {
-//   try {
-//     const alerts = await PriceAlert.deleteMany();
-//     res.json({ message: "All Products deleted unfortunately" });
-//   } catch (error) {
-//     res.status(500).json({ message: "Operation failed bro" });
-//   }
-// });
-
 router.get("/getAllAlerts", async (req, res) => {
   try {
     const alerts = await PriceAlert.find();

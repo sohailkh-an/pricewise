@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import productsRoutes from "./routes/products.js";
 import usersRoutes from "./routes/users.js";
-// import deleteAllProductsRoutes from "./routes/deleteAllProducts.js";
 import reviewsRoutes from "./routes/reviews.js";
 import wishlistRoutes from "./routes/wishlist.js";
 import priceAlertRoutes from "./routes/priceAlert.js";
@@ -26,7 +25,6 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/products", productsRoutes);
-// app.use("/api/deleteAllProducts", deleteAllProductsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/wishlist", wishlistRoutes);
@@ -40,8 +38,7 @@ mongoose
   .connect(process.env.MONGO_URL)
   .then(async () => {
     console.log("MongoDB connected");
-    
-    // Drop old index if it exists (migration from userEmail to user)
+
     try {
       const indexes = await Review.collection.getIndexes();
       if (indexes.product_1_userEmail_1) {
@@ -49,12 +46,11 @@ mongoose
         console.log("Dropped old index: product_1_userEmail_1");
       }
     } catch (error) {
-      // Ignore if index doesn't exist or collection doesn't exist
       if (error.code !== 27 && error.code !== 26) {
         console.log("Index cleanup:", error.message);
       }
     }
-    
+
     app.listen(PORT, () => {
       console.log(`Server is running smoothly on port ${PORT}`);
     });

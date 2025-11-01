@@ -99,12 +99,17 @@ const Login = () => {
     }
 
     try {
-      const { success, message } = await login(formData.email, formData.password);
+      const { success, message } = await login(
+        formData.email,
+        formData.password
+      );
       if (success) {
         navigate("/");
         window.location.reload();
       } else {
-        setError(message || "An error occurred during login. Please try again.");
+        setError(
+          message || "An error occurred during login. Please try again."
+        );
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -115,7 +120,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800 px-4">
       <Card className="w-full max-w-md" size="auth">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
