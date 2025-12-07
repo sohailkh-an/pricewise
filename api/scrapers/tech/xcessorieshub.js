@@ -46,9 +46,9 @@ export async function getXcessorieshubPrice(url) {
   }
 }
 
-// (async () => {
-//   const result = await getXcessorieshubPrice(
-//     "https://xcessorieshub.com/product/samsung-galaxy-watch-ultra-47mm/"
-//   );
-//   console.log(result);
-// })();
+(async () => {
+  const result = await getXcessorieshubPrice(
+    "https://xcessorieshub.com/product/samsung-galaxy-watch-ultra-47mm/"
+  );
+  console.log(result);
+})();

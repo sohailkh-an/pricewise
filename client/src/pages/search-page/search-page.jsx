@@ -64,9 +64,21 @@ const SearchPage = () => {
     setFilters((prev) => ({ ...prev, page: 1 }));
   };
 
+
   const handleFilterChange = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value, page: 1 }));
+    setFilters((prev) => {
+
+      const newFilters = {...prev, [key]: value};
+      if (key !== 'page'){
+        newFilters.page = 1;
+      }
+      return newFilters;
+    }); 
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [filters.page]);
 
   const clearFilters = () => {
     setFilters({
@@ -109,11 +121,13 @@ const SearchPage = () => {
 
   const products = data?.products || [];
   const totalPages = data?.totalPages || 1;
+
+  console.log("Total pages:", totalPages);
   const currentPage = data?.currentPage || 1;
   const total = data?.total || 0;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" >
       <div className="px-6 py-8 bg-muted/30">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Search Products</h1>
@@ -210,7 +224,7 @@ const SearchPage = () => {
           </div>
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex gap-8" >
           {showFilters && (
             <div className="w-55 shrink-0">
               <Card size="sm">

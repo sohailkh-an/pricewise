@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   useRecommendations,
   useTrackView,
   useTrackClick,
 } from "../../hooks/useRecommendations";
 import { ProductCard } from "../ui/ProductCard";
+import { ProductCardSkeleton } from "../ui/ProductCardSkeleton";
+import { Carousel } from "../ui/carousel";
 import { useNavigate } from "react-router-dom";
 
 export const SmartRecommendations = ({ productId }) => {
@@ -12,6 +14,17 @@ export const SmartRecommendations = ({ productId }) => {
   const trackView = useTrackView();
   const trackClick = useTrackClick();
   const navigate = useNavigate();
+  const [itemsPerView, setItemsPerView] = useState(4);
+
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      setItemsPerView(window.innerWidth < 768 ? 1 : 4);
+    };
+
+    updateItemsPerView();
+    window.addEventListener("resize", updateItemsPerView);
+    return () => window.removeEventListener("resize", updateItemsPerView);
+  }, []);
 
   useEffect(() => {
     if (data?.data && data.data.length > 0) {
@@ -27,16 +40,13 @@ export const SmartRecommendations = ({ productId }) => {
 
   if (isLoading) {
     return (
-      <div className="mt-8">
+      <div>
         <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mb-6"></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="h-64 bg-gray-200 rounded animate-pulse"
-            ></div>
+        <Carousel itemsPerView={itemsPerView} className="mb-4 w-full">
+          {Array.from({ length: itemsPerView }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
           ))}
-        </div>
+        </Carousel>
       </div>
     );
   }
@@ -47,8 +57,8 @@ export const SmartRecommendations = ({ productId }) => {
     <div>
       <h2 className="text-2xl font-bold mb-6">Recommended For You</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {data.data.slice(0, 8).map((product) => (
+      <Carousel itemsPerView={itemsPerView} className="mb-4 w-full">
+        {data.data.slice(0, 10).map((product) => (
           <div
             key={product._id}
             onClick={() => handleProductClick(product._id)}
@@ -57,7 +67,7 @@ export const SmartRecommendations = ({ productId }) => {
             <ProductCard product={product} />
           </div>
         ))}
-      </div>
+      </Carousel>
     </div>
   );
 };

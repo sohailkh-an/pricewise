@@ -75,6 +75,9 @@ router.get("/", async (req, res) => {
 
     const total = await Product.countDocuments(query);
 
+
+
+
     res.json({
       products,
       totalPages: Math.ceil(total / limit),
@@ -99,6 +102,7 @@ router.get("/search", async (req, res) => {
       sortBy = "relevance",
     } = req.query;
 
+  
     console.log("Subcat", subCategory);
 
     const query = { isActive: true };
@@ -148,6 +152,10 @@ router.get("/search", async (req, res) => {
       .skip((parseInt(page) - 1) * parseInt(limit));
 
     const total = await Product.countDocuments(query);
+
+
+
+    console.log(products, "totalPages:", Math.ceil(total/limit), "currentPage:", parseInt(page) )
 
     res.json({
       products,
